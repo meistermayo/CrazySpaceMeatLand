@@ -88,14 +88,15 @@ void DXApp::InitDemo()
 
 
 	// Cube
-	//pModel_Cube = new Model(md3dDevice, fbxModelInfo);
-	pModel_Cube = new Model(md3dDevice, Model::UnitSphere, 12.0f);
+	pModel_Cube = new Model(md3dDevice, fbxModelInfo);
+	//pModel_Cube = new Model(md3dDevice, Model::UnitSphere, 12.0f);
 	mWorld_Cube = new Matrix(Matrix::Trans(Vect(0.f, 10.f, 0.f))); /// ??? pointer???
-	pShader_Cube = new ShaderColorLight(md3dDevice);
-	Cube = new GraphicObject_ColorLight(pShader_Cube,1, pModel_Cube, Vect(1,0,0,1), Vect(1,0,0,1), Vect(1,1,1,1));
-	Cube->SetColor(Vect(1, 0, 0, 1), 0);
+	pShader_Cube = new ShaderColorLightTexture(md3dDevice);
+	Cube = new GraphicObject_TextureLight((ShaderColorLightTexture*)(pShader_Cube), pModel_Cube);// Vect(1, 0, 0, 1), Vect(1, 0, 0, 1), Vect(1, 1, 1, 1));
+	pTex_Cube = new Texture(md3dDevice, L"../Assets/Textures/cube.tga", D3D11_FILTER_MIN_MAG_MIP_POINT, 4U, FALSE, 0U, DirectX::TEX_FILTER_POINT);
+	Cube->SetTexture(pTex_Cube, 0);
+	//Cube->SetColor(Vect(1, 0, 0, 1), 0);
 	Cube->SetWorld(*mWorld_Cube);
-
 
 	pShader_Cube->SetPointLightParameters1(pointLightPos1, pointLightRadius1, pointLightAtt1, pointLightAmb1, pointLightDif1, pointLightSpc1);
 	pShader_Cube->SetPointLightParameters2(pointLightPos2, pointLightRadius2, pointLightAtt2, pointLightAmb2, pointLightDif2, pointLightSpc2);

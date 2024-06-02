@@ -111,10 +111,11 @@ private:
 	EyeballRing* eyeballRing;
 
 	// Cube
-	ShaderColorLight* pShader_Cube;
+	ShaderColorLightTexture* pShader_Cube;
 	Model* pModel_Cube;
 	Matrix* mWorld_Cube;
-	GraphicObject_ColorLight* Cube;
+	Texture* pTex_Cube;
+	GraphicObject_TextureLight* Cube;
 
 	// WORMY BOI >:D
 	Worm* worm;
