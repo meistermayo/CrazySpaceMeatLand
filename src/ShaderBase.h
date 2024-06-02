@@ -5,7 +5,7 @@
 #define _ShaderBase
 
 #include <d3dcommon.h>
-#include "Matrix.h"
+#include "Math/Matrix.h"
 #include <string>
 
 struct ID3D11Device;

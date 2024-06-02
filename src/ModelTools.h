@@ -6,7 +6,7 @@
 #ifndef _ModelTools
 #define _ModelTools
 
-#include "Vect.h"
+#include "Math/Vect.h"
 
 struct StandardVertex;
 struct TriangleByIndex;

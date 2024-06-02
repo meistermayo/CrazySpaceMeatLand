@@ -1,13 +1,17 @@
 #pragma once
+#pragma warning(disable : 4201)
 
 #include "Align16.h"
 #include "./Vect.h"
 
+#include <corecrt_math.h>
 #include <xmmintrin.h>
 #include <smmintrin.h> 
+#include <cassert>
 
 class Matrix : public Align16
 {
+	/*/
 	friend struct vM;
 	friend struct vM2;
 	friend struct vM3;
@@ -18,7 +22,6 @@ class Matrix : public Align16
 	friend inline vM3 operator * (const vM2& _vM, const Matrix& _m1);
 	friend inline vM4 operator * (const vM3& _vM, const Matrix& _m1);
 
-	/*/
 	friend struct Mv;
 	friend struct MM;
 	friend struct MMM;
@@ -35,6 +38,7 @@ class Matrix : public Align16
 	//*/
 
 public:
+	static const Matrix Identity;
 
 	Matrix()
 	{
@@ -73,14 +77,93 @@ public:
 	{
 	}
 
-	static Matrix Scale(const Vect& s)
-	{
-		return Matrix(Vect::Right * s.x, Vect::Up * s.y, Vect::Forward * s.z, Vect::Zero);
+	static Matrix Trans(const Vect& t) { return Matrix(Vect::Right_0, Vect::Up_0, Vect::Forward_0, t); }
+	static Matrix Scale(float s) { return Matrix(Vect::Right_0 * s, Vect::Up_0 * s, Vect::Forward_0 * s, Vect::Zero); }
+	static Matrix Scale(const Vect& s) { return Matrix(Vect::Right_0 * s.x, Vect::Up_0 * s.y, Vect::Forward_0 * s.z, Vect::Zero); }
+
+	static Matrix RotAxisAngle(const Vect& axis, float angle) {
+		
+		float c = cosf(angle);
+		float s = sinf(angle);
+		float t = 1.f - c;
+
+		Vect naxis = axis.GetNormalized();
+		float x = naxis.x, y = naxis.y, z = naxis.z;
+
+		// opt me
+		return Matrix(
+			Vect(t*x*x + c,		t*x*y + s*z,	t*x*z - s*y,	0.f),
+			Vect(t*x*y - s*z,	t*y*y + c,		t*y*z + s*x,	0.f),
+			Vect(t*x*z + s*y,	t*y*z - s*x,	t*z*z + c,		0.f),
+			Vect::Zero
+		);
 	}
+
+	Matrix GetInverse() const
+	{
+		return Matrix(); // to dooo
+	}
+
+	Matrix GetOrthoNormalInverse() const
+	{
+		Matrix m = *this;
+		m.Flip(m.m01, m.m10);
+		m.Flip(m.m02, m.m20);
+		m.Flip(m.m21, m.m12);
+		return m;
+	}
+
+	Matrix GetWorldInverse() const
+	{
+		Matrix m = GetOrthoNormalInverse();
+		m.v3 = -m.v3;
+		return m;
+	}
+
+	Matrix GetTranspose() const
+	{
+		Matrix m = *this;
+		m.Transpose();
+		return m;
+	}
+
+	void Transpose()
+	{
+		Flip(m01, m10);
+		Flip(m02, m20);
+		Flip(m03, m30);
+
+		Flip(m21, m12);
+		Flip(m31, m13);
+
+		Flip(m32, m23);
+	}
+
+	void Flip(float& a, float& b)
+	{
+		float tmp = a;
+		a = b;
+		b = tmp;
+	}
+
+	// opt me
+	static Matrix RotX(float angle) { return RotAxisAngle(Vect::Right, angle); }
+	static Matrix RotY(float angle) { return RotAxisAngle(Vect::Up, angle); }
+	static Matrix RotZ(float angle) { return RotAxisAngle(Vect::Forward, angle); }
+
+	void SetTrans(const Vect& t) { v3 = t; }
+	const Vect& GetTrans() const { return v3; }
 
 	Vect operator * (const Vect& v);
 
 	Matrix operator * (const Matrix& t);
+	Matrix& operator *= (const Matrix& t);
+
+	float& operator[](int i)
+	{
+		assert(i >= 0 && i < 16 && "Matrix was indexed outside of its range!");
+		return (&m00)[i];
+	}
 
 	union
 	{
@@ -94,22 +177,22 @@ public:
 
 		struct
 		{
-			float m0;
-			float m1;
-			float m2;
-			float m3;
-			float m4;
-			float m5;
-			float m6;
-			float m7;
-			float m8;
-			float m9;
+			float m00;
+			float m01;
+			float m02;
+			float m03;
 			float m10;
 			float m11;
 			float m12;
 			float m13;
-			float m14;
-			float m15;
+			float m20;
+			float m21;
+			float m22;
+			float m23;
+			float m30;
+			float m31;
+			float m32;
+			float m33;
 		};
 	};
 };
@@ -816,3 +899,5 @@ inline MMMMMv operator * (const MMMMM &_mm, const Vect &_v1)
 //*/
 
 // ---  End of File ---------------
+
+#pragma warning(default : 4201)

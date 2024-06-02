@@ -1,5 +1,7 @@
 #pragma once
 
+#include <corecrt_malloc.h>
+
 class Align16
 {
 public:

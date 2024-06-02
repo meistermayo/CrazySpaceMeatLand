@@ -128,7 +128,7 @@ void ShaderTexture::SendWorld(const Matrix& world)
 {
 	InstanceData wc;
 	wc.World = world;
-	wc.WorldInv = world.getInv();
+	wc.WorldInv = world.GetWorldInverse();
 	this->GetContext()->UpdateSubresource(mpBuffWordColor, 0, nullptr, &wc, 0, 0);
 
 }

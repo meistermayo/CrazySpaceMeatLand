@@ -69,7 +69,7 @@ void ShaderColor::SendWorldColor(const Matrix& world, const Vect& col)
 {
 	Data_WorldColor wc;
 	wc.World = world;
-	wc.WorldInv = world.getInv();
+	wc.WorldInv = world.GetWorldInverse();
 	wc.Color = col;
 
 	this->GetContext()->UpdateSubresource(mpBuffWordColor, 0, nullptr, &wc, 0, 0);

@@ -148,7 +148,7 @@ void ShaderColorLight::SendWorldAndMaterial(const Matrix& world, const Vect& amb
 {
 	Data_WorldAndMaterial wm;
 	wm.World = world;
-	wm.WorlInv = world.getInv();
+	wm.WorlInv = world.GetWorldInverse();
 	wm.Mat.Ambient = amb;
 	wm.Mat.Diffuse = dif;
 	wm.Mat.Specular = sp;

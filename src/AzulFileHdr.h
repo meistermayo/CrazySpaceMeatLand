@@ -2,7 +2,6 @@
 #define AZUL_FILE_HDR_H
 
 #include <string.h>
-#include "MathEngine.h"
 
 #define OBJECT_NAME_SIZE   32
 

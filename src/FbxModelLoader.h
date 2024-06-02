@@ -1,7 +1,7 @@
 #ifndef _FbxModelLoader
 #define _FbxModelLoader
 #include <fbxsdk.h>
-#include "Vect.h"
+#include "Math/Vect.h"
 
 struct StandardVertex;
 struct TriangleByIndex;

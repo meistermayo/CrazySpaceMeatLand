@@ -16,6 +16,7 @@
 #include "GraphicObject_Color.h"
 #include "FbxModelLoader.h"
 #include "EyeballRing.h"
+#include "Math/Constants.h"
 #include "Worm.h"
 /*/
 where could my code be failing
@@ -33,26 +34,26 @@ void DXApp::InitDemo()
 {
 	Vect pointLightPos1 = Vect(-164, 80, 164);
 	float pointLightRadius1 = 100;
-	Vect pointLightAtt1 = .02 * Vect(0, 1, 0);
-	Vect pointLightAmb1 = .001 * Vect(1, 0.5, 0);
-	Vect pointLightDif1 = .5 * Vect(1, 0.5, 0);
-	Vect pointLightSpc1 = 1 * Vect(1, 1, 1, 1);
+	Vect pointLightAtt1 = Vect(0, 1, 0) * .02f;
+	Vect pointLightAmb1 = Vect(1, 0.5, 0) * .001f;
+	Vect pointLightDif1 = Vect(1, 0.5, 0) * .5f;
+	Vect pointLightSpc1 = Vect(1, 1, 1, 1) * 1.f;
 
 	Vect pointLightPos2 = Vect(164, 80, -164);
 	float pointLightRadius2 = 100;
-	Vect pointLightAtt2 = .02f * Vect(0, 1, 0);
-	Vect pointLightAmb2 = .001 * Vect(1, 0.5, 0);
-	Vect pointLightDif2 = .5 * Vect(1, 0.5, 0);
-	Vect pointLightSpc2 = 0.5 * Vect(1, 1, 1, 1);
+	Vect pointLightAtt2 = Vect(0, 1, 0) * .02f;
+	Vect pointLightAmb2 = Vect(1, 0.5, 0) * .001f;
+	Vect pointLightDif2 = Vect(1, 0.5, 0) * .5f;
+	Vect pointLightSpc2 = Vect(1, 1, 1, 1) * 0.5f;
 
 	Vect spotLightPos = Vect(0, 128, 256);
 	float spotLightRadius = 100;
-	Vect spotLightAtt = .02f * Vect(0, 1, 0);
+	Vect spotLightAtt = Vect(0, 1, 0) * .02f;
 	Vect spotDir = Vect(0,10,64);
 	float spotExp = 1;
-	Vect spotLightAmb = .1 * Vect(0, 0, 1);
-	Vect spotLightDif = .5 * Vect(0, 0, 1);
-	Vect spotLightSpc = 0.5 * Vect(.3, .6, 1, 150);
+	Vect spotLightAmb = Vect(0, 0, 1) * .1f;
+	Vect spotLightDif = Vect(0, 0, 1) * .5f;
+	Vect spotLightSpc = Vect(.3, .6, 1, 150) * 0.5f;
 
 
 	FbxModelLoader fbxModelLoader = FbxModelLoader();
@@ -80,7 +81,7 @@ void DXApp::InitDemo()
 	// FRIGATE )))))))
 	pModel_Frigate = new Model(md3dDevice, "../Assets/Models/space_frigate.azul",false,false,.2f);
 	pTex_Frigate = new Texture(md3dDevice, L"../Assets/Textures/space_frigate.tga");
-	world_Frigate = Matrix(RotType::ROT_Y, MATH_PI) *Matrix(RotType::ROT_Z, 0) * Matrix(TRANS, 40, 60, 40);
+	world_Frigate = Matrix::RotY(MATH_PI) * Matrix::RotZ(0.f) * Matrix::Trans(Vect(40.f, 60.f, 40.f));
 	GO_Frigate = new GraphicObject_TextureLight(pShaderTexLight,pModel_Frigate);
 	GO_Frigate->SetWorld(world_Frigate);
 	GO_Frigate->SetTexture(pTex_Frigate, 0);
@@ -89,7 +90,7 @@ void DXApp::InitDemo()
 	// Cube
 	//pModel_Cube = new Model(md3dDevice, fbxModelInfo);
 	pModel_Cube = new Model(md3dDevice, Model::UnitSphere, 12.0f);
-	mWorld_Cube = new Matrix(TRANS, 0, 10, 0);
+	mWorld_Cube = new Matrix(Matrix::Trans(Vect(0.f, 10.f, 0.f))); /// ??? pointer???
 	pShader_Cube = new ShaderColorLight(md3dDevice);
 	Cube = new GraphicObject_ColorLight(pShader_Cube,1, pModel_Cube, Vect(1,0,0,1), Vect(1,0,0,1), Vect(1,1,1,1));
 	Cube->SetColor(Vect(1, 0, 0, 1), 0);
@@ -117,11 +118,11 @@ void DXApp::InitDemo()
 	pTerrain = new TerrainModel(md3dDevice, L"../Assets/Textures/canyon2.tga",len,50,0,8,8);
 	pTerrain_Shader = new ShaderTexture(md3dDevice);
 	pTerrain_Shader->SetTextureResourceAndSampler(NULL);
-	pTerrain_World = new Matrix(MatrixTransType::TRANS, -128.0f*len, 0.0f, -128.0f*len);
+	pTerrain_World = new Matrix(Matrix::Trans(Vect(-128.0f*len, 0.0f, -128.0f*len))); // why tf is this a pointer???
 #endif
 
 #ifdef SKYBOX
-	Matrix _tempMatrix = Matrix(SCALE, 1, 1, 1) * Matrix(TRANS, 0,0,0);
+	Matrix _tempMatrix = Matrix::Scale(1.f) * Matrix::Trans(Vect::Zero); // why?
 	pSkyBox_World = new Matrix(_tempMatrix);
 	pSkyBox_Texture = new Texture(md3dDevice, L"../Assets/Textures/redspace.tga");
 	pSkyBox_Shader = new ShaderTexture(md3dDevice);
@@ -164,20 +165,20 @@ void DXApp::UpdateScene()
 	GO_Frigate->SetWorld(world_Frigate);
 
 	pShaderTexLight->SetPointLightParameters3(
-		world_Frigate.get(MatrixRowType::ROW_3) + Vect(0, -59.9f, 0), userdata.frigateSpotRange,
-		userdata.frigateSpotAtten * Vect(0, 1, 0),
+		world_Frigate.GetTrans() + Vect(0, -59.9f, 0), userdata.frigateSpotRange,
+		Vect(0, 1, 0) * userdata.frigateSpotAtten,
 
-		1 * Vect(.7, .7, 1),
-		3 * Vect(.7, .7, 1),
-		1 * Vect(1, 1, 1, 1));
+		Vect(.7, .7, 1) * 1.f,
+		Vect(.7, .7, 1) * 3.f,
+		Vect(1, 1, 1, 1) * 1.f);
 
 	pShader_Cube->SetPointLightParameters3(
-		world_Frigate.get(MatrixRowType::ROW_3) + Vect(0, -59.9f, 0), userdata.frigateSpotRange,
-		userdata.frigateSpotAtten * Vect(0, 1, 0),
+		world_Frigate.GetTrans() + Vect(0, -59.9f, 0), userdata.frigateSpotRange,
+		Vect(0, 1, 0) * userdata.frigateSpotAtten,
 
-		1 * Vect(.7, .7, 1),
-		3 * Vect(.7, .7, 1),
-		1 * Vect(1, 1, 1, 1));
+		Vect(.7, .7, 1)	* 1.f,
+		Vect(.7, .7, 1)	* 3.f,
+		Vect(1, 1, 1, 1)* 1.f);
 
 	float camSpeed = 40 * mTimer.DeltaTime();
 	if (GetKeyState('W') & 0x08000)
@@ -215,11 +216,11 @@ void DXApp::UpdateScene()
 	}
 	else if (GetKeyState('Q') & 0x08000)
 	{
-		world_Frigate *= Matrix(RotType::ROT_Y,- MATH_PI / 5000);
+		world_Frigate *= Matrix::RotY(-MATH_PI / 5000.f);
 	}
 	else if (GetKeyState('E') & 0x08000)
 	{
-		world_Frigate *= Matrix(RotType::ROT_Y, MATH_PI / 5000);
+		world_Frigate *= Matrix::RotY(MATH_PI / 5000.f);
 	}
 
 	float rotSpeed = 3 * mTimer.DeltaTime();
@@ -268,7 +269,7 @@ void DXApp::DrawScene()
 #ifdef SKYBOX
 	Vect camPos;
 	mCam.getPos(camPos);
-	pSkyBox_World->set(MatrixRowType::ROW_3, camPos);
+	pSkyBox_World->SetTrans(camPos);
 	pSkyBox_Shader->SetToContext(md3dImmediateContext);
 	pSkyBox_Shader->SendFogData(500, 5000, fogCol);
 	pSkyBox_Shader->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());
@@ -619,11 +620,11 @@ void DXApp::OnMouseDown(WPARAM btnState, int xval, int yval)
 		mCam.getPos(camPos);
 		mCam.getDir(camDir);
 		Matrix camWorld;
-		camWorld = Matrix(RotType::ROT_Y,0) * Matrix(SCALE,1,1,1) * Matrix(TRANS, camPos);
+		camWorld = Matrix::RotY(0) * Matrix::Scale(1.f) * Matrix::Trans(camPos);
 
 		//myBullet->Activate(0.1f*(((-camDir)).getNorm()), camWorld);
-		MousePos[x] = static_cast<float>(xval);
-		MousePos[y] = static_cast<float>(yval);
+		MousePos.x = static_cast<float>(xval);
+		MousePos.y = static_cast<float>(yval);
 	}
 }
 

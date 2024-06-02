@@ -8,7 +8,7 @@ GraphicObject_Texture::GraphicObject_Texture(ShaderTexture* shader,Model* mod)
 	pShader = shader;
 	SetModel(mod);
 	tex = new Texture*[mod->GetMeshCount()];
-	world = Matrix(IDENTITY);
+	world = Matrix::Identity;
 	pShader->SetTextureResourceAndSampler(NULL);
 }
 

@@ -15,7 +15,7 @@ Worm::Worm(ID3D11Device * md3dDevice, ShaderColorLightTexture * pShaderTexLight)
 	FbxModelLoader fbxModelLoader = FbxModelLoader();
 	FbxModelInfo fbxModelInfo = fbxModelLoader.GetModel("../Assets/Models/Cube_Tri.fbx");
 
-	Matrix tempMatrix = Matrix(RotType::ROT_Y, 180.5) * Matrix(SCALE, 1, 1, 1) * Matrix(TRANS, 0, 0, -20);
+	Matrix tempMatrix = Matrix::RotY(180.5f) * Matrix::Scale(1.f) * Matrix::Trans(Vect(0.f, 0.f, -20.f));
 	mWorld_WormyBoi = new Matrix(tempMatrix);
 	pModel_WormyBoi = new Model(md3dDevice, "../Assets/Models/WormyBoi_Full.azul", false, true, 2);
 	WormyBoi = new GraphicObject_TextureLight(pShaderTexLight, pModel_WormyBoi);
@@ -44,13 +44,13 @@ Worm::Worm(ID3D11Device * md3dDevice, ShaderColorLightTexture * pShaderTexLight)
 		GroundSpheres[i]->SetTexture(pTerrain_Texture, 0);
 	}
 
-	GroundSpheres[0]->SetWorld(Matrix(TRANS, 0, 0, -50));
-	GroundSpheres[1]->SetWorld(Matrix(TRANS, 20, -2, -55));
-	GroundSpheres[2]->SetWorld(Matrix(TRANS, 17, -2, -75));
-	GroundSpheres[3]->SetWorld(Matrix(TRANS, 5, 1, -85));
-	GroundSpheres[4]->SetWorld(Matrix(TRANS, -5, -4, -85));
-	GroundSpheres[5]->SetWorld(Matrix(TRANS, -15, 1, -65));
-	GroundSpheres[6]->SetWorld(Matrix(TRANS, -10, 3, -55));
+	GroundSpheres[0]->SetWorld(Matrix::Trans(Vect(0, 0, -50)));
+	GroundSpheres[1]->SetWorld(Matrix::Trans(Vect(20, -2, -55)));
+	GroundSpheres[2]->SetWorld(Matrix::Trans(Vect(17, -2, -75)));
+	GroundSpheres[3]->SetWorld(Matrix::Trans(Vect(5, 1, -85)));
+	GroundSpheres[4]->SetWorld(Matrix::Trans(Vect(-5, -4, -85)));
+	GroundSpheres[5]->SetWorld(Matrix::Trans(Vect(-15, 1, -65)));
+	GroundSpheres[6]->SetWorld(Matrix::Trans(Vect(-10, 3, -55)));
 
 	this->pShaderTexLight = pShaderTexLight;
 }

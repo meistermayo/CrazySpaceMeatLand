@@ -74,7 +74,7 @@ void Bullet::Update(float elapsedMilliseconds)
 		Deactivate();
 	}
 	else
-		pGO->SetWorld(pGO->GetWorld() * Matrix(TRANS, Speed));
+		pGO->SetWorld(pGO->GetWorld() * Matrix::Trans(Speed));
 }
 
 void Bullet::Render()

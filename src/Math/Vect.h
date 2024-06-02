@@ -4,11 +4,13 @@
 
 #include <xmmintrin.h>
 #include <smmintrin.h>  
+#include <math.h>
 
 class Matrix;
 
 class Vect : public Align16
 {
+	/*
 	friend struct vM;
 	friend struct vM2;
 	friend struct vM3;
@@ -18,6 +20,7 @@ class Vect : public Align16
 	friend inline vM2 operator * (const vM& _vM, const Matrix& _m1);
 	friend inline vM3 operator * (const vM2& _vM, const Matrix& _m1);
 	friend inline vM4 operator * (const vM3& _vM, const Matrix& _m1);
+	*/
 
 public:
 	static const Vect Right;
@@ -25,6 +28,12 @@ public:
 	static const Vect Forward;
 	static const Vect Zero;
 	static const Vect One;
+
+	static const Vect Right_0;
+	static const Vect Up_0;
+	static const Vect Forward_0;
+	static const Vect Zero_0;
+	static const Vect One_0;
 
 	Vect()
 	{
@@ -51,26 +60,35 @@ public:
 	};
 
 
-	Vect(const float tx, const float ty, const float tz, const float tw = 1.0f)
+	Vect(float tx, float ty, float tz, float tw = 1.0f)
 	{
 		this->_m = _mm_set_ps(tw, tz, ty, tx);
 	}
 
-	void set(const float xVal, const float yVal, const float zVal, const float wVal)
+	void set(float xVal, float yVal, float zVal, float wVal)
 	{
 		this->_m = _mm_set_ps(wVal, zVal, yVal, xVal);
+	}
+
+	void set(float xVal, float yVal, float zVal)
+	{
+		this->_m = _mm_set_ps(w, zVal, yVal, xVal);
 	}
 
 	Vect operator + (const Vect& tmp) const
 	{
 		//return Vect(tmp.x + x, tmp.y + y, tmp.z + z, tmp.w + w); // ?
 		__m128 teMp = _mm_add_ps(this->_m, tmp._m);
-		return Vect(teMp);
+
+		Vect v(teMp);
+		v.w = 1.0f;
+		return v;
 	}
 
 	Vect& operator += (const Vect& tmp)
 	{
 		this->_m = _mm_add_ps(this->_m, tmp._m);
+		this->w = 1.0f;
 		return *this;
 	}
 
@@ -82,12 +100,15 @@ public:
 			z - tmp.z,
 			w - tmp.w); */
 		__m128 teMp = _mm_sub_ps(this->_m, tmp._m);
-		return Vect(teMp);
+		Vect v(teMp);
+		v.w = 1.0f;
+		return v;
 	}
 
 	Vect& operator -= (const Vect& tmp)
 	{
 		this->_m = _mm_sub_ps(this->_m, tmp._m);
+		this->w = 1.0f;
 		return *this;
 	}
 
@@ -100,7 +121,7 @@ public:
 		_tmp.x = (y * tmp.z) - (z * tmp.y);
 		_tmp.y = (z * tmp.x) - (x * tmp.z);
 		_tmp.z = (x * tmp.y) - (y * tmp.x);
-		_tmp.w = 1;
+		_tmp.w = 1.0f;
 		return _tmp;
 	}
 
@@ -111,14 +132,16 @@ public:
 		x = (t.y * tmp.z) - (t.z * tmp.y);
 		y = (t.z * tmp.x) - (t.x * tmp.z);
 		z = (t.x * tmp.y) - (t.y * tmp.x);
-		w = 1;
+		w = 1.0f;
 		return *this;
 	}
 
 	Vect operator / (const Vect& tmp) const
 	{
 		__m128 teMp = _mm_div_ps(this->_m, tmp._m);
-		return Vect(teMp);
+		Vect v(teMp);
+		v.w = 1.0f;
+		return v;
 
 		//return Vect(x / tmp.x, y / tmp.y, z / tmp.z, w / tmp.w);
 	}
@@ -126,6 +149,7 @@ public:
 	Vect& operator /= (const Vect& tmp)
 	{
 		this->_m = _mm_div_ps(this->_m, tmp._m);
+		this->w = 1.0f;
 		return *this;
 		/*/
 		this->x /= tmp.x;
@@ -143,10 +167,63 @@ public:
 		return (x * t.x) + (y * t.y) + (z * t.z) + (w * t.w);
 	}
 
-	Vect operator * (const float s) const
+	void Normalize()
 	{
-		return Vect(x * s, y * s, z * s, w * s);
+		float n = 1.0f / sqrtf(x * x + y * y + z * z);
+		x *= n;
+		y *= n;
+		z *= n;
+		w = 1.0f;
+		// check back on this
 	}
+
+	Vect GetNormalized() const
+	{
+		Vect v = *this;
+		v.Normalize();
+		return v;
+	}
+
+	Vect cross(const Vect& inVect) const
+	{
+		return Vect(
+			y * inVect.z - z * inVect.y,
+			z * inVect.x - x * inVect.z,
+			x * inVect.y - y * inVect.x
+		);
+	/*
+		__m128 v1 = _mm_set_ps(0.0f, x, z, y); // 1,2,0 ordering to save a shuffle
+		__m128 v2 = _mm_set_ps(0.0f, inVect.x, inVect.z, inVect.y);
+		__m128 result = _mm_sub_ps(
+			_mm_mul_ps(v1, _mm_shuffle_ps(v2, v2, _MM_SHUFFLE(3, 1, 0, 2))),
+			_mm_mul_ps(_mm_shuffle_ps(v1, v1, _MM_SHUFFLE(3, 1, 0, 2)), v2)
+		);
+
+		Vect cross;
+		_mm_store_ps(&cross.x, result);
+
+		return cross;
+		*/ // lookin a tthis later OL:::)
+	}
+
+	static float fastInvSqrt(float x) {
+		float xhalf = 0.5f * x;
+		int i = *(int*)&x; // based floating point bit level magic
+		i = 0x5f3759df - (i >> 1); // delightful! 
+		x = *(float*)&i;
+		x = x * (1.5f - xhalf * x * x); // 1st iteration
+		return x;
+	}
+
+	Vect operator-() const { return { -x,-y,-z, w }; }
+
+	Vect operator * (double s) const = delete;
+	Vect operator * (float s) const
+	{
+		return Vect(x * s, y * s, z * s, w);
+	}
+
+	Vect operator * (const Matrix& tmp) const;
 
 	//Vect operator * (const Matrix &m) const;
 
@@ -169,8 +246,3 @@ public:
 		};
 	};
 };
-
-
-
-
-

@@ -2,9 +2,9 @@
 #define MODEL_H
 
 #include <d3d11.h>
-#include "Vect.h"
+#include "Math/Vect.h"
 #include "Align16.h"
-#include "Matrix.h"
+#include "Math/Matrix.h"
 #include "FbxModelLoader.h"
 
 class MeshSeparator;

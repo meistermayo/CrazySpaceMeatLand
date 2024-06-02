@@ -8,7 +8,7 @@ GraphicObject_TextureLight::GraphicObject_TextureLight( ShaderColorLightTexture*
 	pShader = shader;
 	SetModel(mod);
 	tex = new Texture*[mod->GetMeshCount()];
-	world = Matrix(IDENTITY);
+	world = Matrix::Identity;
 	pShader->SetTextureResourceAndSampler(NULL);
 }
 
@@ -33,7 +33,7 @@ void GraphicObject_TextureLight::Render()
 	for (int i = 0; i < pModel->GetMeshCount(); i++)
 	{
 		tex[i]->SetToContext(pShader->GetContext());
-		pShader->SendWorldAndMaterial(world, 1.0 * Vect(1, 1, 1, 1), 1.0 * Vect(1, 1, 1, 1), 1.0 * Vect(1, 1, 1, 1));
+		pShader->SendWorldAndMaterial(world, Vect::One, Vect::One, Vect::One);
 		pModel->RenderMesh(pShader->GetContext(), i);
 	}
 }

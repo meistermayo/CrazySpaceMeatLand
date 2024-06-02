@@ -17,7 +17,7 @@ TerrainModel::TerrainModel(ID3D11Device* dev, LPCWSTR heightmapFile, float len, 
 
 	mDevice = dev;
 
-	WorldMat = Matrix(MatrixScaleType::SCALE, 0.25, 0.25, 0.25);
+	WorldMat = Matrix::Scale(0.25f);
 
 	// ** much work to add below **
 	ConstructTerrain(hgtmap,maxheight,len,RepeatU,RepeatV); // how about two lines
@@ -227,12 +227,12 @@ Vect TerrainModel::normalHelper(Vect p, Vect p6, Vect p2, Vect p1, Vect p4, Vect
 	Vect norm = cross1 + cross2 + cross3 + cross4 + cross5 + cross6;
 	float mult = 1.0f / 6.0f;
 	norm = norm * mult;
-	norm = norm.getNorm();
-	if (norm.Y() < 0)
-		norm.set(norm.X(), -norm.Y(), norm.Z());
+	norm = norm.GetNormalized();
+	if (norm.y < 0)
+		norm.set(norm.x, -norm.y, norm.z);
 
-	if (norm.Y() == 0)
-		norm.set(norm.X(), 1, norm.Z());
+	if (norm.y == 0)
+		norm.set(norm.x, 1, norm.z);
 
 	return norm;
 }

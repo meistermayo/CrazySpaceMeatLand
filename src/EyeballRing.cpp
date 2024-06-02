@@ -6,6 +6,7 @@
 #include "Math/Matrix.h"
 #include "Model.h"
 #include "Camera.h"
+#include "Math/Constants.h"
 #include <d3d11.h>
 
 EyeballRing::EyeballRing(ID3D11Device* md3dDevice, ShaderColorLightTexture* pShaderTexLight)
@@ -36,7 +37,7 @@ EyeballRing::EyeballRing(ID3D11Device* md3dDevice, ShaderColorLightTexture* pSha
 		float fCos = cosf(i * 36 * MATH_PI / 180.0f);
 		float fSin = sinf(i * 36 * MATH_PI / 180.0f);
 		float fSin_y = sinf(((i * 36) + 90) * MATH_PI / 180.0f);
-		Matrix tempMatrix = Matrix(TRANS, (fSin * 2.0f), (fSin_y * 1.0f), (fCos*2.0f));
+		Matrix tempMatrix = Matrix::Trans(Vect((fSin * 2.0f), (fSin_y * 1.0f), (fCos*2.0f)));
 		mWorld_EyeballBois[i] = new Matrix(tempMatrix);
 
 		EyeballBois[i]->SetWorld(*mWorld_EyeballBois[i]);
