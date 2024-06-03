@@ -26,6 +26,8 @@ public:
 	StandardVertex * GetVertices(FbxMesh* pMesh);
 	TriangleByIndex * GetTriangles(FbxMesh* pMesh);
 
+	template <typename T>
+	T GetLayerElement(FbxLayerElementTemplate<T>* pLayerElement, int index);
 
 private:
 

@@ -56,8 +56,6 @@ void DXApp::InitDemo()
 	Vect spotLightSpc = Vect(.3, .6, 1, 150) * 0.5f;
 
 
-	FbxModelLoader fbxModelLoader = FbxModelLoader();
-	FbxModelInfo fbxModelInfo = fbxModelLoader.GetModel("../Assets/Models/Cube_Tri.fbx");
 
 	pShaderTex = new ShaderTexture(md3dDevice);
 
@@ -88,6 +86,8 @@ void DXApp::InitDemo()
 
 
 	// Cube
+	FbxModelLoader fbxModelLoader = FbxModelLoader();
+	FbxModelInfo fbxModelInfo = fbxModelLoader.GetModel("../Assets/Models/trap.fbx");
 	pModel_Cube = new Model(md3dDevice, fbxModelInfo);
 	//pModel_Cube = new Model(md3dDevice, Model::UnitSphere, 12.0f);
 	mWorld_Cube = new Matrix(Matrix::Trans(Vect(0.f, 10.f, 0.f))); /// ??? pointer???

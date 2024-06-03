@@ -3,6 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include <assert.h>
+#include <iostream>
 
 FbxModelLoader::FbxModelLoader()
 {
@@ -14,9 +15,15 @@ FbxModelInfo FbxModelLoader::GetModel(const char* fileName)
 	FbxManager* pManager = FbxManager::Create();
 	FbxModelInfo fbxModelInfo = FbxModelInfo();
 
+	int lSDKMajor, lSDKMinor, lSDKRevision;
+	FbxManager::GetFileFormatVersion(lSDKMajor, lSDKMinor, lSDKRevision);
+	std::cout << "FUCK YOU Maj:" << lSDKMajor << ", Min: " << lSDKMinor << ", Rev: " << lSDKRevision << std::endl;
 	FbxIOSettings * ios = FbxIOSettings::Create(pManager, IOSROOT);
+	ios->SetBoolProp(IMP_RELAXED_FBX_CHECK, true);
 	pManager->SetIOSettings(ios);
-	FbxImporter* pImporter = FbxImporter::Create(pManager, "");
+
+	FbxImporter* pImporter = FbxImporter::Create(pManager, "fuckyou");
+	std::cout << pImporter->GetStatus().GetErrorString() << std::endl;
 
 	if (!pImporter->Initialize(fileName, -1, pManager->GetIOSettings()))
 	{
@@ -26,10 +33,12 @@ FbxModelInfo FbxModelLoader::GetModel(const char* fileName)
 	{
 		// ???
 		FbxScene * pScene = FbxScene::Create(pManager, "uhhh");
+		std::cout << pImporter->GetStatus().GetErrorString() << std::endl;
 
 		pImporter->Import(pScene);
+		std::cout << pImporter->GetStatus().GetErrorString() << std::endl;
 		pImporter->Destroy();
-			
+
 
 		FbxNode* pRootNode = pScene->GetRootNode();
 		if (pRootNode)
@@ -39,71 +48,167 @@ FbxModelInfo FbxModelLoader::GetModel(const char* fileName)
 				FbxMesh* mesh = pRootNode->GetChild(i)->GetMesh();
 				if (mesh)
 				{
+					mesh->GenerateNormals(true, true);
+					FbxGeometryElementNormal* pNormalElement = mesh->GetElementNormal();
+					FbxGeometryElementUV* pUVElement = mesh->GetElementUV(0);
+					FbxVector4* pControlPoints = mesh->GetControlPoints();
+
 					fbxModelInfo.nTris = mesh->GetPolygonCount();
-					fbxModelInfo.nVerts = mesh->GetControlPointsCount();
-					fbxModelInfo.pVertices = GetVertices(mesh);
-					fbxModelInfo.pTris = GetTriangles(mesh);
+					fbxModelInfo.nVerts = fbxModelInfo.nTris * 3;
+
+					int polygonCount = mesh->GetPolygonCount();
+					std::vector<int> indexVector;
+
+					fbxModelInfo.pVertices = new StandardVertex[polygonCount * 3];
+					for (int i = 0; i < polygonCount; i++)
+					{
+						int indexCount = mesh->GetPolygonSize(i);
+						assert(indexCount == 3);
+						int tri[3];
+						for (int j = 0; j < 3; j++)
+						{
+							int k = i * 3 + j;
+							int ind = mesh->GetPolygonVertex(i, j);
+
+							FbxVector4 controlPoint = pControlPoints[ind];
+							FbxVector4 normal = GetLayerElement<FbxVector4>(pNormalElement, k);
+							FbxVector2 uv = GetLayerElement<FbxVector2>(pUVElement, k);
+
+							Vect controlVect = Vect(
+								static_cast<float>(controlPoint[0]),
+								static_cast<float>(controlPoint[1]),
+								static_cast<float>(controlPoint[2])
+							) * Matrix::RotX(-90.0f);
+
+							Vect normalVect = Vect(
+								static_cast<float>(normal[0]),
+								static_cast<float>(normal[1]),
+								static_cast<float>(normal[2]),
+								static_cast<float>(normal[3])
+							) * Matrix::RotX(-90.0f);
+
+							fbxModelInfo.pVertices[i*3+j].set(
+								controlVect.x,
+								controlVect.y,
+								controlVect.z,
+								static_cast<float>(uv[0]),
+								1.0f - static_cast<float>(uv[1]),
+								normalVect,
+								Vect(1, 1, 1),
+								0
+							);
+							indexVector.push_back(ind);
+						}
+					}
+
+					fbxModelInfo.pTris = new TriangleByIndex[mesh->GetPolygonCount()];
+					for (int i = 0; i < mesh->GetPolygonCount(); i++)
+					{
+						fbxModelInfo.pTris[i].set (i*3, i*3 + 1, i*3 + 2);
+					}
 				}
 			}
 		}
 	}
 
 	pManager->Destroy();
-
-
 	return fbxModelInfo;
 }
 
 StandardVertex * FbxModelLoader::GetVertices(FbxMesh * pMesh)
 {
-	pMesh->GenerateNormals(true, true);
+	int count = pMesh->GetUVLayerCount();
 
-	int vertexCount = pMesh->GetControlPointsCount();
-	StandardVertex* verts = new StandardVertex[vertexCount];
+	pMesh->GenerateNormals(true, true);
+	int controlPointsCount = pMesh->GetControlPointsCount();// "points... "
+	int polygonVertexCount = pMesh->GetPolygonVertexCount(); // but not vertices.... danmb...
+	int vertexCount = polygonVertexCount > controlPointsCount ? polygonVertexCount : controlPointsCount;
+
+	StandardVertex* verts = new StandardVertex[controlPointsCount];
 
 	FbxGeometryElementNormal* pNormalElement = pMesh->GetElementNormal();
-	FbxVector4* vertexArray = pMesh->GetControlPoints();
+	FbxGeometryElementUV* pUVElement = pMesh->GetElementUV(0);
+	int* vertexArray = pMesh->GetPolygonVertices();
 	Vect* normals = new Vect[vertexCount];
+	Vect* uvs = new Vect[vertexCount];
 
-	if (pNormalElement)
+	// how do we know how to loop this?...
+	switch (pNormalElement->GetMappingMode())
 	{
-		if (pNormalElement->GetMappingMode() == FbxGeometryElement::eByControlPoint)
+	case FbxGeometryElement::eByControlPoint:
 		{
-			for (int i = 0; i < vertexCount; i++)
+			for (int i = 0; i < controlPointsCount; i++)
 			{
-				FbxVector4 normal = pNormalElement->GetDirectArray().GetAt(i);
+				FbxVector4 normal = GetLayerElement<FbxVector4>(pNormalElement, i);
 				normals[i] = Vect(
 					static_cast<float>(normal[0]),
 					static_cast<float>(normal[1]),
 					static_cast<float>(normal[2]),
 					static_cast<float>(normal[3])
-				);// .norm();
+				);
 			}
 		}
-		else if (pNormalElement->GetMappingMode() == FbxGeometryElement::eByPolygonVertex)
+		break;
+	case FbxGeometryElement::eByPolygonVertex:
 		{
-			int triangleCount = pMesh->GetPolygonCount();
-			for (int i = 0; i < triangleCount; i++)
+			for (int i = 0; i < polygonVertexCount; i++)
 			{
-				int indexCount = pMesh->GetPolygonSize(i);
-				for (int j = 0; j < indexCount; j++)
-				{
-					FbxVector4 normal = FbxVector4(1, 1, 1, 1);//pNormalElement->GetDirectArray().GetAt(j + (i*indexCount));
-					normals[j + (i*indexCount)] = Vect(0,0,1,1);// normal[0], normal[1], normal[2], normal[3]).norm();
-				}
+				FbxVector4 normal = GetLayerElement<FbxVector4>(pNormalElement, i);
+				normals[i] = Vect(
+					static_cast<float>(normal[0]),
+					static_cast<float>(normal[1]),
+					static_cast<float>(normal[2]),
+					static_cast<float>(normal[3])
+				);
 			}
+		}
+		break;
+	}
+
+	// uvs
+	switch (pUVElement->GetMappingMode())
+	{
+	case FbxGeometryElement::eByControlPoint:
+	{
+		for (int i = 0; i < controlPointsCount; i++)
+		{
+			FbxVector2 uv = GetLayerElement<FbxVector2>(pUVElement, i);
+			uvs[i] = Vect(
+				static_cast<float>(uv[0]),
+				static_cast<float>(uv[1]),
+				0.0f
+			);
 		}
 	}
-	FbxDouble scale = 1.0f;
-	for (int i = 0; i < vertexCount; i++)
+	break;
+	case FbxGeometryElement::eByPolygonVertex:
 	{
+		for (int i = 0; i < polygonVertexCount; i++)
+		{
+			FbxVector2 uv = GetLayerElement<FbxVector2>(pUVElement, i);
+			uvs[i] = Vect(
+				static_cast<float>(uv[0]),
+				static_cast<float>(uv[1]),
+				0.0f
+			);
+		}
+	}
+	break;
+	}
+
+	// verts
+	FbxDouble scale = 1.0f;
+	for (int i = 0; i < controlPointsCount; i++)
+	{
+		FbxVector4 controlPoint = pMesh->GetControlPointAt(i);
 		verts[i] = StandardVertex();
 		verts[i].set(
-			static_cast<float>(vertexArray[i].mData[0] * scale),
-			static_cast<float>(vertexArray[i].mData[1] * scale),
-			static_cast<float>(vertexArray[i].mData[2] * scale),
-			static_cast<float>(i)/vertexCount,
-			static_cast<float>(i) / vertexCount, normals[i],
+			static_cast<float>(controlPoint.mData[0] * scale),
+			static_cast<float>(controlPoint.mData[1] * scale),
+			static_cast<float>(controlPoint.mData[2] * scale),
+			static_cast<float>(uvs[i].x),
+			static_cast<float>(uvs[i].y),
+			normals[i],
 			Vect(1,1,1),
 			0
 		);
@@ -112,80 +217,66 @@ StandardVertex * FbxModelLoader::GetVertices(FbxMesh * pMesh)
 	return verts;
 }
 
+template <typename T>
+T FbxModelLoader::GetLayerElement(FbxLayerElementTemplate<T>* pLayerElement, int index)
+{
+	switch (pLayerElement->GetMappingMode())
+	{
+	case FbxGeometryElement::eByControlPoint:
+		switch (pLayerElement->GetReferenceMode())
+		{
+		case FbxGeometryElement::eDirect:
+			{
+				return pLayerElement->GetDirectArray().GetAt(index);
+			}
+			break;
+		case FbxGeometryElement::eIndexToDirect:
+			{
+				int subIndex = pLayerElement->GetIndexArray().GetAt(index);
+				return pLayerElement->GetDirectArray().GetAt(subIndex);
+			}
+			break;
+		}
+
+		break;
+	case FbxGeometryElement::eByPolygonVertex:
+		switch (pLayerElement->GetReferenceMode())
+		{
+		case FbxGeometryElement::eDirect:
+			{
+				return pLayerElement->GetDirectArray().GetAt(index);
+			}
+			break;
+		case FbxGeometryElement::eIndexToDirect:
+			{
+				int subIndex = pLayerElement->GetIndexArray().GetAt(index);
+				return pLayerElement->GetDirectArray().GetAt(subIndex);
+			}
+			break;
+		}
+		break;
+	}
+
+	return T();
+}
+
 TriangleByIndex * FbxModelLoader::GetTriangles(FbxMesh * pMesh)
 {
 	int polygonCount = pMesh->GetPolygonCount();
-	// int* triangles = pMesh->GetPolygonVertices();
 	std::vector<TriangleByIndex*> triVector = std::vector<TriangleByIndex*>();
-
 
 	for (int i = 0; i < polygonCount; i++)
 	{
 		int indexCount = pMesh->GetPolygonSize(i);
 		assert(indexCount == 3);
-			/*/
+		triVector.push_back(new TriangleByIndex());
+		int tri[3];
+		for (int j=0; j<3; j++)
 		{
-			std::vector<int> indices = std::vector<int>();
-			switch (indexCount)
-			{
-				 // :(
-			case 4:
-				indices.push_back(pMesh->GetPolygonVertex(i, 0));
-				indices.push_back(pMesh->GetPolygonVertex(i, 1));
-				indices.push_back(pMesh->GetPolygonVertex(i, 2));
-				indices.push_back(pMesh->GetPolygonVertex(i, 3));
-				
-				std::sort(indices.begin(), indices.end());
-				
-				triVector.push_back(new TriangleByIndex());
-				triVector[triVector.size()-1]->set(
-					indices[0],
-					indices[1],
-					indices[2]
-				);
-
-				triVector.push_back(new TriangleByIndex());
-				triVector[triVector.size() - 1]->set(
-					indices[0],
-					indices[2],
-					indices[3]
-				);
-				indices.clear();
-				break;
-
-
-			case 5:
-				triVector.push_back(new TriangleByIndex());
-				triVector[triVector.size() - 1]->set(
-					pMesh->GetPolygonVertex(i, 0),
-					pMesh->GetPolygonVertex(i, 1),
-					pMesh->GetPolygonVertex(i, 2)
-				);
-				triVector.push_back(new TriangleByIndex());
-				triVector[triVector.size() - 1]->set(
-					pMesh->GetPolygonVertex(i, 1),
-					pMesh->GetPolygonVertex(i, 3),
-					pMesh->GetPolygonVertex(i, 4)
-				);
-				triVector.push_back(new TriangleByIndex());
-				triVector[triVector.size() - 1]->set(
-					pMesh->GetPolygonVertex(i, 1),
-					pMesh->GetPolygonVertex(i, 4),
-					pMesh->GetPolygonVertex(i, 2)
-				);
-				break;
-			}
+			tri[j] = pMesh->GetPolygonVertex(i, j);
 		}
-		else
-		//*/
-		{
-			triVector.push_back(new TriangleByIndex());
-			triVector[triVector.size() - 1]->set(
-				pMesh->GetPolygonVertex(i, 0),
-				pMesh->GetPolygonVertex(i, 1),
-				pMesh->GetPolygonVertex(i, 2)
-			);
-		}
+
+		triVector[triVector.size() - 1]->set(tri[0], tri[1], tri[2]);
 	}
 	TriangleByIndex* tris = new TriangleByIndex[triVector.size()];
 

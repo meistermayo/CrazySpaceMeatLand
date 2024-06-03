@@ -12,9 +12,6 @@
 
 Worm::Worm(ID3D11Device * md3dDevice, ShaderColorLightTexture * pShaderTexLight)
 {
-	FbxModelLoader fbxModelLoader = FbxModelLoader();
-	FbxModelInfo fbxModelInfo = fbxModelLoader.GetModel("../Assets/Models/Cube_Tri.fbx");
-
 	Matrix tempMatrix = Matrix::RotY(180.5f) * Matrix::Scale(1.f) * Matrix::Trans(Vect(0.f, 0.f, -20.f));
 	mWorld_WormyBoi = new Matrix(tempMatrix);
 	pModel_WormyBoi = new Model(md3dDevice, "../Assets/Models/WormyBoi_Full.azul", false, true, 2);
