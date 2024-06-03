@@ -1,20 +1,28 @@
 #ifndef _FbxModelLoader
 #define _FbxModelLoader
 #include <fbxsdk.h>
+#include <vector>
 #include "Math/Vect.h"
 
 struct StandardVertex;
 struct TriangleByIndex;
-struct FbxModelInfo
+
+struct FbxMeshInfo
 {
 	int nVerts;
-	StandardVertex * pVertices;
+	StandardVertex* pVertices;
 
 	int nTris;
-	TriangleByIndex * pTris;
+	TriangleByIndex* pTris;
 
-	Vect * pNormals;
-	Vect * pUVs;
+	Vect* pNormals;
+	Vect* pUVs;
+};
+
+struct FbxModelInfo
+{
+	std::vector<FbxMeshInfo> meshInfo;
+	int nMeshes;
 };
 
 class FbxModelLoader

@@ -127,7 +127,7 @@ public:
 	Model(ID3D11Device* dev, StandardVertex *pVerts, int nverts, TriangleByIndex *ptlist, int ntri);
 	Model(ID3D11Device* dev, PreMadedeModels pm, float scale = 1);
 	Model(ID3D11Device* dev, const char * const _modelName, bool flipU = false, bool flipV = false, float scale = 1);
-	Model(ID3D11Device* dev, FbxModelInfo fbxModelInfo);
+	Model(ID3D11Device* dev, FbxMeshInfo& fbxMeshInfo);
 
 	virtual ~Model();
 

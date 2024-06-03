@@ -27,6 +27,7 @@ Model::Model(ID3D11Device* dev, StandardVertex *pVerts, int nverts, TriangleByIn
 		pTriList[i] = ptlist[i];
 	}
 
+	meshes = new MeshSeparator(pStdVerts, numVerts, pTriList, numTris);
 	privLoadDataToGPU();
 }
 
@@ -39,18 +40,20 @@ Model::Model(ID3D11Device* dev, const char * const _modelName, bool flipU, bool 
 	numTris = 0;
 
 	privLoadDataFromFile(_modelName, pStdVerts, numVerts, pTriList, numTris, flipU, flipV, scale );
+	meshes = new MeshSeparator(pStdVerts, numVerts, pTriList, numTris);
 	privLoadDataToGPU();
 }
 
-Model::Model(ID3D11Device * dev, FbxModelInfo fbxModelInfo)
+Model::Model(ID3D11Device * dev, FbxMeshInfo& fbxMeshInfo)
 {
 	mDevice = dev;
-	numVerts = fbxModelInfo.nVerts;
-	numTris = fbxModelInfo.nTris;
+	numVerts = fbxMeshInfo.nVerts;
+	numTris = fbxMeshInfo.nTris;
 
-	pStdVerts = fbxModelInfo.pVertices;
-	pTriList = fbxModelInfo.pTris;
-
+	pStdVerts = fbxMeshInfo.pVertices;
+	pTriList = fbxMeshInfo.pTris;
+	
+	meshes = new MeshSeparator(pStdVerts, numVerts, pTriList, numTris);
 	privLoadDataToGPU();
 }
 
@@ -79,6 +82,8 @@ Model::Model(ID3D11Device* dev, Model::PreMadedeModels pm, float scale)
 	default:
 		assert(false && "Invalid option");
 	}
+
+	meshes = new MeshSeparator(pStdVerts, numVerts, pTriList, numTris);
 
 	privLoadDataToGPU();
 }
@@ -214,9 +219,6 @@ void Model::privLoadDataFromFile(const char * const _modelName, StandardVertex*&
 
 void  Model::privLoadDataToGPU()
 {
-	// Extract mesh information
-	meshes = new MeshSeparator(pStdVerts, numVerts, pTriList, numTris);
-
 	// Vertex buffer
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));

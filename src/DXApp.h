@@ -112,10 +112,14 @@ private:
 
 	// Cube
 	ShaderColorLightTexture* pShader_Cube;
-	Model* pModel_Cube;
+	Model* pModel_Cube1;
+	Model* pModel_Cube2;
+	Model* pModel_Cube3;
 	Matrix* mWorld_Cube;
 	Texture* pTex_Cube;
-	GraphicObject_TextureLight* Cube;
+	GraphicObject_TextureLight* Cube1;
+	GraphicObject_TextureLight* Cube2;
+	GraphicObject_TextureLight* Cube3;
 
 	// WORMY BOI >:D
 	Worm* worm;

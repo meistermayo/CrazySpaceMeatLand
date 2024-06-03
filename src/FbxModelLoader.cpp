@@ -1,4 +1,5 @@
 #include "FbxModelLoader.h"
+#include "Math/Constants.h"
 #include "Model.h"
 #include <vector>
 #include <algorithm>
@@ -15,15 +16,10 @@ FbxModelInfo FbxModelLoader::GetModel(const char* fileName)
 	FbxManager* pManager = FbxManager::Create();
 	FbxModelInfo fbxModelInfo = FbxModelInfo();
 
-	int lSDKMajor, lSDKMinor, lSDKRevision;
-	FbxManager::GetFileFormatVersion(lSDKMajor, lSDKMinor, lSDKRevision);
-	std::cout << "FUCK YOU Maj:" << lSDKMajor << ", Min: " << lSDKMinor << ", Rev: " << lSDKRevision << std::endl;
 	FbxIOSettings * ios = FbxIOSettings::Create(pManager, IOSROOT);
-	ios->SetBoolProp(IMP_RELAXED_FBX_CHECK, true);
 	pManager->SetIOSettings(ios);
 
-	FbxImporter* pImporter = FbxImporter::Create(pManager, "fuckyou");
-	std::cout << pImporter->GetStatus().GetErrorString() << std::endl;
+	FbxImporter* pImporter = FbxImporter::Create(pManager, "");
 
 	if (!pImporter->Initialize(fileName, -1, pManager->GetIOSettings()))
 	{
@@ -33,19 +29,19 @@ FbxModelInfo FbxModelLoader::GetModel(const char* fileName)
 	{
 		// ???
 		FbxScene * pScene = FbxScene::Create(pManager, "uhhh");
-		std::cout << pImporter->GetStatus().GetErrorString() << std::endl;
 
 		pImporter->Import(pScene);
-		std::cout << pImporter->GetStatus().GetErrorString() << std::endl;
 		pImporter->Destroy();
 
 
 		FbxNode* pRootNode = pScene->GetRootNode();
 		if (pRootNode)
 		{
-			for (int i = 0; i < pRootNode->GetChildCount(); i++)
+			for (int n = 0; n < pRootNode->GetChildCount(); n++)
 			{
-				FbxMesh* mesh = pRootNode->GetChild(i)->GetMesh();
+				FbxMesh* mesh = pRootNode->GetChild(n)->GetMesh();
+				FbxMeshInfo meshInfo;
+
 				if (mesh)
 				{
 					mesh->GenerateNormals(true, true);
@@ -53,41 +49,49 @@ FbxModelInfo FbxModelLoader::GetModel(const char* fileName)
 					FbxGeometryElementUV* pUVElement = mesh->GetElementUV(0);
 					FbxVector4* pControlPoints = mesh->GetControlPoints();
 
-					fbxModelInfo.nTris = mesh->GetPolygonCount();
-					fbxModelInfo.nVerts = fbxModelInfo.nTris * 3;
+					meshInfo.nTris = mesh->GetPolygonCount();
+					meshInfo.nVerts = meshInfo.nTris * 3;
 
 					int polygonCount = mesh->GetPolygonCount();
 					std::vector<int> indexVector;
 
-					fbxModelInfo.pVertices = new StandardVertex[polygonCount * 3];
+					std::vector<FbxVector4> _normals;
+					
+					for (int i = 0; i < mesh->GetPolygonCount(); i++)
+					{
+						_normals.push_back(pNormalElement->GetDirectArray().GetAt(i));
+					}
+
+					meshInfo.pVertices = new StandardVertex[polygonCount * 3];
 					for (int i = 0; i < polygonCount; i++)
 					{
 						int indexCount = mesh->GetPolygonSize(i);
 						assert(indexCount == 3);
-						int tri[3];
 						for (int j = 0; j < 3; j++)
 						{
 							int k = i * 3 + j;
 							int ind = mesh->GetPolygonVertex(i, j);
 
 							FbxVector4 controlPoint = pControlPoints[ind];
-							FbxVector4 normal = GetLayerElement<FbxVector4>(pNormalElement, k);
+
+							// These may require a smarter solution soon
+							FbxVector4 normal = GetLayerElement<FbxVector4>(pNormalElement, ind);
 							FbxVector2 uv = GetLayerElement<FbxVector2>(pUVElement, k);
 
 							Vect controlVect = Vect(
 								static_cast<float>(controlPoint[0]),
 								static_cast<float>(controlPoint[1]),
 								static_cast<float>(controlPoint[2])
-							) * Matrix::RotX(-90.0f);
+							) * Matrix::RotX(-MATH_PI * 0.5f);
 
 							Vect normalVect = Vect(
 								static_cast<float>(normal[0]),
 								static_cast<float>(normal[1]),
 								static_cast<float>(normal[2]),
 								static_cast<float>(normal[3])
-							) * Matrix::RotX(-90.0f);
+							) * Matrix::RotX(-MATH_PI * 0.5f);
 
-							fbxModelInfo.pVertices[i*3+j].set(
+							meshInfo.pVertices[i*3+j].set(
 								controlVect.x,
 								controlVect.y,
 								controlVect.z,
@@ -101,11 +105,13 @@ FbxModelInfo FbxModelLoader::GetModel(const char* fileName)
 						}
 					}
 
-					fbxModelInfo.pTris = new TriangleByIndex[mesh->GetPolygonCount()];
+					meshInfo.pTris = new TriangleByIndex[mesh->GetPolygonCount()];
 					for (int i = 0; i < mesh->GetPolygonCount(); i++)
 					{
-						fbxModelInfo.pTris[i].set (i*3, i*3 + 1, i*3 + 2);
+						meshInfo.pTris[i].set (i*3, i*3 + 1, i*3 + 2);
 					}
+
+					fbxModelInfo.meshInfo.push_back(meshInfo);
 				}
 			}
 		}
@@ -117,7 +123,7 @@ FbxModelInfo FbxModelLoader::GetModel(const char* fileName)
 
 StandardVertex * FbxModelLoader::GetVertices(FbxMesh * pMesh)
 {
-	int count = pMesh->GetUVLayerCount();
+	// int count = pMesh->GetUVLayerCount();
 
 	pMesh->GenerateNormals(true, true);
 	int controlPointsCount = pMesh->GetControlPointsCount();// "points... "
@@ -128,7 +134,7 @@ StandardVertex * FbxModelLoader::GetVertices(FbxMesh * pMesh)
 
 	FbxGeometryElementNormal* pNormalElement = pMesh->GetElementNormal();
 	FbxGeometryElementUV* pUVElement = pMesh->GetElementUV(0);
-	int* vertexArray = pMesh->GetPolygonVertices();
+	// int* vertexArray = pMesh->GetPolygonVertices();
 	Vect* normals = new Vect[vertexCount];
 	Vect* uvs = new Vect[vertexCount];
 

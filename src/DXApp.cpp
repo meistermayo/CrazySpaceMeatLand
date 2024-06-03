@@ -87,16 +87,24 @@ void DXApp::InitDemo()
 
 	// Cube
 	FbxModelLoader fbxModelLoader = FbxModelLoader();
-	FbxModelInfo fbxModelInfo = fbxModelLoader.GetModel("../Assets/Models/trap.fbx");
-	pModel_Cube = new Model(md3dDevice, fbxModelInfo);
+	FbxModelInfo fbxModelInfo = fbxModelLoader.GetModel("../Assets/Models/mouse.fbx");
+	pModel_Cube1 = new Model(md3dDevice, fbxModelInfo.meshInfo[0]);
+	pModel_Cube2 = new Model(md3dDevice, fbxModelInfo.meshInfo[1]);
+	pModel_Cube3 = new Model(md3dDevice, fbxModelInfo.meshInfo[2]);
 	//pModel_Cube = new Model(md3dDevice, Model::UnitSphere, 12.0f);
 	mWorld_Cube = new Matrix(Matrix::Trans(Vect(0.f, 10.f, 0.f))); /// ??? pointer???
 	pShader_Cube = new ShaderColorLightTexture(md3dDevice);
-	Cube = new GraphicObject_TextureLight((ShaderColorLightTexture*)(pShader_Cube), pModel_Cube);// Vect(1, 0, 0, 1), Vect(1, 0, 0, 1), Vect(1, 1, 1, 1));
-	pTex_Cube = new Texture(md3dDevice, L"../Assets/Textures/cube.tga", D3D11_FILTER_MIN_MAG_MIP_POINT, 4U, FALSE, 0U, DirectX::TEX_FILTER_POINT);
-	Cube->SetTexture(pTex_Cube, 0);
+	Cube1 = new GraphicObject_TextureLight((ShaderColorLightTexture*)(pShader_Cube), pModel_Cube1);// Vect(1, 0, 0, 1), Vect(1, 0, 0, 1), Vect(1, 1, 1, 1));
+	Cube2 = new GraphicObject_TextureLight((ShaderColorLightTexture*)(pShader_Cube), pModel_Cube2);// Vect(1, 0, 0, 1), Vect(1, 0, 0, 1), Vect(1, 1, 1, 1));
+	Cube3 = new GraphicObject_TextureLight((ShaderColorLightTexture*)(pShader_Cube), pModel_Cube3);// Vect(1, 0, 0, 1), Vect(1, 0, 0, 1), Vect(1, 1, 1, 1));
+	pTex_Cube = new Texture(md3dDevice, L"../Assets/Textures/mouse.tga", D3D11_FILTER_MIN_MAG_MIP_POINT, 4U, FALSE, 0U, DirectX::TEX_FILTER_POINT);
+	Cube1->SetTexture(pTex_Cube, 0);
+	Cube2->SetTexture(pTex_Cube, 0);
+	Cube3->SetTexture(pTex_Cube, 0);
 	//Cube->SetColor(Vect(1, 0, 0, 1), 0);
-	Cube->SetWorld(*mWorld_Cube);
+	Cube1->SetWorld(*mWorld_Cube);
+	Cube2->SetWorld(*mWorld_Cube);
+	Cube3->SetWorld(*mWorld_Cube);
 
 	pShader_Cube->SetPointLightParameters1(pointLightPos1, pointLightRadius1, pointLightAtt1, pointLightAmb1, pointLightDif1, pointLightSpc1);
 	pShader_Cube->SetPointLightParameters2(pointLightPos2, pointLightRadius2, pointLightAtt2, pointLightAmb2, pointLightDif2, pointLightSpc2);
@@ -310,7 +318,9 @@ void DXApp::DrawScene()
 	pShader_Cube->SendFogData(fogStart, fogRange, fogCol);
 	pShader_Cube->SendLightParameters(eyepos);
 	pShader_Cube->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());
-	Cube->Render();
+	Cube1->Render();
+	Cube2->Render();
+	Cube3->Render();
 
 	// Switches the display to show the now-finished back-buffer
 	mSwapChain->Present(0, 0);
@@ -356,10 +366,14 @@ DXApp::~DXApp()
 	//delete pModel_EyeballBoi;
 	//delete ppTex_EyeballBoi;
 
-	delete pModel_Cube;
+	delete pModel_Cube1;
+	delete pModel_Cube2;
+	delete pModel_Cube3;
 	delete mWorld_Cube;
 	delete pShader_Cube;
-	delete Cube;
+	delete Cube1;
+	delete Cube2;
+	delete Cube3;
 
 
 #ifdef _COL_L
