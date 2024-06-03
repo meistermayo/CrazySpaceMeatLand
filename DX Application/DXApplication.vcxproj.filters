@@ -59,6 +59,15 @@
     <Filter Include="Source\Math">
       <UniqueIdentifier>{22d38477-287a-4041-bb23-5a99948c7939}</UniqueIdentifier>
     </Filter>
+    <Filter Include="_Libs\FBX">
+      <UniqueIdentifier>{2586c888-b048-4f8e-8d1a-f58ab2f804ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="_Libs\FBX\lib">
+      <UniqueIdentifier>{d4ab3b2e-9e04-463c-8774-df03ee0defca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="_Libs\FBX\include">
+      <UniqueIdentifier>{0c0bfd7e-ecb5-4fa0-9b02-26f0cd441916}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainWindow.cpp" />
