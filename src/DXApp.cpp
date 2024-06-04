@@ -114,11 +114,11 @@ void DXApp::InitDemo()
 	_TEST_model = new Model(md3dDevice, "../Assets/Models/CubeTest2.azul");
 	_TEST_tex = new Texture(md3dDevice, L"../Assets/Textures/CubeTex.tga");
 	_TEST_go = new GraphicObject_Texture(pShaderTex, _TEST_model);
-	_TEST_go->SetWorld(Matrix(SCALE, 1, 1, 1) * Matrix::Trans(0, 10, 0));
+	_TEST_go->SetWorld(Matrix::Scale( 1, 1, 1) * Matrix::Trans(0, 10, 0));
 	_TEST_go->SetTexture(_TEST_tex,0);
 	CubeModel = new Model(md3dDevice, Model::PreMadeModels::UnitBoxRepeatedTexture);
 	CubeGo = new GraphicObject_TextureLight(pShaderTexLight, CubeModel);
-	CubeGo->SetWorld(Matrix(SCALE, 10, 10, 10)*Matrix::Trans(5, 10, 5));
+	CubeGo->SetWorld(Matrix::Scale( 10, 10, 10)*Matrix::Trans(5, 10, 5));
 	CubeGo->SetTexture(ppTex_WormyBoi[0],0);
 #endif
 #ifdef TERRAIN
@@ -140,7 +140,7 @@ void DXApp::InitDemo()
 #endif
 #ifdef FLATPLANE
 	flatPlane = new FlatPlane(md3dDevice,1000,1,1);
-	flatPlane_World = Matrix(SCALE,1,1,1) * Matrix::Trans(0, 2, 0);
+	flatPlane_World = Matrix::Scale(1,1,1) * Matrix::Trans(0, 2, 0);
 
 #endif
 
@@ -169,7 +169,7 @@ void DXApp::InitDemo()
 // make me smooth
 void DXApp::UpdateScene()
 {
-	//mWorld2 *= Matrix(ROT_Y, 0.0003);
+	//mWorld2 *= Matrix::RotY(0.0003);
 	//GraphObj2->SetWorld(mWorld2);
 	GO_Frigate->SetWorld(world_Frigate);
 
@@ -676,7 +676,7 @@ void DXApp::OnMouseMove(WPARAM btnState, int xval, int yval)
 		// Build the view matrix using gimmicky trick
 		Vect target = Vect(0, 0, 0, 0);
 		Vect up = Vect(0, 1, 0, 0);
-		Vect pos = Vect(0, 0, -mRadius) * Matrix(ROT_Y, mTheta) * Matrix(ROT_X, mPhi);
+		Vect pos = Vect(0, 0, -mRadius) * Matrix::RotY(mTheta) * Matrix::RotX(mPhi);
 		mCam.setOrientAndPosition(up, target, pos);
 	}
 
