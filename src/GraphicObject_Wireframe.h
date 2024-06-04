@@ -6,8 +6,8 @@
 
 #include "GraphicObject_Base.h"
 #include "Math/Vect.h"
-#include "ShaderWireframe.h"
-#include "ShaderWireframe.h"
+
+class ShaderWireframe;
 
 class GraphicObject_Wireframe : public GraphicObject_Base
 {
@@ -25,7 +25,7 @@ public:
 	void SetWorld(const Matrix& m);
 	virtual void Render() override;
 
-	GraphicObject_Wireframe(ShaderWireframe* shader, int meshCount, Model* mod, Vect& color);
+	GraphicObject_Wireframe(ShaderWireframe* shader, int meshCount, Model* mod, const Vect& color);
 	GraphicObject_Wireframe(Model* mod, ShaderBase* shader, Vect& color);
 
 private:

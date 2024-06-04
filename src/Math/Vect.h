@@ -233,7 +233,7 @@ public:
 
 	//Vect operator * (const Matrix &m) const;
 	
-	friend Vect operator * (const float scale, const Vect& inV); // noted...
+	friend Vect operator * (float scale, const Vect& inV); // noted...
 
 	static void VectLerp(const Vect& a, const Vect& b, const float t, Vect& outVect)
 	{

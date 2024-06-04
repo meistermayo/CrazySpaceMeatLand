@@ -9,6 +9,8 @@
 #include <smmintrin.h> 
 #include <cassert>
 
+class Quat;
+
 class Matrix : public Align16
 {
 	/*/
@@ -43,6 +45,8 @@ public:
 	Matrix()
 	{
 	}
+
+	Matrix(const Quat& tmp);
 
 	Matrix(const Matrix& tmp)
 		:v0(tmp.v0), v1(tmp.v1), v2(tmp.v2), v3(tmp.v3)
@@ -97,6 +101,17 @@ public:
 			Vect(t*x*x + c,		t*x*y + s*z,	t*x*z - s*y,	0.f),
 			Vect(t*x*y - s*z,	t*y*y + c,		t*y*z + s*x,	0.f),
 			Vect(t*x*z + s*y,	t*y*z - s*x,	t*z*z + c,		0.f),
+			Vect::Zero
+		);
+	}
+	
+	static Matrix Matrix::RotOrient(const Vect& newFwd, const Vect& newUp)
+	{
+		// maybe need to uhhhhhh this? todo
+		return Matrix (
+			newUp.cross(newFwd),
+			newUp,
+			newFwd,
 			Vect::Zero
 		);
 	}

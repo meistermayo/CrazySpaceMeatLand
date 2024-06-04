@@ -637,7 +637,7 @@ void DXApp::OnMouseDown(WPARAM btnState, int xval, int yval)
 		Matrix camWorld;
 		camWorld = Matrix::RotY(0) * Matrix::Scale(1.f) * Matrix::Trans(camPos);
 
-		//myBullet->Activate(0.1f*(((-camDir)).getNorm()), camWorld);
+		//myBullet->Activate(0.1f*(((-camDir)).GetNormalized()), camWorld);
 		MousePos.x = static_cast<float>(xval);
 		MousePos.y = static_cast<float>(yval);
 	}

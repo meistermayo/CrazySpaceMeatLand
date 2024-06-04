@@ -1,34 +1,23 @@
-#include "GraphicObject_Color.h"
+#include "GraphicObject_Wireframe.h"
 #include "Model.h"
-#include "ShaderColor.h"
+#include "ShaderWireframe.h"
 #include <assert.h>
 
-GraphicObject_Wireframe::GraphicObject_Wireframe(ShaderWireframe* shader, int meshCount, Model* mod, const Vect &amb, const Vect &dif, const Vect& sp)
+GraphicObject_Wireframe::GraphicObject_Wireframe(ShaderWireframe* shader, int meshCount, Model* mod, const Vect& color)
 {
-	meshCount;
-	material = new ShaderWireframe::Material();
-	this->material->Ambient = amb;
-	this->material->Diffuse = dif;
-	this->material->Specular = sp;
-	SetModel(mod );
-	pShader = shader;
+	SetModel(mod);
+	pShader = (ShaderWireframe*)shader;
 
-	Color = new Vect[mod->GetMeshCount()];
-
-	for (int i = 0; i < mod->GetMeshCount(); i++)
-	{
-		Color[i] = Vect(0,0,0, 1);
-	}
+	Color = color;
 	World = Matrix::Identity;
 }
 
 GraphicObject_Wireframe::GraphicObject_Wireframe(Model* mod, ShaderBase* shader, Vect& color)
 {
 	SetModel(mod);
-	pShader = shader;
+	pShader = (ShaderWireframe*)shader;
 
-	Color = new Vect[1];
-	Color[0] = color; /// ??? 
+	Color = color;
 	World = Matrix::Identity;
 }
 
@@ -49,7 +38,7 @@ void GraphicObject_Wireframe::Render()
 	pModel->BindVertexIndexBuffers(pShader->GetContext());
 	for (int i = 0; i < pModel->GetMeshCount(); i++)
 	{
-		pShader->SendWorldAndMaterial(World, material->Ambient, material->Diffuse, material->Specular);
+		pShader->SendWorldColor(World, Color);
 		pModel->RenderMesh(pShader->GetContext(),i);
 	}
 }
