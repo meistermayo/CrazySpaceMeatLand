@@ -28,12 +28,14 @@ public:
 	virtual void Render() override;
 
 	GraphicObject_TextureLight(ShaderColorLightTexture* shader, Model* mod);
-	GraphicObject_TextureLight(Model* mod, ShaderBase* shader, Texture* inTexture, const Vect& col, const Vect& col2);
+	GraphicObject_TextureLight(Model* mod, ShaderBase* shader, Texture* inTexture, const Vect& inAmb, const Vect& inDif);
 
 private:
 	Texture ** tex;
 	Matrix world;
 	ShaderColorLightTexture* pShader;
+	Vect ambColor;
+	Vect difColor;
 };
 
 #endif _GraphicObject_Texture

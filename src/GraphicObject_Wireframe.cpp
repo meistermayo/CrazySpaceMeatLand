@@ -5,6 +5,8 @@
 
 GraphicObject_Wireframe::GraphicObject_Wireframe(ShaderWireframe* shader, int meshCount, Model* mod, const Vect& color)
 {
+	meshCount; // unreferenced fopr now
+
 	SetModel(mod);
 	pShader = (ShaderWireframe*)shader;
 

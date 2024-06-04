@@ -1,8 +1,8 @@
 // GraphicObject_Color
 // Andre Berthiaume, July 2016
 
-#ifndef _GraphicObject_Color
-#define _GraphicObject_Color
+#ifndef _GraphicObject_Wireframe
+#define _GraphicObject_Wireframe
 
 #include "GraphicObject_Base.h"
 #include "Math/Vect.h"
@@ -23,13 +23,14 @@ public:
 	GraphicObject_Wireframe() = delete;
 
 	void SetWorld(const Matrix& m);
+	void SetColor(const Vect& inColor) { Color = inColor; }
 	virtual void Render() override;
 
 	GraphicObject_Wireframe(ShaderWireframe* shader, int meshCount, Model* mod, const Vect& color);
 	GraphicObject_Wireframe(Model* mod, ShaderBase* shader, Vect& color);
 
 private:
-	ShaderWireframe*					pShader;
+	ShaderWireframe*				pShader;
 	Vect							Color;
 	Matrix							World;
 };

@@ -5,6 +5,8 @@
 
 GraphicObject_TextureLight::GraphicObject_TextureLight(ShaderColorLightTexture* shader, Model* mod)
 {
+	ambColor = Vect::One;
+	difColor = Vect::One;
 	pShader = shader;
 	SetModel(mod);
 	tex = new Texture * [mod->GetMeshCount()];
@@ -12,13 +14,17 @@ GraphicObject_TextureLight::GraphicObject_TextureLight(ShaderColorLightTexture* 
 	pShader->SetTextureResourceAndSampler(NULL);
 }
 
-GraphicObject_TextureLight::GraphicObject_TextureLight(Model* mod, ShaderBase* shader, Texture* inTexture, const Vect& col1, const Vect& col2)
+GraphicObject_TextureLight::GraphicObject_TextureLight(Model* mod, ShaderBase* shader, Texture* inTexture, const Vect& inAmb, const Vect& inDif)
 {
-	// todo: cols
+	ambColor = inAmb;
+	ambColor = inDif;
 
 	pShader = (ShaderColorLightTexture*)shader;
 	SetModel(mod);
+
 	tex = new Texture * [mod->GetMeshCount()];
+	tex[0] = inTexture;
+
 	world = Matrix::Identity;
 	pShader->SetTextureResourceAndSampler(NULL);
 }
@@ -44,7 +50,7 @@ void GraphicObject_TextureLight::Render()
 	for (int i = 0; i < pModel->GetMeshCount(); i++)
 	{
 		tex[i]->SetToContext(pShader->GetContext());
-		pShader->SendWorldAndMaterial(world, Vect::One, Vect::One, Vect::One);
+		pShader->SendWorldAndMaterial(world, ambColor, difColor, Vect::One);
 		pModel->RenderMesh(pShader->GetContext(), i);
 	}
 }

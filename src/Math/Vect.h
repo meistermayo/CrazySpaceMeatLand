@@ -112,6 +112,7 @@ public:
 		return *this;
 	}
 
+	/* .. dooo we need this?...
 	Vect operator * (const Vect& tmp) const
 	{
 		//__m128 teMp = _mm_mul_ps(this->_m, tmp._m);
@@ -151,14 +152,8 @@ public:
 		this->_m = _mm_div_ps(this->_m, tmp._m);
 		this->w = 1.0f;
 		return *this;
-		/*/
-		this->x /= tmp.x;
-		this->y /= tmp.y;
-		this->z /= tmp.z;
-		this->w /= tmp.w;
-		*/
-		//return *this;
 	}
+	*/
 
 	// Vect operator * (const Vect& v);
 

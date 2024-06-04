@@ -6,48 +6,33 @@
 
 #include "GraphicObject_Base.h"
 #include "Math/Vect.h"
-#include "ShaderColor.h"
-#include "ShaderColorLight.h"
 
-class GraphicObject_ColorLight : public GraphicObject_Base
+class ShaderColor;
+
+class GraphicObject_Color : public GraphicObject_Base
 {
 friend class ShaderColor;
-friend class ShaderColorLight;
 
 public:
-	GraphicObject_ColorLight(const GraphicObject_ColorLight&) = delete;				 // Copy constructor
-	GraphicObject_ColorLight(GraphicObject_ColorLight&&) = default;                    // Move constructor
-	GraphicObject_ColorLight& operator=(const GraphicObject_ColorLight&) & = default;  // Copy assignment operator
-	GraphicObject_ColorLight& operator=(GraphicObject_ColorLight&&) & = default;       // Move assignment operator
-	~GraphicObject_ColorLight();		  											 // Destructor
+	GraphicObject_Color(const GraphicObject_Color&) = delete;				 // Copy constructor
+	GraphicObject_Color(GraphicObject_Color&&) = default;                    // Move constructor
+	GraphicObject_Color& operator=(const GraphicObject_Color&) & = default;  // Copy assignment operator
+	GraphicObject_Color& operator=(GraphicObject_Color&&) & = default;       // Move assignment operator
+	~GraphicObject_Color();		  											 // Destructor
 
-	GraphicObject_ColorLight() = delete;
+	GraphicObject_Color() = delete;
 
-	void SetColor(const Vect& col, int meshNum);
 	void SetWorld(const Matrix& m);
+	void SetColor(const Vect& inColor) { Color = inColor; }
 	virtual void Render() override;
 
-	void SetLights(ShaderColorLight::DirectionalLight* _dirLight, ShaderColorLight::SpotLight* _sptLight, ShaderColorLight::PointLight* _pntLight);
-
-	void SetDirectionalLightParameters(const Vect& dir, const Vect& amb, const Vect& dif, const Vect& sp);
-	void SetPointLightParameters1(const Vect& pos, float r, const Vect& att, const Vect& amb, const Vect& dif, const Vect& sp);
-	void SetPointLightParameters2(const Vect& pos, float r, const Vect& att, const Vect& amb, const Vect& dif, const Vect& sp);
-	void SetPointLightParameters3(const Vect& pos, float r, const Vect& att, const Vect& amb, const Vect& dif, const Vect& sp);
-	void SetSpotLightParameters(const Vect& pos, float r, const Vect& att, const Vect& dir, float spotExp, const Vect& amb, const Vect& dif, const Vect& sp);
-
-	void SetMaterial(ShaderColorLight::Material* _material);
-
-	GraphicObject_ColorLight(ShaderColorLight* shader, int meshCount, Model* mod, const Vect &amb, const Vect &dif, const Vect& sp);
+	GraphicObject_Color(ShaderColor* shader, int meshCount, Model* mod, const Vect& color);
+	GraphicObject_Color(Model* mod, ShaderBase* shader, const Vect& color);
 
 private:
-	ShaderColorLight::DirectionalLight* dirLight;
-	ShaderColorLight::SpotLight* sptLight;
-	ShaderColorLight::PointLight* pntLight;
-
-	ShaderColorLight*					pShader;
-	Vect*							Color;
+	ShaderColor*				pShader;
+	Vect							Color;
 	Matrix							World;
-	ShaderColorLight::Material* material;
 };
 
 #endif _GraphicObject_Color

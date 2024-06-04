@@ -5,8 +5,8 @@ class Quat
 public:
 	static const Quat Identity;
 
-	Quat(Vect inV)
-		: v(inV) {}
+	Quat()
+		: v(Vect::Zero) {}
 
 	Quat(const Quat& tmp)
 		: v(tmp.v) {}
@@ -17,6 +17,11 @@ public:
 	}
 
 	~Quat() {}
+
+	Quat(const Vect& inV)
+		: v(inV) {}
+
+	Quat(const Matrix& tmp);
 
 	Quat GetInverse() const
 	{
