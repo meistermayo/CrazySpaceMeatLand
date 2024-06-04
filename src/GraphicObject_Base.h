@@ -22,6 +22,7 @@ public:
 	~GraphicObject_Base() = default;		  							   // Destructor
 	GraphicObject_Base();
 
+	Model* GetModel() { return pModel; }
 	void SetModel(Model* mod);
 	virtual void Render() = 0;
 

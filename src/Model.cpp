@@ -57,7 +57,7 @@ Model::Model(ID3D11Device * dev, FbxMeshInfo& fbxMeshInfo)
 	privLoadDataToGPU();
 }
 
-Model::Model(ID3D11Device* dev, Model::PreMadedeModels pm, float scale)
+Model::Model(ID3D11Device* dev, Model::PreMadeModels pm, float scale)
 {
 	mDevice = dev;
 	pStdVerts = nullptr;

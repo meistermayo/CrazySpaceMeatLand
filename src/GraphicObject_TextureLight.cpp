@@ -1,4 +1,4 @@
-#include "GraphicObject_TextureL.h"
+#include "src/Graphics/CrazySpaceMeatLand/src/GraphicObject_TextureLight.h"
 #include "Model.h"
 #include <assert.h>
 

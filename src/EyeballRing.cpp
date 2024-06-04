@@ -1,6 +1,6 @@
 #include "EyeballRing.h"
 #include "ShaderColorLightTexture.h"
-#include "GraphicObject_TextureL.h"
+#include "src/Graphics/CrazySpaceMeatLand/src/GraphicObject_TextureLight.h"
 #include "Texture.h"
 #include "Math/Vect.h"
 #include "Math/Matrix.h"

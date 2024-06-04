@@ -1,6 +1,6 @@
 #include "Worm.h"
 #include "ShaderColorLightTexture.h"
-#include "GraphicObject_TextureL.h"
+#include "GraphicObject_TextureLight.h"
 #include "Texture.h"
 #include "Math/Vect.h"
 #include "Math/Matrix.h"
@@ -26,8 +26,8 @@ Worm::Worm(ID3D11Device * md3dDevice, ShaderColorLightTexture * pShaderTexLight)
 	{
 		WormyBoi->SetTexture(ppTex_WormyBoi[i], i);
 	}
-	pModel_UnitSphere = new Model(md3dDevice, Model::PreMadedeModels::UnitSphere, 12);
-	//pModel_UnitSphere = new Model(md3dDevice, Model::PreMadedeModels::UnitBoxRepeatedTexture,12.0f);
+	pModel_UnitSphere = new Model(md3dDevice, Model::PreMadeModels::UnitSphere, 12);
+	//pModel_UnitSphere = new Model(md3dDevice, Model::PreMadeModels::UnitBoxRepeatedTexture,12.0f);
 	//pModel_UnitSphere = new Model(md3dDevice, fbxModelInfo);
 
 

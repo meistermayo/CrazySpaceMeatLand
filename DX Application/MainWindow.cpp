@@ -4,7 +4,7 @@
 // Heavily inspired by http://msdn.microsoft.com/en-us/library/windows/apps/ff729718.aspx
 #include <WindowsX.h>
 #include "resource.h"
-#include "DXApp.h"
+#include "../src/DXApp.h"
 #include <assert.h>
 
 //--------------------------------------------------------------------------------------
@@ -77,7 +77,7 @@ HRESULT InitWindow( HINSTANCE hInstance, int nCmdShow )
     wcex.hCursor = LoadCursor( nullptr, IDC_ARROW );
     wcex.hbrBackground = ( HBRUSH )( COLOR_WINDOW + 1 );
     wcex.lpszMenuName = nullptr;
-    wcex.lpszClassName = L"MainlWindowClass";
+    wcex.lpszClassName = (LPCSTR)L"MainlWindowClass";
     wcex.hIconSm = LoadIcon( wcex.hInstance, ( LPCTSTR )IDI_TUTORIAL1 );
     if( !RegisterClassEx( &wcex ) )
         return E_FAIL;
@@ -87,7 +87,7 @@ HRESULT InitWindow( HINSTANCE hInstance, int nCmdShow )
     RECT rc = { 0, 0, 1920, 1080}; // Initial window dimentions. 
 
     AdjustWindowRect( &rc, WS_OVERLAPPEDWINDOW, FALSE );
-    g_hWnd = CreateWindow( L"MainlWindowClass", L"Main Window",
+    g_hWnd = CreateWindow( (LPCSTR)L"MainlWindowClass", (LPCSTR)L"Main Window",
                            WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
                            CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance,
                            nullptr );

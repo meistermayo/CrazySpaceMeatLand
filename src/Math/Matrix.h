@@ -1,7 +1,7 @@
 #pragma once
 #pragma warning(disable : 4201)
 
-#include "Align16.h"
+#include "../Align16.h"
 #include "./Vect.h"
 
 #include <corecrt_math.h>
@@ -77,7 +77,7 @@ public:
 	{
 	}
 
-	static Matrix Trans(const Vect& t) { return Matrix(Vect::Right_0, Vect::Up_0, Vect::Forward_0, t); }
+	static Matrix 0Trans(const Vect& t) { return Matrix(Vect::Right_0, Vect::Up_0, Vect::Forward_0, t); }
 	static Matrix Scale(float s) { return Matrix(Vect::Right_0 * s, Vect::Up_0 * s, Vect::Forward_0 * s, Vect::Zero); }
 	static Matrix Scale(const Vect& s) { return Matrix(Vect::Right_0 * s.x, Vect::Up_0 * s.y, Vect::Forward_0 * s.z, Vect::Zero); }
 
@@ -158,6 +158,10 @@ public:
 
 	Matrix operator * (const Matrix& t);
 	Matrix& operator *= (const Matrix& t);
+
+	const Vect& GetRow0() const { return v0; }
+	const Vect& GetRow1() const { return v1; }
+	const Vect& GetRow2() const { return v2; }
 
 	float& operator[](int i)
 	{

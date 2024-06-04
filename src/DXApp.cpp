@@ -53,7 +53,7 @@ void DXApp::InitDemo()
 	float spotExp = 1;
 	Vect spotLightAmb = Vect(0, 0, 1) * .1f;
 	Vect spotLightDif = Vect(0, 0, 1) * .5f;
-	Vect spotLightSpc = Vect(.3, .6, 1, 150) * 0.5f;
+	Vect spotLightSpc = Vect(.3f, .6f, 1, 150) * 0.5f;
 
 
 
@@ -114,11 +114,11 @@ void DXApp::InitDemo()
 	_TEST_model = new Model(md3dDevice, "../Assets/Models/CubeTest2.azul");
 	_TEST_tex = new Texture(md3dDevice, L"../Assets/Textures/CubeTex.tga");
 	_TEST_go = new GraphicObject_Texture(pShaderTex, _TEST_model);
-	_TEST_go->SetWorld(Matrix(SCALE, 1, 1, 1) * Matrix(TRANS, 0, 10, 0));
+	_TEST_go->SetWorld(Matrix(SCALE, 1, 1, 1) * Matrix::Trans(0, 10, 0));
 	_TEST_go->SetTexture(_TEST_tex,0);
-	CubeModel = new Model(md3dDevice, Model::PreMadedeModels::UnitBoxRepeatedTexture);
+	CubeModel = new Model(md3dDevice, Model::PreMadeModels::UnitBoxRepeatedTexture);
 	CubeGo = new GraphicObject_TextureLight(pShaderTexLight, CubeModel);
-	CubeGo->SetWorld(Matrix(SCALE, 10, 10, 10)*Matrix(TRANS, 5, 10, 5));
+	CubeGo->SetWorld(Matrix(SCALE, 10, 10, 10)*Matrix::Trans(5, 10, 5));
 	CubeGo->SetTexture(ppTex_WormyBoi[0],0);
 #endif
 #ifdef TERRAIN
@@ -140,7 +140,7 @@ void DXApp::InitDemo()
 #endif
 #ifdef FLATPLANE
 	flatPlane = new FlatPlane(md3dDevice,1000,1,1);
-	flatPlane_World = Matrix(SCALE,1,1,1) * Matrix(TRANS, 0, 2, 0);
+	flatPlane_World = Matrix(SCALE,1,1,1) * Matrix::Trans(0, 2, 0);
 
 #endif
 
@@ -151,16 +151,16 @@ void DXApp::InitDemo()
 
 
 	// Initialize the projection matrix
-	mCam.setPerspective( 3.14159*.45f, mClientWidth / (float)mClientHeight, 1.0f, 5000.0f);
+	mCam.setPerspective( 3.14159f*.45f, mClientWidth / (float)mClientHeight, 1.0f, 5000.0f);
 	mCam.setOrientAndPosition(
-		Vect( - 0.0507903174, 0.857880533, 0.511332929),
-		Vect(-2.04233885, 23.4840279, -16.0365753),
-		Vect(-1.95754349, 23.9978771, -16.8902550));
+		Vect( - 0.0507903174f, 0.857880533f, 0.511332929f),
+		Vect(-2.04233885f, 23.4840279f, -16.0365753f),
+		Vect(-1.95754349f, 23.9978771f, -16.8902550f));
 
 	// Initialize gimmicky mouse control values
-	mTheta = .5;
-	mPhi = 3.1415f / 8;
-	mRadius = 6;
+	mTheta = .5f;
+	mPhi = 3.1415f / 8.f;
+	mRadius = 6.f;
 
 	mTimer.Reset();
 }
@@ -177,16 +177,16 @@ void DXApp::UpdateScene()
 		world_Frigate.GetTrans() + Vect(0, -59.9f, 0), userdata.frigateSpotRange,
 		Vect(0, 1, 0) * userdata.frigateSpotAtten,
 
-		Vect(.7, .7, 1) * 1.f,
-		Vect(.7, .7, 1) * 3.f,
+		Vect(.7f, .7f, 1) * 1.f,
+		Vect(.7f, .7f, 1) * 3.f,
 		Vect(1, 1, 1, 1) * 1.f);
 
 	pShader_Cube->SetPointLightParameters3(
 		world_Frigate.GetTrans() + Vect(0, -59.9f, 0), userdata.frigateSpotRange,
 		Vect(0, 1, 0) * userdata.frigateSpotAtten,
 
-		Vect(.7, .7, 1)	* 1.f,
-		Vect(.7, .7, 1)	* 3.f,
+		Vect(.7f, .7f, 1)	* 1.f,
+		Vect(.7f, .7f, 1)	* 3.f,
 		Vect(1, 1, 1, 1)* 1.f);
 
 	float camSpeed = 40 * mTimer.DeltaTime();
@@ -351,7 +351,7 @@ DXApp::DXApp(HWND hwnd)
 	// Get window caption
 	const int MAX_LABEL_LENGTH = 100; // probably overkill...
 	WCHAR str[MAX_LABEL_LENGTH];
-	GetWindowText(mhMainWnd, str, MAX_LABEL_LENGTH);
+	GetWindowText(mhMainWnd, (LPSTR)str, MAX_LABEL_LENGTH);
 	mMainWndCaption = str;
 
 	// Initialize DX11
@@ -609,7 +609,7 @@ void DXApp::CalculateFrameStats()
 		outs << mMainWndCaption << L"    "
 			<< L"FPS: " << fps << L"    "
 			<< L"Frame Time: " << mspf << L" (ms)";
-		SetWindowText(mhMainWnd, outs.str().c_str());
+		SetWindowText(mhMainWnd, (LPSTR)outs.str().c_str());
 
 		// Reset for next average.
 		frameCnt = 0;

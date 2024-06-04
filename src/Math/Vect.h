@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Align16.h"
+#include "../Align16.h"
 
 #include <xmmintrin.h>
 #include <smmintrin.h>  
@@ -226,7 +226,7 @@ public:
 	Vect operator * (const Matrix& tmp) const;
 
 	//Vect operator * (const Matrix &m) const;
-
+	// friend Vect operator *(const float scale, const Vect& inV); // noted...
 	static void VectLerp(const Vect& a, const Vect& b, const float t, Vect& outVect)
 	{
 		outVect = a + ((b - a) * t);

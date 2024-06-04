@@ -21,7 +21,7 @@ FlatPlane::FlatPlane(ID3D11Device* dev, float size, float hrep, float vrep)
 	pTriList[1].set(0, 2, 3);
 
 	pPlane = new Model(dev, pVerts, nverts, pTriList, ntri);
-	//pPlane = new Model( dev, Model::PreMadedeModels::UnitSphere);
+	//pPlane = new Model( dev, Model::PreMadeModels::UnitSphere);
 }
 
 FlatPlane::~FlatPlane()

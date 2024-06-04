@@ -115,7 +115,7 @@ public:
 	Model& operator=(const Model&) & = delete;  // Copy assignment operator
 	Model& operator=(Model&&) & = delete;       // Move assignment operator
 
-	enum PreMadedeModels {
+	enum PreMadeModels {
 		UnitBox,
 		UnitBoxRepeatedTexture,
 		UnitPyramid,
@@ -125,7 +125,7 @@ public:
 
 	Model() = delete;
 	Model(ID3D11Device* dev, StandardVertex *pVerts, int nverts, TriangleByIndex *ptlist, int ntri);
-	Model(ID3D11Device* dev, PreMadedeModels pm, float scale = 1);
+	Model(ID3D11Device* dev, PreMadeModels pm, float scale = 1);
 	Model(ID3D11Device* dev, const char * const _modelName, bool flipU = false, bool flipV = false, float scale = 1);
 	Model(ID3D11Device* dev, FbxMeshInfo& fbxMeshInfo);
 
@@ -138,6 +138,9 @@ public:
 	// Get access
 	int GetMeshCount();
 	bool ValidMeshNum(int i);
+
+	Vect GetCenter() const { return Vect(1, 1, 1); }
+	float GetRadius() const { return 10.0f; } // TODO
 };
 
 

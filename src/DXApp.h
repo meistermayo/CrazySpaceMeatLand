@@ -45,11 +45,10 @@
 #include "Camera.h"
 #include "ShaderColor.h"
 #include "ShaderColorLight.h"
-#include "GraphicObject_Texture.h"
-#include "GraphicObject_TextureL.h"
+#include "src/Graphics/CrazySpaceMeatLand/src/GraphicObject_Texture.h"
+#include "src/Graphics/CrazySpaceMeatLand/src/GraphicObject_TextureLight.h"
 #include "Skybox.h"
 #include "TerrainModel.h"
-#include "Bullet.h"
 
 class Model;
 class Texture;
@@ -123,9 +122,6 @@ private:
 
 	// WORMY BOI >:D
 	Worm* worm;
-
-	GraphicObject_TextureLight* Bullet_GO;
-	Bullet* myBullet;
 
 	// Frigate
 	Model* pModel_Frigate;
