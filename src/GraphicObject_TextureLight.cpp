@@ -3,11 +3,22 @@
 #include <assert.h>
 
 
-GraphicObject_TextureLight::GraphicObject_TextureLight( ShaderColorLightTexture* shader,Model* mod)
+GraphicObject_TextureLight::GraphicObject_TextureLight(ShaderColorLightTexture* shader, Model* mod)
 {
 	pShader = shader;
 	SetModel(mod);
-	tex = new Texture*[mod->GetMeshCount()];
+	tex = new Texture * [mod->GetMeshCount()];
+	world = Matrix::Identity;
+	pShader->SetTextureResourceAndSampler(NULL);
+}
+
+GraphicObject_TextureLight::GraphicObject_TextureLight(Model* mod, ShaderBase* shader, Texture* inTexture, const Vect& col1, const Vect& col2)
+{
+	// todo: cols
+
+	pShader = (ShaderColorLightTexture*)shader;
+	SetModel(mod);
+	tex = new Texture * [mod->GetMeshCount()];
 	world = Matrix::Identity;
 	pShader->SetTextureResourceAndSampler(NULL);
 }

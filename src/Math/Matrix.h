@@ -77,8 +77,10 @@ public:
 	{
 	}
 
-	static Matrix 0Trans(const Vect& t) { return Matrix(Vect::Right_0, Vect::Up_0, Vect::Forward_0, t); }
+	static Matrix Trans(const Vect& t) { return Matrix(Vect::Right_0, Vect::Up_0, Vect::Forward_0, t); }
+	static Matrix Trans(float x, float y, float z) { return Matrix(Vect::Right_0, Vect::Up_0, Vect::Forward_0, Vect(x,y,z)); }
 	static Matrix Scale(float s) { return Matrix(Vect::Right_0 * s, Vect::Up_0 * s, Vect::Forward_0 * s, Vect::Zero); }
+	static Matrix Scale(float x, float y, float z) { return Matrix(Vect::Right_0 * x, Vect::Up_0 * y, Vect::Forward_0 * z, Vect::Zero); }
 	static Matrix Scale(const Vect& s) { return Matrix(Vect::Right_0 * s.x, Vect::Up_0 * s.y, Vect::Forward_0 * s.z, Vect::Zero); }
 
 	static Matrix RotAxisAngle(const Vect& axis, float angle) {
@@ -154,14 +156,27 @@ public:
 	void SetTrans(const Vect& t) { v3 = t; }
 	const Vect& GetTrans() const { return v3; }
 
-	Vect operator * (const Vect& v);
-
 	Matrix operator * (const Matrix& t);
+	Matrix operator * (float s)
+	{
+		return Matrix(
+			v0 * s,
+			v1 * s,
+			v2 * s,
+			v3 * s
+		);
+	}
 	Matrix& operator *= (const Matrix& t);
 
 	const Vect& GetRow0() const { return v0; }
 	const Vect& GetRow1() const { return v1; }
 	const Vect& GetRow2() const { return v2; }
+
+	void SetRow0(const Vect& inRow) { v0 = inRow; }
+	void SetRow1(const Vect& inRow) { v1 = inRow; }
+	void SetRow2(const Vect& inRow) { v2 = inRow; }
+
+	operator Vect() = delete;
 
 	float& operator[](int i)
 	{

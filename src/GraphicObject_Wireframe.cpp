@@ -3,10 +3,10 @@
 #include "ShaderColor.h"
 #include <assert.h>
 
-GraphicObject_ColorLight::GraphicObject_ColorLight(ShaderColorLight* shader, int meshCount, Model* mod, const Vect &amb, const Vect &dif, const Vect& sp)
+GraphicObject_Wireframe::GraphicObject_Wireframe(ShaderWireframe* shader, int meshCount, Model* mod, const Vect &amb, const Vect &dif, const Vect& sp)
 {
 	meshCount;
-	material = new ShaderColorLight::Material();
+	material = new ShaderWireframe::Material();
 	this->material->Ambient = amb;
 	this->material->Diffuse = dif;
 	this->material->Specular = sp;
@@ -21,18 +21,29 @@ GraphicObject_ColorLight::GraphicObject_ColorLight(ShaderColorLight* shader, int
 	}
 	World = Matrix::Identity;
 }
+
+GraphicObject_Wireframe::GraphicObject_Wireframe(Model* mod, ShaderBase* shader, Vect& color)
+{
+	SetModel(mod);
+	pShader = shader;
+
+	Color = new Vect[1];
+	Color[0] = color; /// ??? 
+	World = Matrix::Identity;
+}
+
 // NOTE can prob get rid of ptrs to lights...
-GraphicObject_ColorLight::~GraphicObject_ColorLight()
+GraphicObject_Wireframe::~GraphicObject_Wireframe()
 {
 
 }
 
-void GraphicObject_ColorLight::SetWorld(const Matrix& m) 
+void GraphicObject_Wireframe::SetWorld(const Matrix& m) 
 { 
 	World = m;
 }
 
-void GraphicObject_ColorLight::Render()
+void GraphicObject_Wireframe::Render()
 {
 	//pShader->SendWorldAndMaterial(World,material->Ambient,material->Diffuse,material->Specular); 
 	pModel->BindVertexIndexBuffers(pShader->GetContext());

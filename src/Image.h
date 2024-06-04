@@ -9,10 +9,10 @@ class Image
 public:
 	// public methods: -------------------------------------------------------------
 	Image()
-		: pImageRect(nullptr), pText(nullptr) {}
+		: pText(nullptr), pImageRect(nullptr) {}
 
 	Image(Texture* pTexture, Rect* pRect)
-		: pImageRect(nullptr), pText(nullptr) {}
+		: pText(pTexture), pImageRect(pRect) {}
 
 	void Set(Texture* pTexture, Rect* pRect)
 	{

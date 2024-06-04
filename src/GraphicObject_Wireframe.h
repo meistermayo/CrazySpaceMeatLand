@@ -26,6 +26,7 @@ public:
 	virtual void Render() override;
 
 	GraphicObject_Wireframe(ShaderWireframe* shader, int meshCount, Model* mod, Vect& color);
+	GraphicObject_Wireframe(Model* mod, ShaderBase* shader, Vect& color);
 
 private:
 	ShaderWireframe*					pShader;

@@ -160,6 +160,8 @@ public:
 		//return *this;
 	}
 
+	// Vect operator * (const Vect& v);
+
 	float dot(const Vect& t) const
 	{
 		// Only do the inner product for {x,y,z}
@@ -176,6 +178,9 @@ public:
 		w = 1.0f;
 		// check back on this
 	}
+
+	float GetMag() const { return sqrtf(x * x + y * y + z * z); }
+	float GetSqrMag() const { return x * x + y * y + z * z; }
 
 	Vect GetNormalized() const
 	{
@@ -224,9 +229,12 @@ public:
 	}
 
 	Vect operator * (const Matrix& tmp) const;
+	Vect operator *= (const Matrix& tmp) const;
 
 	//Vect operator * (const Matrix &m) const;
-	// friend Vect operator *(const float scale, const Vect& inV); // noted...
+	
+	friend Vect operator * (const float scale, const Vect& inV); // noted...
+
 	static void VectLerp(const Vect& a, const Vect& b, const float t, Vect& outVect)
 	{
 		outVect = a + ((b - a) * t);

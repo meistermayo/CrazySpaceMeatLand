@@ -8,11 +8,6 @@
 
 const Matrix Matrix::Identity(Vect::Right_0, Vect::Up_0, Vect::Forward_0, Vect::Zero);
 
-Vect Matrix::operator * (const Vect& v)
-{
-	return Vect(v.dot(v0), v.dot(v1), v.dot(v2), v.dot(v3));
-}
-
 //*/
 Matrix Matrix::operator * (const Matrix& t)
 {

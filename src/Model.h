@@ -141,6 +141,9 @@ public:
 
 	Vect GetCenter() const { return Vect(1, 1, 1); }
 	float GetRadius() const { return 10.0f; } // TODO
+
+	Vect* GetVectList();
+	int GetVectNum() { return numVerts; }
 };
 
 
