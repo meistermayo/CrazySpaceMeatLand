@@ -37,6 +37,9 @@ protected:
 	virtual void privSetClearColor(float r, float g, float b, float a = 1.0f) = 0;
 	virtual const GraphicsDevice& privGetDevice() const = 0;
 	virtual const GraphicsContext& privGetContext() const = 0;
+
+	virtual void privSetPrimitiveTopologyAsTriList() const = 0;
+	virtual void privDrawIndexed(int indexCount, int startIndex, int baseVertex) const = 0;
 };
 
 struct GraphicsDevice : public Align16
@@ -88,6 +91,8 @@ public:
 #endif
 
 #ifdef BACKEND_D3D
+static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+
 class D3D_GraphicsBackend : public GraphicsBackend_Base
 {
 	HINSTANCE               hInst = nullptr;
@@ -109,7 +114,9 @@ class D3D_GraphicsBackend : public GraphicsBackend_Base
 
 	MSG msg = { 0 };
 
+public:
 	void SetData(HINSTANCE hInstance, int inCmdShow);
+	HWND GetWindowHandle() { return hWnd; }
 
 protected:
 	virtual int privInitialize() override;
@@ -130,6 +137,9 @@ protected:
 
 	virtual const GraphicsDevice& privGetDevice() const override;
 	virtual const GraphicsContext& privGetContext() const override;
+
+	virtual void privDrawIndexed(int indexCount, int startIndex, int baseVertex) const override;
+	virtual void privSetPrimitiveTopologyAsTriList() const override;
 
 	void InitDirect3D();
 
@@ -170,68 +180,13 @@ protected:
 
 		return S_OK;
 	}
-
-	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-	{
-		D3D_GraphicsBackend* pBackend = (D3D_GraphicsBackend*)i::GetGraphicsBackend();
-		PAINTSTRUCT ps;
-		HDC hdc;
-
-		switch (message)
-		{
-			// Early exit using ESC key: very useful during development
-		case WM_KEYDOWN:
-			if (wParam == VK_ESCAPE)
-			{
-				PostQuitMessage(0);
-				return 0;
-			}
-			break;
-
-		case WM_PAINT:
-			hdc = BeginPaint(hWnd, &ps);
-			EndPaint(hWnd, &ps);
-			break;
-
-		case WM_DESTROY:
-			PostQuitMessage(0);
-			break;
-
-		case WM_LBUTTONDOWN:
-		case WM_MBUTTONDOWN:
-		case WM_RBUTTONDOWN:
-			SetCapture(pBackend->hWnd);
-			i::BackendOnMouseButton(wParam, 1);
-			break;
-
-		case WM_LBUTTONUP:
-		case WM_MBUTTONUP:
-		case WM_RBUTTONUP:
-			ReleaseCapture();
-			i::BackendOnMouseButton(wParam, 0);
-			break;
-
-		case WM_MOUSEMOVE:
-			i::BackendOnMouseMove(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-			break;
-
-		case WM_MOUSEWHEEL:
-			i::BackendOnMouseWheel(GET_WHEEL_DELTA_WPARAM(wParam));
-			break;
-
-		default:
-			return DefWindowProc(hWnd, message, wParam, lParam);
-		}
-
-		return 0;
-	}
-
 };
 #endif
 
 class GraphicsBackend : public Align16 {
 	static GraphicsBackend_Base* pInst;
 
+public:
 	static GraphicsBackend_Base* Instance()
 	{
 		if (pInst == nullptr)
@@ -247,7 +202,6 @@ class GraphicsBackend : public Align16 {
 		return pInst;
 	}
 
-public:
 	static int Initialize() { return Instance()->privInitialize(); }
 	static void InitApp() { Instance()->privInitApp(); }
 	static bool StillOpen() { return Instance()->privStillOpen(); }
@@ -258,7 +212,66 @@ public:
 	static void SetClearColor(float r, float g, float b, float a = 1.0f) { Instance()->privSetClearColor(r, g, b, a); }
 	static const GraphicsDevice& GetDevice() { return Instance()->privGetDevice(); }
 	static const GraphicsContext& GetContext() { return Instance()->privGetContext(); }
+	
+	static void SetPrimitiveTopologyAsTriList() { Instance()->privSetPrimitiveTopologyAsTriList(); }
+	static void DrawIndexed(int indexCount, int startIndex, int baseVertex) { Instance()->privDrawIndexed(indexCount, startIndex, baseVertex); }
 };
 
+#ifdef BACKEND_D3D
+static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	D3D_GraphicsBackend* pBackend = (D3D_GraphicsBackend*)GraphicsBackend::Instance();
+	PAINTSTRUCT ps;
+	HDC hdc;
+
+	switch (message)
+	{
+		// Early exit using ESC key: very useful during development
+	case WM_KEYDOWN:
+		if (wParam == VK_ESCAPE)
+		{
+			PostQuitMessage(0);
+			return 0;
+		}
+		break;
+
+	case WM_PAINT:
+		hdc = BeginPaint(hWnd, &ps);
+		EndPaint(hWnd, &ps);
+		break;
+
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		break;
+
+	case WM_LBUTTONDOWN:
+	case WM_MBUTTONDOWN:
+	case WM_RBUTTONDOWN:
+		SetCapture(pBackend->GetWindowHandle());
+		i::BackendOnMouseButton(wParam, 1);
+		break;
+
+	case WM_LBUTTONUP:
+	case WM_MBUTTONUP:
+	case WM_RBUTTONUP:
+		ReleaseCapture();
+		i::BackendOnMouseButton(wParam, 0);
+		break;
+
+	case WM_MOUSEMOVE:
+		i::BackendOnMouseMove(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		break;
+
+	case WM_MOUSEWHEEL:
+		i::BackendOnMouseWheel(GET_WHEEL_DELTA_WPARAM(wParam));
+		break;
+
+	default:
+		return DefWindowProc(hWnd, message, wParam, lParam);
+	}
+
+	return 0;
+}
+#endif
 
 #endif

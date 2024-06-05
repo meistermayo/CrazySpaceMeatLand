@@ -29,7 +29,7 @@ FlatPlane::~FlatPlane()
 	delete pPlane;
 }
 
-void FlatPlane::Render(ID3D11DeviceContext* context)
+void FlatPlane::Render()
 {
-	pPlane->Render(context);
+	pPlane->Render();
 }

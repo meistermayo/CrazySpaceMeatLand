@@ -5,8 +5,6 @@
 #define _FlatPlane
 
 class Model;
-struct ID3D11DeviceContext;
-struct ID3D11Device;
 
 class FlatPlane 
 {
@@ -22,7 +20,7 @@ public:
 
 	FlatPlane(float size, float hrep, float vrep);
 
-	void Render(ID3D11DeviceContext* context);
+	void Render();
 
 };
 

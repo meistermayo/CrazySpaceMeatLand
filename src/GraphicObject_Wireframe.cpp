@@ -32,10 +32,10 @@ GraphicObject_Wireframe::~GraphicObject_Wireframe()
 void GraphicObject_Wireframe::Render()
 {
 	//pShader->SendWorldAndMaterial(World,material->Ambient,material->Diffuse,material->Specular); 
-	pModel->BindVertexIndexBuffers(pShader->GetContext());
+	pModel->BindVertexIndexBuffers();
 	for (int i = 0; i < pModel->GetMeshCount(); i++)
 	{
 		pShader->SendWorldColor(*pWorld, Color);
-		pModel->RenderMesh(pShader->GetContext(),i);
+		pModel->RenderMesh(i);
 	}
 }

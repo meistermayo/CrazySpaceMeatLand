@@ -22,10 +22,10 @@ GraphicObject_Sprite::~GraphicObject_Sprite()
 void GraphicObject_Sprite::Render()
 {
 	//pShader->SendWorldAndMaterial(World,material->Ambient,material->Diffuse,material->Specular); 
-	pModel->BindVertexIndexBuffers(pShader->GetContext());
+	pModel->BindVertexIndexBuffers();
 	for (int i = 0; i < pModel->GetMeshCount(); i++)
 	{
 		((ShaderTexture*)pShader)->SendWorld(*pWorld);
-		pModel->RenderMesh(pShader->GetContext(), i);
+		pModel->RenderMesh(i);
 	}
 }

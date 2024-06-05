@@ -4,6 +4,7 @@
 #include "src/Graphics/CrazySpaceMeatLand/src/DXApp.h"
 #include "src/i Engine/i.h"
 
+#ifdef BACKEND_D3D
 
 void D3D_GraphicsBackend::SetData(HINSTANCE hInstance, int inCmdShow)
 {
@@ -104,6 +105,16 @@ void D3D_GraphicsBackend::privSetClearColor(float r, float g, float b, float a)
 
 const GraphicsDevice& D3D_GraphicsBackend::privGetDevice() const { return mDev; }
 const GraphicsContext& D3D_GraphicsBackend::privGetContext() const { return mCon; }
+
+void D3D_GraphicsBackend::privDrawIndexed(int indexCount, int startIndex, int baseVertex) const
+{
+	mCon.md3dImmediateContext->DrawIndexed(indexCount, startIndex, baseVertex);
+}
+
+void D3D_GraphicsBackend::privSetPrimitiveTopologyAsTriList() const
+{
+	mCon.md3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+}
 
 void D3D_GraphicsBackend::InitDirect3D()
 {
@@ -249,3 +260,5 @@ void D3D_GraphicsBackend::InitDirect3D()
 	vp.TopLeftY = 0;
 	mCon.md3dImmediateContext->RSSetViewports(1, &vp);
 }
+
+#endif

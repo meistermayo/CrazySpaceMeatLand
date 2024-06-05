@@ -41,11 +41,11 @@ void GraphicObject_TextureLight::SetTexture(Texture* _tex, int i)
 
 void GraphicObject_TextureLight::Render()
 {
-	pModel->BindVertexIndexBuffers(pShader->GetContext());
+	pModel->BindVertexIndexBuffers();
 	for (int i = 0; i < pModel->GetMeshCount(); i++)
 	{
 		tex[i]->SetToContext(pShader->GetContext());
 		pShader->SendWorldAndMaterial(*pWorld, ambColor, difColor, Vect::One);
-		pModel->RenderMesh(pShader->GetContext(), i);
+		pModel->RenderMesh(i);
 	}
 }

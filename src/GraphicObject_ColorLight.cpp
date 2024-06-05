@@ -36,11 +36,11 @@ void GraphicObject_ColorLight::SetColor(const Vect& col, int meshNum)
 void GraphicObject_ColorLight::Render()
 {
 	//pShader->SendWorldAndMaterial(World,material->Ambient,material->Diffuse,material->Specular); 
-	pModel->BindVertexIndexBuffers(pShader->GetContext());
+	pModel->BindVertexIndexBuffers();
 	for (int i = 0; i < pModel->GetMeshCount(); i++)
 	{
 		pShader->SendWorldAndMaterial(*pWorld, material->Ambient, material->Diffuse, material->Specular);
-		pModel->RenderMesh(pShader->GetContext(),i);
+		pModel->RenderMesh(i);
 	}
 }
 

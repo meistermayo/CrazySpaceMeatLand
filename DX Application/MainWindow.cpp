@@ -20,7 +20,7 @@ DXApp*					g_dxapp = nullptr;
 HRESULT InitWindow( HINSTANCE hInstance, int nCmdShow );
 void InitApp();
 void CleanupApp();
-LRESULT CALLBACK    WndProc( HWND, UINT, WPARAM, LPARAM );
+// LRESULT CALLBACK    WndProc( HWND, UINT, WPARAM, LPARAM );
 
 //--------------------------------------------------------------------------------------
 // Entry point to the program. Initializes everything and goes into a message processing 
@@ -65,6 +65,7 @@ int WINAPI wWinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 //--------------------------------------------------------------------------------------
 // Register class and create window
 //--------------------------------------------------------------------------------------
+/*
 HRESULT InitWindow( HINSTANCE hInstance, int nCmdShow )
 {
     // Register class
@@ -102,11 +103,12 @@ HRESULT InitWindow( HINSTANCE hInstance, int nCmdShow )
 
     return S_OK;
 }
-
+*/
 
 //--------------------------------------------------------------------------------------
 // Called every time the application receives a message
 //--------------------------------------------------------------------------------------
+/*
 LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
     PAINTSTRUCT ps;
@@ -161,7 +163,7 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 
     return 0;
 }
-
+*/
 
 //--------------------------------------------------------------------------------------
 // Create Direct3D device and swap chain

@@ -110,5 +110,5 @@ void Skybox::CreateSkybox(StandardVertex *&pVerts, int& nverts, TriangleByIndex 
 void Skybox::Render(ID3D11DeviceContext *context)
 {
 	mTexture->SetToContext(context);
-	pModel->Render(context);
+	pModel->Render();
 }

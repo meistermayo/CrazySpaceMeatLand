@@ -40,7 +40,7 @@ void IndexBufferObject::LoadToGPU()
 {
 #ifdef BACKEND_D3D
 		D3D11_BUFFER_DESC bd;
-		// Index buffer
+		ZeroMemory(&bd, sizeof(bd));
 		bd.Usage = D3D11_USAGE_DEFAULT;
 		bd.ByteWidth = sizeof(TriangleByIndex) * num;
 		bd.BindFlags = D3D11_BIND_INDEX_BUFFER;

@@ -32,8 +32,6 @@ void TerrainModel::Render(ID3D11DeviceContext* context)
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	context->DrawIndexed(ntris * 3, 0, 0);
-
-
 }
 
 void TerrainModel::ConstructTerrain(const DirectX::Image* hMap,float maxHeight,float len,int repeatU, int repeatV)

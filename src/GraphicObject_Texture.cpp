@@ -34,11 +34,11 @@ void GraphicObject_Texture::SetTexture(Texture* _tex, int i)
 
 void GraphicObject_Texture::Render()
 {
-	pModel->BindVertexIndexBuffers(pShader->GetContext());
+	pModel->BindVertexIndexBuffers();
 	for (int i = 0; i < pModel->GetMeshCount(); i++)
 	{
 		tex[i]->SetToContext(pShader->GetContext());
 		pShader->SendWorld(*pWorld);
-		pModel->RenderMesh(pShader->GetContext(), i);
+		pModel->RenderMesh(i);
 	}
 }

@@ -220,7 +220,11 @@ void Model::privLoadDataFromFile(const char * const _modelName, StandardVertex*&
 void  Model::privLoadDataToGPU()
 {
 	mpVertexBufferObject = new VertexBufferObject();
+	mpVertexBufferObject->num = numVerts;
+	mpVertexBufferObject->pVerts = pStdVerts;
 	mpIndexBufferObject = new IndexBufferObject();
+	mpIndexBufferObject->num = numTris;
+	mpIndexBufferObject->pTris = pTriList;
 
 	mpVertexBufferObject->LoadToGPU();
 	mpIndexBufferObject->LoadToGPU();
@@ -236,27 +240,27 @@ int Model::GetMeshCount()
 	return meshes->GetMeshCount();
 }
 
-void  Model::BindVertexIndexBuffers(ID3D11DeviceContext* context)
+void  Model::BindVertexIndexBuffers()
 {
 	mpVertexBufferObject->Bind();
 	mpIndexBufferObject->Bind();
-	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	GraphicsBackend::SetPrimitiveTopologyAsTriList();
 }
 
-void Model::Render(ID3D11DeviceContext* context)
+void Model::Render()
 {
-	BindVertexIndexBuffers(context);
-	context->DrawIndexed(numTris * 3, 0, 0); 
+	BindVertexIndexBuffers();
+	GraphicsBackend::DrawIndexed(numTris * 3, 0, 0);
 }
 
-void Model::RenderMesh(ID3D11DeviceContext* context, int meshnum)
+void Model::RenderMesh(int meshnum)
 {
 	assert(ValidMeshNum(meshnum));
 
 	int tricount, trioffset;
 	meshes->GetMeshTriCountAndOffset(meshnum, tricount, trioffset);
 
-	context->DrawIndexed(tricount * 3, trioffset * 3, 0);
+	GraphicsBackend::DrawIndexed(tricount * 3, trioffset * 3, 0);
 }
 
 

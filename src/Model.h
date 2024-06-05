@@ -9,7 +9,6 @@
 class MeshSeparator;
 struct VertexBufferObject;
 struct IndexBufferObject;
-struct ID3D11DeviceContext;
 
 struct StandardVertex : public Align16
 {
@@ -134,9 +133,9 @@ public:
 
 	virtual ~Model();
 
-	void BindVertexIndexBuffers(ID3D11DeviceContext* context);
-	void Render(ID3D11DeviceContext* context);
-	void RenderMesh(ID3D11DeviceContext* context, int meshnum);
+	void BindVertexIndexBuffers();
+	void Render();
+	void RenderMesh(int meshnum);
 
 	// Get access
 	int GetMeshCount();

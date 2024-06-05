@@ -315,7 +315,7 @@ void DXApp::DrawScene()
 	pShaderColLight->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());
 	pShaderColLight->SendLightParameters(eyepos);
 	pShaderColLight->SendWorldAndMaterial(flatPlane_World);
-	//flatPlane->Render(md3dImmediateContext);
+	//flatPlane->Render();
 #endif
 	pShader_Cube->SetToContext(md3dImmediateContext);
 	pShader_Cube->SendFogData(fogStart, fogRange, fogCol);
