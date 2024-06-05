@@ -5,13 +5,12 @@
 #include "d3dUtil.h"
 #include "AzulFileHdr.h"
 #include "MeshSeparator.h"
+#include "GraphicsBackend.h"
 
-Model::Model(ID3D11Device* dev, StandardVertex *pVerts, int nverts, TriangleByIndex *ptlist, int ntri)
+Model::Model(StandardVertex *pVerts, int nverts, TriangleByIndex *ptlist, int ntri)
 {
 	assert(nverts > 0);
 	assert(ntri > 0);
-
-	mDevice = dev;
 
 	// Copy Data
 	numVerts = nverts;
@@ -33,9 +32,8 @@ Model::Model(ID3D11Device* dev, StandardVertex *pVerts, int nverts, TriangleByIn
 	privLoadDataToGPU();
 }
 
-Model::Model(ID3D11Device* dev, const char * const _modelName, bool flipU, bool flipV, float scale)
+Model::Model(const char * const _modelName, bool flipU, bool flipV, float scale)
 {
-	mDevice = dev;
 	pStdVerts = nullptr;
 	pTriList = nullptr;
 	numVerts = 0;
@@ -46,9 +44,8 @@ Model::Model(ID3D11Device* dev, const char * const _modelName, bool flipU, bool 
 	privLoadDataToGPU();
 }
 
-Model::Model(ID3D11Device * dev, FbxMeshInfo& fbxMeshInfo)
+Model::Model(FbxMeshInfo& fbxMeshInfo)
 {
-	mDevice = dev;
 	numVerts = fbxMeshInfo.nVerts;
 	numTris = fbxMeshInfo.nTris;
 
@@ -59,9 +56,8 @@ Model::Model(ID3D11Device * dev, FbxMeshInfo& fbxMeshInfo)
 	privLoadDataToGPU();
 }
 
-Model::Model(ID3D11Device* dev, Model::PreMadeModels pm, float scale)
+Model::Model(Model::PreMadeModels pm, float scale)
 {
-	mDevice = dev;
 	pStdVerts = nullptr;
 	pTriList = nullptr;
 	numVerts = 0;
@@ -93,16 +89,14 @@ Model::Model(ID3D11Device* dev, Model::PreMadeModels pm, float scale)
 	privLoadDataToGPU();
 }
 
-
-
 Model::~Model()
 {
 	delete[] pTriList;
 	delete[] pStdVerts;
 	delete[] pVectList;
 
-	ReleaseAndDeleteCOMobject(mpVertexBuffer);
-	ReleaseAndDeleteCOMobject(mpIndexBuffer);
+	delete mpVertexBufferObject;
+	delete mpIndexBufferObject;
 }
 
 void Model::privLoadDataFromFile(const char * const _modelName, StandardVertex*& pVerts, int& nverts, TriangleByIndex*& ptlist, int& ntri, bool flipU, bool flipV, float scale)
@@ -225,29 +219,11 @@ void Model::privLoadDataFromFile(const char * const _modelName, StandardVertex*&
 
 void  Model::privLoadDataToGPU()
 {
-	// Vertex buffer
-	D3D11_BUFFER_DESC bd;
-	ZeroMemory(&bd, sizeof(bd));
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(StandardVertex) * numVerts;
-	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bd.CPUAccessFlags = 0;
+	mpVertexBufferObject = new VertexBufferObject();
+	mpIndexBufferObject = new IndexBufferObject();
 
-	D3D11_SUBRESOURCE_DATA InitData;
-	ZeroMemory(&InitData, sizeof(InitData));
-	InitData.pSysMem = pStdVerts;
-	HRESULT hr = mDevice->CreateBuffer(&bd, &InitData, &mpVertexBuffer);
-	assert(SUCCEEDED(hr));
-
-	// Index buffer
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(TriangleByIndex) * numTris;
-	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	bd.CPUAccessFlags = 0;
-	InitData.pSysMem = pTriList;
-	hr = mDevice->CreateBuffer(&bd, &InitData, &mpIndexBuffer);
-	assert(SUCCEEDED(hr));
-
+	mpVertexBufferObject->LoadToGPU();
+	mpIndexBufferObject->LoadToGPU();
 }
 
 bool Model::ValidMeshNum(int meshnum)
@@ -262,12 +238,9 @@ int Model::GetMeshCount()
 
 void  Model::BindVertexIndexBuffers(ID3D11DeviceContext* context)
 {
-	UINT stride = sizeof(StandardVertex);
-	UINT offset = 0;
-	context->IASetVertexBuffers(0, 1, &mpVertexBuffer, &stride, &offset);
-	context->IASetIndexBuffer(mpIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	mpVertexBufferObject->Bind();
+	mpIndexBufferObject->Bind();
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
 }
 
 void Model::Render(ID3D11DeviceContext* context)

@@ -20,7 +20,7 @@ public:
 	FlatPlane& operator=(FlatPlane&&) & = delete;       // Move assignment operator
 	~FlatPlane();
 
-	FlatPlane(ID3D11Device* dev, float size, float hrep, float vrep);
+	FlatPlane(float size, float hrep, float vrep);
 
 	void Render(ID3D11DeviceContext* context);
 

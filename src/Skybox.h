@@ -1,5 +1,7 @@
+#ifndef SKYBOX_H
+#define SKYBOX_H
+
 #include "Model.h"
-#include "d3dUtil.h"
 #include "ShaderTexture.h"
 #include "Texture.h"
 
@@ -25,3 +27,5 @@ private :
 	ShaderTexture* mShader;
 	Texture* mTexture;
 };
+
+#endif

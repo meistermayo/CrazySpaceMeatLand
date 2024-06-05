@@ -14,7 +14,7 @@ Worm::Worm(ID3D11Device * md3dDevice, ShaderColorLightTexture * pShaderTexLight)
 {
 	Matrix tempMatrix = Matrix::RotY(180.5f) * Matrix::Scale(1.f) * Matrix::Trans(Vect(0.f, 0.f, -20.f));
 	mWorld_WormyBoi = new Matrix(tempMatrix);
-	pModel_WormyBoi = new Model(md3dDevice, "../Assets/Models/WormyBoi_Full.azul", false, true, 2);
+	pModel_WormyBoi = new Model("../Assets/Models/WormyBoi_Full.azul", false, true, 2);
 	WormyBoi = new GraphicObject_TextureLight(pShaderTexLight, pModel_WormyBoi);
 	WormyBoi->SetWorld(*mWorld_WormyBoi);
 	ppTex_WormyBoi = new Texture*[4];
@@ -26,9 +26,9 @@ Worm::Worm(ID3D11Device * md3dDevice, ShaderColorLightTexture * pShaderTexLight)
 	{
 		WormyBoi->SetTexture(ppTex_WormyBoi[i], i);
 	}
-	pModel_UnitSphere = new Model(md3dDevice, Model::PreMadeModels::UnitSphere, 12);
-	//pModel_UnitSphere = new Model(md3dDevice, Model::PreMadeModels::UnitBoxRepeatedTexture,12.0f);
-	//pModel_UnitSphere = new Model(md3dDevice, fbxModelInfo);
+	pModel_UnitSphere = new Model(Model::PreMadeModels::UnitSphere, 12);
+	//pModel_UnitSphere = new Model(Model::PreMadeModels::UnitBoxRepeatedTexture,12.0f);
+	//pModel_UnitSphere = new Model(fbxModelInfo);
 
 
 	GroundSpheres = new GraphicObject_TextureLight*[7];

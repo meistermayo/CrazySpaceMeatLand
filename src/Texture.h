@@ -1,6 +1,3 @@
-// Texture
-// Andre Berthiaume, July, 2016
-
 #ifndef _Texture
 #define _Texture
 

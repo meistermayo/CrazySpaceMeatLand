@@ -1,8 +1,10 @@
 #include "Skybox.h"
-#include <assert.h>
+#include "d3dUtil.h"
+#include <cassert>
+
 Skybox::Skybox(ID3D11Device *device,ShaderTexture* pShader, Texture* pTexture )
 {
-	mDevice = device;
+	device; // todo
 
 	pStdVerts = nullptr;
 	pTriList = nullptr;
@@ -102,7 +104,7 @@ void Skybox::CreateSkybox(StandardVertex *&pVerts, int& nverts, TriangleByIndex 
 	pTriList[11].set(22, 23, 21);
 	/*/
 	//*/
-	pModel = new Model(mDevice, pVerts, nverts, pTriList, ntri);
+	pModel = new Model(pVerts, nverts, pTriList, ntri);
 }
 
 void Skybox::Render(ID3D11DeviceContext *context)

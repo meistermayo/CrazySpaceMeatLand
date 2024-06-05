@@ -21,7 +21,7 @@ EyeballRing::EyeballRing(ID3D11Device* md3dDevice, ShaderColorLightTexture* pSha
 	ppTex_EyeballBoi[5] = new Texture(md3dDevice, L"../Assets/Textures/Tex_Eyeball_Stalk.tga");
 	ppTex_EyeballBoi[6] = new Texture(md3dDevice, L"../Assets/Textures/Tex_Eyeball_Ball.tga");
 
-	pModel_EyeballBoi = new Model(md3dDevice, "../Assets/Models/Eyeball_Ascii.azul", false, true, 0.25f);
+	pModel_EyeballBoi = new Model("../Assets/Models/Eyeball_Ascii.azul", false, true, 0.25f);
 
 	EyeballBois = new GraphicObject_TextureLight*[eyeballBoiCount];
 

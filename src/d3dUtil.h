@@ -2,10 +2,11 @@
 // d3dUtil.h by Frank Luna (C) 2011 All Rights Reserved.
 //***************************************************************************************
 
-#include "Math/Vect.h"
-
 #ifndef D3DUTIL_H
 #define D3DUTIL_H
+
+#include "Math/Vect.h"
+
 
 
 // Convenience macro for releasing COM objects.

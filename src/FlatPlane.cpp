@@ -2,7 +2,7 @@
 #include "Model.h"
 #include "d3dUtil.h"
 
-FlatPlane::FlatPlane(ID3D11Device* dev, float size, float hrep, float vrep)
+FlatPlane::FlatPlane(float size, float hrep, float vrep)
 {
 	int nverts = 4;
 	StandardVertex* pVerts = new StandardVertex[nverts];
@@ -20,7 +20,7 @@ FlatPlane::FlatPlane(ID3D11Device* dev, float size, float hrep, float vrep)
 	pTriList[0].set(0, 1, 2);
 	pTriList[1].set(0, 2, 3);
 
-	pPlane = new Model(dev, pVerts, nverts, pTriList, ntri);
+	pPlane = new Model(pVerts, nverts, pTriList, ntri);
 	//pPlane = new Model( dev, Model::PreMadeModels::UnitSphere);
 }
 

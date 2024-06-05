@@ -18,6 +18,9 @@
 #include "EyeballRing.h"
 #include "Math/Constants.h"
 #include "Worm.h"
+#ifdef SKYBOX
+#include "Skybox.h"
+#endif
 /*/
 where could my code be failing
 
@@ -77,7 +80,7 @@ void DXApp::InitDemo()
 
 
 	// FRIGATE )))))))
-	pModel_Frigate = new Model(md3dDevice, "../Assets/Models/space_frigate.azul",false,false,.2f);
+	pModel_Frigate = new Model("../Assets/Models/space_frigate.azul",false,false,.2f);
 	pTex_Frigate = new Texture(md3dDevice, L"../Assets/Textures/space_frigate.tga");
 	world_Frigate = Matrix::RotY(MATH_PI) * Matrix::RotZ(0.f) * Matrix::Trans(Vect(40.f, 60.f, 40.f));
 	GO_Frigate = new GraphicObject_TextureLight(pShaderTexLight,pModel_Frigate);
@@ -88,10 +91,10 @@ void DXApp::InitDemo()
 	// Cube
 	FbxModelLoader fbxModelLoader = FbxModelLoader();
 	FbxModelInfo fbxModelInfo = fbxModelLoader.GetModel("../Assets/Models/mouse.fbx");
-	pModel_Cube1 = new Model(md3dDevice, fbxModelInfo.meshInfo[0]);
-	pModel_Cube2 = new Model(md3dDevice, fbxModelInfo.meshInfo[1]);
-	pModel_Cube3 = new Model(md3dDevice, fbxModelInfo.meshInfo[2]);
-	//pModel_Cube = new Model(md3dDevice, Model::UnitSphere, 12.0f);
+	pModel_Cube1 = new Model(fbxModelInfo.meshInfo[0]);
+	pModel_Cube2 = new Model(fbxModelInfo.meshInfo[1]);
+	pModel_Cube3 = new Model(fbxModelInfo.meshInfo[2]);
+	//pModel_Cube = new Model(Model::UnitSphere, 12.0f);
 	mWorld_Cube = new Matrix(Matrix::Trans(Vect(0.f, 10.f, 0.f))); /// ??? pointer???
 	pShader_Cube = new ShaderColorLightTexture(md3dDevice);
 	Cube1 = new GraphicObject_TextureLight((ShaderColorLightTexture*)(pShader_Cube), pModel_Cube1);// Vect(1, 0, 0, 1), Vect(1, 0, 0, 1), Vect(1, 1, 1, 1));
@@ -111,12 +114,12 @@ void DXApp::InitDemo()
 	pShader_Cube->SetSpotLightParameters(spotLightPos, spotLightRadius, spotLightAtt, spotDir, spotExp, spotLightAmb, spotLightDif, spotLightSpc);
 
 #ifdef _TEST
-	_TEST_model = new Model(md3dDevice, "../Assets/Models/CubeTest2.azul");
+	_TEST_model = new Model("../Assets/Models/CubeTest2.azul");
 	_TEST_tex = new Texture(md3dDevice, L"../Assets/Textures/CubeTex.tga");
 	_TEST_go = new GraphicObject_Texture(pShaderTex, _TEST_model);
 	_TEST_go->SetWorld(Matrix::Scale( 1, 1, 1) * Matrix::Trans(0, 10, 0));
 	_TEST_go->SetTexture(_TEST_tex,0);
-	CubeModel = new Model(md3dDevice, Model::PreMadeModels::UnitBoxRepeatedTexture);
+	CubeModel = new Model(Model::PreMadeModels::UnitBoxRepeatedTexture);
 	CubeGo = new GraphicObject_TextureLight(pShaderTexLight, CubeModel);
 	CubeGo->SetWorld(Matrix::Scale( 10, 10, 10)*Matrix::Trans(5, 10, 5));
 	CubeGo->SetTexture(ppTex_WormyBoi[0],0);
@@ -139,7 +142,7 @@ void DXApp::InitDemo()
 	pSkyBox = new Skybox(md3dDevice,pSkyBox_Shader,pSkyBox_Texture);
 #endif
 #ifdef FLATPLANE
-	flatPlane = new FlatPlane(md3dDevice,1000,1,1);
+	flatPlane = new FlatPlane(1000,1,1);
 	flatPlane_World = Matrix::Scale(1,1,1) * Matrix::Trans(0, 2, 0);
 
 #endif

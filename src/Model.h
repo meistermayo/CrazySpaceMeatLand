@@ -1,13 +1,15 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#include <d3d11.h>
 #include "Math/Vect.h"
 #include "Align16.h"
 #include "Math/Matrix.h"
 #include "FbxModelLoader.h"
 
 class MeshSeparator;
+struct VertexBufferObject;
+struct IndexBufferObject;
+struct ID3D11DeviceContext;
 
 struct StandardVertex : public Align16
 {
@@ -103,9 +105,8 @@ private:
 	MeshSeparator* meshes;
 
 	// GPU connections
-	ID3D11Device*			mDevice;
-	ID3D11Buffer*           mpVertexBuffer;
-	ID3D11Buffer*           mpIndexBuffer;
+	VertexBufferObject*		mpVertexBufferObject;
+	IndexBufferObject*		mpIndexBufferObject;
 
 	void privLoadDataToGPU();
 	void privLoadDataFromFile(const char * const _modelName, StandardVertex*& pVerts, int& nverts, TriangleByIndex*& ptlist, int& ntri, bool flipU, bool flipV, float scale);
@@ -126,10 +127,10 @@ public:
 	};
 
 	Model() = delete;
-	Model(ID3D11Device* dev, StandardVertex *pVerts, int nverts, TriangleByIndex *ptlist, int ntri);
-	Model(ID3D11Device* dev, PreMadeModels pm, float scale = 1);
-	Model(ID3D11Device* dev, const char * const _modelName, bool flipU = false, bool flipV = false, float scale = 1);
-	Model(ID3D11Device* dev, FbxMeshInfo& fbxMeshInfo);
+	Model(StandardVertex *pVerts, int nverts, TriangleByIndex *ptlist, int ntri);
+	Model(PreMadeModels pm, float scale = 1);
+	Model(const char * const _modelName, bool flipU = false, bool flipV = false, float scale = 1);
+	Model(FbxMeshInfo& fbxMeshInfo);
 
 	virtual ~Model();
 

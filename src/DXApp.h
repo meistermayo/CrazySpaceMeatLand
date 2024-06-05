@@ -47,9 +47,9 @@
 #include "ShaderColorLight.h"
 #include "src/Graphics/CrazySpaceMeatLand/src/GraphicObject_Texture.h"
 #include "src/Graphics/CrazySpaceMeatLand/src/GraphicObject_TextureLight.h"
-#include "Skybox.h"
 #include "TerrainModel.h"
 
+class Skybox;
 class Model;
 class Texture;
 class FlatPlane;
