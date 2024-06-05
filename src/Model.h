@@ -117,6 +117,7 @@ public:
 
 	enum PreMadeModels {
 		UnitBox,
+		UnitPlaneXY,
 		UnitBoxRepeatedTexture,
 		UnitPyramid,
 		UnitBoxSixFacesTexture,

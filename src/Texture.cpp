@@ -60,6 +60,12 @@ Texture::Texture(ID3D11Device* d3dDev, LPCWSTR filepath, D3D11_FILTER filter, UI
 	assert(SUCCEEDED(hr));
 }
 
+Texture::Texture(float r, float g, float b, float a)
+{
+	r; g; b; a; 
+	// create red image :) todo
+}
+
 void Texture::SetToContext(ID3D11DeviceContext* devcon, int texResSlot,  int sampSlot)
 {
 	devcon->PSSetShaderResources(texResSlot, 1, &mpTextureRV);

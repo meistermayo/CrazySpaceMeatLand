@@ -12,6 +12,7 @@ void Camera::setPerspective(float Fovy, float Aspect, float NearDist, float FarD
 
 void Camera::setViewport(float x, float y, int width, int height)
 {
+	width; height;//todo
 	this->aspectRatio = static_cast<float>(y) / static_cast<float>(x);
 }
 

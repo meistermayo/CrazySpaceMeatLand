@@ -25,7 +25,7 @@ public:
 	Model* GetModel() { return pModel; }
 	void SetModel(Model* mod);
 	virtual void Render() = 0;
-	virtual Matrix GetWorld() const { return *pWorld; }
+	virtual Matrix& GetWorld() const { return *pWorld; }
 	void SetWorld(const Matrix& m) { *pWorld = m; }
 
 protected:

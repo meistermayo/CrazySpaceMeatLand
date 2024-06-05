@@ -59,3 +59,29 @@ Matrix::Matrix(const Quat& tmp)
 
 
 // ---  End of File ---------------
+
+Matrix operator*(const Matrix& l, const Matrix& r)
+{
+	return Matrix(
+		Vect(
+			l.v0.dot(Vect(r.m00, r.m10, r.m20, r.m30)),
+			l.v0.dot(Vect(r.m01, r.m11, r.m21, r.m31)),
+			l.v0.dot(Vect(r.m02, r.m12, r.m22, r.m32)),
+			l.v0.dot(Vect(r.m03, r.m13, r.m23, r.m33))),
+		Vect(
+			l.v1.dot(Vect(r.m00, r.m10, r.m20, r.m30)),
+			l.v1.dot(Vect(r.m01, r.m11, r.m21, r.m31)),
+			l.v1.dot(Vect(r.m02, r.m12, r.m22, r.m32)),
+			l.v1.dot(Vect(r.m03, r.m13, r.m23, r.m33))),
+		Vect(
+			l.v2.dot(Vect(r.m00, r.m10, r.m20, r.m30)),
+			l.v2.dot(Vect(r.m01, r.m11, r.m21, r.m31)),
+			l.v2.dot(Vect(r.m02, r.m12, r.m22, r.m32)),
+			l.v2.dot(Vect(r.m03, r.m13, r.m23, r.m33))),
+		Vect(
+			l.v3.dot(Vect(r.m00, r.m10, r.m20, r.m30)),
+			l.v3.dot(Vect(r.m01, r.m11, r.m21, r.m31)),
+			l.v3.dot(Vect(r.m02, r.m12, r.m22, r.m32)),
+			l.v3.dot(Vect(r.m03, r.m13, r.m23, r.m33)))
+	);
+}

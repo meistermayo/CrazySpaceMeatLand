@@ -1,4 +1,5 @@
 #pragma once
+#pragma warning(disable : 4201)
 
 class Quat
 {
@@ -11,9 +12,10 @@ public:
 	Quat(const Quat& tmp)
 		: v(tmp.v) {}
 
-	Quat operator=(const Quat& tmp)
+	Quat& operator=(const Quat& tmp)
 	{
 		v = tmp.v;
+		return *this;
 	}
 
 	~Quat() {}
@@ -28,12 +30,12 @@ public:
 		return Quat(-v);
 	}
 
-	Quat operator-()
+	Quat operator-() const
 	{
-		
+		return *this;
 	}
 
-	Quat operator-(const Quat& tmp)
+	Quat operator-(const Quat& tmp) const
 	{
 		float w1 = w;
 		Vect v1 = v;
@@ -46,7 +48,7 @@ public:
 		return q;
 	}
 
-	Quat operator+(const Quat& tmp)
+	Quat operator+(const Quat& tmp) const
 	{
 		float w1 = w;
 		Vect v1 = v;
@@ -59,14 +61,14 @@ public:
 		return q;
 	}
 
-	Quat operator*(float s)
+	Quat operator*(float s) const
 	{
 		Quat q(v * s);
 		q.w = w * s;
 		return q;
 	}
 
-	Quat operator/(float s)
+	Quat operator/(float s) const
 	{
 		float inv = 1.0f / s;
 		Quat q(v * inv);
@@ -74,7 +76,7 @@ public:
 		return q;
 	}
 
-	Quat operator*(const Quat& tmp)
+	Quat& operator*(const Quat& tmp) const
 	{
 		float w1 = w;
 		Vect v1 = v;
@@ -111,3 +113,5 @@ public:
 		Vect v;
 	};
 };
+
+#pragma warning(default : 4201)

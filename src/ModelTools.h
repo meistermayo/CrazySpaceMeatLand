@@ -18,6 +18,7 @@ public:
 	static void CreateUnitBox(StandardVertex *&pVerts, int& nverts, TriangleByIndex *&pTriList, int& ntri);
 	//static void CreateSkyBox(StandardVertex *&pVerts, int& nverts, TriangleByIndex *&pTriList, int& ntri);
 	//static void CreateTerrain(StandardVertex *&pVerts, int& nverts, TriangleByIndex *&pTriList, int& ntri);
+	static void CreateUnitPlaneXY(StandardVertex*& pVerts, int& nverts, TriangleByIndex*& pTriList, int& ntri);
 	static void CreateUnitBoxRepTexture(StandardVertex *&pVerts, int& nverts, TriangleByIndex *&pTriList, int& ntri);
 
 	static void CreateUnitPyramid(StandardVertex *&pVerts, int& nverts, TriangleByIndex *&pTriList, int& ntri);

@@ -50,6 +50,22 @@ void ModelTools::CreateUnitBox(StandardVertex *&pVerts, int& nverts, TriangleByI
 	pTriList[11].set(4, 3, 7);
 }
 
+void ModelTools::CreateUnitPlaneXY(StandardVertex*& pVerts, int& nverts, TriangleByIndex*& pTriList, int& ntri)
+{
+	nverts = 4;
+	pVerts = new StandardVertex[nverts];
+	ntri = 2;
+	pTriList = new TriangleByIndex[ntri];
+
+	pVerts[0].set(-0.5f, -0.5f, -0.0f, Colors::Red);
+	pVerts[1].set( 0.5f, -0.5f, -0.0f, Colors::Green);
+	pVerts[2].set(-0.5f,  0.5f, -0.0f, Colors::Blue);
+	pVerts[3].set( 0.5f,  0.5f, -0.0f, Colors::White);
+
+	pTriList[0].set(0, 1, 2);
+	pTriList[1].set(0, 2, 3);
+}
+
 void ModelTools::CreateUnitBoxRepTexture(StandardVertex *&pVerts, int& nverts, TriangleByIndex *&pTriList, int& ntri)
 {
 	nverts = 24;

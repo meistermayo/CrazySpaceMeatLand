@@ -61,7 +61,7 @@ public:
 		this->v3 = Vect(_v3);
 	}
 
-	Matrix& operator=(const Matrix& tmp)
+	Matrix operator=(const Matrix& tmp)
 	{
 		v0 = tmp.v0;
 		v1 = tmp.v1;
@@ -171,7 +171,9 @@ public:
 	void SetTrans(const Vect& t) { v3 = t; }
 	const Vect& GetTrans() const { return v3; }
 
+	friend Matrix operator * (const Matrix& l, const Matrix& r);
 	Matrix operator * (const Matrix& t);
+
 	Matrix operator * (float s)
 	{
 		return Matrix(
@@ -181,6 +183,7 @@ public:
 			v3 * s
 		);
 	}
+
 	Matrix& operator *= (const Matrix& t);
 
 	const Vect& GetRow0() const { return v0; }

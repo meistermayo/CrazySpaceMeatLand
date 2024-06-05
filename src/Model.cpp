@@ -77,7 +77,10 @@ Model::Model(ID3D11Device* dev, Model::PreMadeModels pm, float scale)
 		ModelTools::CreateUnitPyramid(pStdVerts, numVerts, pTriList, numTris);
 		break;
 	case UnitSphere:
-		ModelTools::CreateUnitSphere(12, 12, pStdVerts, numVerts, pTriList, numTris,scale);
+		ModelTools::CreateUnitSphere(12, 12, pStdVerts, numVerts, pTriList, numTris, scale);
+		break;
+	case UnitPlaneXY:
+		ModelTools::CreateUnitPlaneXY(pStdVerts, numVerts, pTriList, numTris);
 		break;
 	default:
 		assert(false && "Invalid option");
