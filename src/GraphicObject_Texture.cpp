@@ -37,7 +37,7 @@ void GraphicObject_Texture::Render()
 	pModel->BindVertexIndexBuffers();
 	for (int i = 0; i < pModel->GetMeshCount(); i++)
 	{
-		tex[i]->SetToContext(pShader->GetContext());
+		tex[i]->SetToContext();
 		pShader->SendWorld(*pWorld);
 		pModel->RenderMesh(i);
 	}

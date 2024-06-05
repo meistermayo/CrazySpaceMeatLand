@@ -8,13 +8,12 @@ class ShaderColorLightTexture;
 class Matrix;
 class Texture;
 class Camera;
-struct ID3D11Device;
 struct ID3D11DeviceContext;
 
 class Worm
 {
 public:
-	Worm(ID3D11Device* md3dDevice, ShaderColorLightTexture* pShaderTexLight);
+	Worm(ShaderColorLightTexture* pShaderTexLight);
 	void Render(ID3D11DeviceContext * md3dImmediateContext, Camera * pCam, Vect eyepos, float fogStart, float fogRange, Vect fogCol);
 
 private:

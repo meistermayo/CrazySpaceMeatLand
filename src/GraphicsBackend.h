@@ -84,6 +84,24 @@ struct IndexBufferObject : public Align16
 	void Bind();
 };
 
+struct TextureSampler : public Align16
+{
+#ifdef BACKEND_D3D
+	ID3D11ShaderResourceView* mpTextureRV;
+	ID3D11SamplerState* mpSampler;
+#endif
+
+#ifdef BACKEND_D3D
+	void LoadTexture(std::string filepath, bool ComputeMip = false, size_t miplevel = 0, uint32_t filterflags = DirectX::TEX_FILTER_LINEAR);
+
+	void CreateSampleState(uint32_t filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR, uint32_t isotropic_level = 4);
+#endif BACKEND_D3D
+
+	void SetToContext(int texResSlot, int sampSlot);
+
+	~TextureSampler();
+};
+
 #ifdef BACKEND_OGL
 class OGL_GraphicsBackend : public GraphicsBackend_Base {
 public:

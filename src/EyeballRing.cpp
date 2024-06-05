@@ -9,17 +9,17 @@
 #include "Math/Constants.h"
 #include <d3d11.h>
 
-EyeballRing::EyeballRing(ID3D11Device* md3dDevice, ShaderColorLightTexture* pShaderTexLight)
+EyeballRing::EyeballRing(ShaderColorLightTexture* pShaderTexLight)
 {
 	int texNum = 7;
 	ppTex_EyeballBoi = new Texture*[texNum];
-	ppTex_EyeballBoi[0] = new Texture(md3dDevice, L"../Assets/Textures/Tex_Eyeball_Stalk.tga");
-	ppTex_EyeballBoi[1] = new Texture(md3dDevice, L"../Assets/Textures/Tex_Eyeball_Stalk.tga");
-	ppTex_EyeballBoi[2] = new Texture(md3dDevice, L"../Assets/Textures/Tex_Eyeball_Stalk.tga");
-	ppTex_EyeballBoi[3] = new Texture(md3dDevice, L"../Assets/Textures/Tex_Eyeball_Stalk.tga");
-	ppTex_EyeballBoi[4] = new Texture(md3dDevice, L"../Assets/Textures/Tex_Eyeball_Stalk.tga");
-	ppTex_EyeballBoi[5] = new Texture(md3dDevice, L"../Assets/Textures/Tex_Eyeball_Stalk.tga");
-	ppTex_EyeballBoi[6] = new Texture(md3dDevice, L"../Assets/Textures/Tex_Eyeball_Ball.tga");
+	ppTex_EyeballBoi[0] = new Texture("../Assets/Textures/Tex_Eyeball_Stalk.tga");
+	ppTex_EyeballBoi[1] = new Texture("../Assets/Textures/Tex_Eyeball_Stalk.tga");
+	ppTex_EyeballBoi[2] = new Texture("../Assets/Textures/Tex_Eyeball_Stalk.tga");
+	ppTex_EyeballBoi[3] = new Texture("../Assets/Textures/Tex_Eyeball_Stalk.tga");
+	ppTex_EyeballBoi[4] = new Texture("../Assets/Textures/Tex_Eyeball_Stalk.tga");
+	ppTex_EyeballBoi[5] = new Texture("../Assets/Textures/Tex_Eyeball_Stalk.tga");
+	ppTex_EyeballBoi[6] = new Texture("../Assets/Textures/Tex_Eyeball_Ball.tga");
 
 	pModel_EyeballBoi = new Model("../Assets/Models/Eyeball_Ascii.azul", false, true, 0.25f);
 

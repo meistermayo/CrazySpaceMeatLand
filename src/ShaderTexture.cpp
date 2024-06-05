@@ -74,7 +74,7 @@ void ShaderTexture::SetToContext(ID3D11DeviceContext* devcon)
 	devcon->PSSetConstantBuffers(1, 1, &mpBuffWordColor);
 	devcon->PSSetConstantBuffers(2, 1, &mpFog);
 
-	mTex->SetToContext(devcon);
+	mTex->SetToContext();
 }
 
 void ShaderTexture::SetTextureResourceAndSampler(Texture* _tex)

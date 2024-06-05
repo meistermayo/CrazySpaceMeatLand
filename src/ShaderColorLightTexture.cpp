@@ -191,7 +191,7 @@ void ShaderColorLightTexture::SetToContext(ID3D11DeviceContext* devcon)
 	devcon->PSSetConstantBuffers(2, 1, &mpBuffWordAndMaterial);
 	devcon->PSSetConstantBuffers(3, 1, &mpFog);
 
-	mTex->SetToContext(devcon);
+	mTex->SetToContext();
 }
 
 void ShaderColorLightTexture::SetTextureResourceAndSampler(Texture* _tex)

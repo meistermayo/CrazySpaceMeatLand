@@ -3,8 +3,9 @@
 
 #include <Windows.h>
 #include <string>
-#include <d3d11.h>
 #include "DirectXTex.h"
+
+struct TextureSampler;
 
 class Texture
 {
@@ -16,17 +17,17 @@ public:
 	~Texture();									     // Destructor
 	Texture() = delete;
 
-	Texture(ID3D11Device* d3dDev, LPCWSTR filepath, D3D11_FILTER filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR, UINT isotropic_level = 4, bool ComputeMip = false, size_t miplevel = 0, DirectX::TEX_FILTER_FLAGS filterflags = DirectX::TEX_FILTER_LINEAR);
+	Texture(std::string filepath);
+	Texture(std::string filepath, uint32_t filter, uint32_t isotropic_level, bool ComputeMip, size_t miplevel, uint32_t filterflags);
 	Texture(float r, float g, float b, float a = 1.0f);
 
-	void SetToContext(ID3D11DeviceContext* devcon, int texResSlot = 0, int sampSlot = 0);
+	void SetToContext(int texResSlot = 0, int sampSlot = 0);
 	
 	int GetWidth() { return 0; }
 	int GetHeight() { return 0; } // todo
 private:
-	ID3D11ShaderResourceView* mpTextureRV;
-	ID3D11SamplerState* mpSampler;
-	
+	TextureSampler* mpTextureSampler;
+
 };
 
 #endif _Texture

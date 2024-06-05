@@ -44,7 +44,7 @@ void GraphicObject_TextureLight::Render()
 	pModel->BindVertexIndexBuffers();
 	for (int i = 0; i < pModel->GetMeshCount(); i++)
 	{
-		tex[i]->SetToContext(pShader->GetContext());
+		tex[i]->SetToContext();
 		pShader->SendWorldAndMaterial(*pWorld, ambColor, difColor, Vect::One);
 		pModel->RenderMesh(i);
 	}

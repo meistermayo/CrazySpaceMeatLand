@@ -91,9 +91,9 @@ struct TriangleByIndex
 	}
 };
 
-class Model
+class Model : public Align16
 {
-private:
+protected:
 	// Model information
 	TriangleByIndex *pTriList;
 	StandardVertex* pStdVerts;
@@ -125,7 +125,10 @@ public:
 		UnitSphere
 	};
 
-	Model() = delete;
+protected:
+	Model() {}
+
+public:
 	Model(StandardVertex *pVerts, int nverts, TriangleByIndex *ptlist, int ntri);
 	Model(PreMadeModels pm, float scale = 1);
 	Model(const char * const _modelName, bool flipU = false, bool flipV = false, float scale = 1);

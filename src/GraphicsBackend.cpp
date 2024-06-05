@@ -65,3 +65,75 @@ IndexBufferObject::~IndexBufferObject()
 {
 	ReleaseAndDeleteCOMobject(mpIndexBuffer);
 }
+
+void TextureSampler::LoadTexture(std::string filepath, bool ComputeMip, size_t miplevel, uint32_t filterflags)
+{
+	LPCWSTR lpFilepath = L"";
+
+	std::wstring fpath(lpFilepath);
+	std::wstring ext = fpath.substr(fpath.find_last_of(L".") + 1);
+
+	DirectX::ScratchImage scrtTex;
+	HRESULT hr = S_OK;
+	if (ext == L"tga" || ext == L"TGA")
+	{
+		hr = LoadFromTGAFile(lpFilepath, nullptr, scrtTex);
+	}
+	else if (ext == L"dds" || ext == L"DDS")
+	{
+		hr = LoadFromDDSFile(lpFilepath, DirectX::DDS_FLAGS_NONE, nullptr, scrtTex);
+	}
+	else
+	{
+		assert(false && "ERROR: Invalid file format");
+	}
+	assert(SUCCEEDED(hr));
+
+	if (ComputeMip)
+	{
+		assert(scrtTex.GetImageCount() == 1 && "ERROR: File already contains MIP map.");
+		DirectX::ScratchImage mipchain;
+		hr = DirectX::GenerateMipMaps(*(scrtTex.GetImage(0, 0, 0)), filterflags, miplevel, mipchain);
+		assert(SUCCEEDED(hr));
+
+		CreateShaderResourceView(GraphicsBackend::GetDevice().md3dDevice, mipchain.GetImage(0, 0, 0), mipchain.GetImageCount(), mipchain.GetMetadata(), &mpTextureRV);
+	}
+	else
+	{
+		CreateShaderResourceView(GraphicsBackend::GetDevice().md3dDevice, scrtTex.GetImage(0, 0, 0), scrtTex.GetImageCount(), scrtTex.GetMetadata(), &mpTextureRV);
+	}
+}
+
+void TextureSampler::CreateSampleState(uint32_t filter, uint32_t isotropic_level)
+{
+#ifdef BACKEND_D3D
+	D3D11_SAMPLER_DESC sampDesc;
+	ZeroMemory(&sampDesc, sizeof(sampDesc));
+	sampDesc.Filter = (D3D11_FILTER)filter;
+	sampDesc.MaxAnisotropy = isotropic_level;
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	sampDesc.MinLOD = 0;
+	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	HRESULT hr = GraphicsBackend::GetDevice().md3dDevice->CreateSamplerState(&sampDesc, &mpSampler);
+	assert(SUCCEEDED(hr));
+#endif
+}
+
+void TextureSampler::SetToContext(int texResSlot, int sampSlot)
+{
+#ifdef BACKEND_D3D
+	GraphicsBackend::GetContext().md3dImmediateContext->PSSetShaderResources(texResSlot, 1, &mpTextureRV);
+	GraphicsBackend::GetContext().md3dImmediateContext->PSSetSamplers(sampSlot, 1, &mpSampler);
+#endif
+}
+
+TextureSampler::~TextureSampler()
+{
+#ifdef BACKEND_D3D
+	ReleaseAndDeleteCOMobject(mpTextureRV);
+	ReleaseAndDeleteCOMobject(mpSampler);
+#endif
+}

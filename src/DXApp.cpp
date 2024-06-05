@@ -72,16 +72,16 @@ void DXApp::InitDemo()
 	pShaderTex->SetTextureResourceAndSampler(NULL);
 	pShaderTexLight->SetTextureResourceAndSampler(NULL);
 
-	eyeballRing = new EyeballRing(md3dDevice,pShaderTexLight);
+	eyeballRing = new EyeballRing(pShaderTexLight);
 	
 
 	// WORMY BOI
-	worm = new Worm(md3dDevice, pShaderTexLight);
+	worm = new Worm(pShaderTexLight);
 
 
 	// FRIGATE )))))))
 	pModel_Frigate = new Model("../Assets/Models/space_frigate.azul",false,false,.2f);
-	pTex_Frigate = new Texture(md3dDevice, L"../Assets/Textures/space_frigate.tga");
+	pTex_Frigate = new Texture("../Assets/Textures/space_frigate.tga");
 	world_Frigate = Matrix::RotY(MATH_PI) * Matrix::RotZ(0.f) * Matrix::Trans(Vect(40.f, 60.f, 40.f));
 	GO_Frigate = new GraphicObject_TextureLight(pShaderTexLight,pModel_Frigate);
 	GO_Frigate->SetWorld(world_Frigate);
@@ -100,7 +100,7 @@ void DXApp::InitDemo()
 	Cube1 = new GraphicObject_TextureLight((ShaderColorLightTexture*)(pShader_Cube), pModel_Cube1);// Vect(1, 0, 0, 1), Vect(1, 0, 0, 1), Vect(1, 1, 1, 1));
 	Cube2 = new GraphicObject_TextureLight((ShaderColorLightTexture*)(pShader_Cube), pModel_Cube2);// Vect(1, 0, 0, 1), Vect(1, 0, 0, 1), Vect(1, 1, 1, 1));
 	Cube3 = new GraphicObject_TextureLight((ShaderColorLightTexture*)(pShader_Cube), pModel_Cube3);// Vect(1, 0, 0, 1), Vect(1, 0, 0, 1), Vect(1, 1, 1, 1));
-	pTex_Cube = new Texture(md3dDevice, L"../Assets/Textures/mouse.tga", D3D11_FILTER_MIN_MAG_MIP_POINT, 4U, FALSE, 0U, DirectX::TEX_FILTER_POINT);
+	pTex_Cube = new Texture("../Assets/Textures/mouse.tga", D3D11_FILTER_MIN_MAG_MIP_POINT, 4U, FALSE, 0U, DirectX::TEX_FILTER_POINT);
 	Cube1->SetTexture(pTex_Cube, 0);
 	Cube2->SetTexture(pTex_Cube, 0);
 	Cube3->SetTexture(pTex_Cube, 0);
@@ -125,9 +125,9 @@ void DXApp::InitDemo()
 	CubeGo->SetTexture(ppTex_WormyBoi[0],0);
 #endif
 #ifdef TERRAIN
-	pTerrain_Texture = new Texture(md3dDevice, L"../Assets/Textures/brownsand.tga");
+	pTerrain_Texture = new Texture("../Assets/Textures/brownsand.tga");
 	float len = 3;
-	pTerrain = new TerrainModel(md3dDevice, L"../Assets/Textures/canyon2.tga", len, 50.f, 0.f, 8, 8);
+	pTerrain = new TerrainModel("../Assets/Textures/canyon2.tga", len, 50.f, 0.f, 8, 8);
 	pTerrain_Shader = new ShaderTexture(md3dDevice);
 	pTerrain_Shader->SetTextureResourceAndSampler(NULL);
 	pTerrain_World = new Matrix(Matrix::Trans(Vect(-128.0f*len, 0.0f, -128.0f*len))); // why tf is this a pointer???
@@ -136,10 +136,10 @@ void DXApp::InitDemo()
 #ifdef SKYBOX
 	Matrix _tempMatrix = Matrix::Scale(1.f) * Matrix::Trans(Vect::Zero); // why?
 	pSkyBox_World = new Matrix(_tempMatrix);
-	pSkyBox_Texture = new Texture(md3dDevice, L"../Assets/Textures/redspace.tga");
+	pSkyBox_Texture = new Texture("../Assets/Textures/redspace.tga");
 	pSkyBox_Shader = new ShaderTexture(md3dDevice);
 	pSkyBox_Shader->SetTextureResourceAndSampler(NULL);
-	pSkyBox = new Skybox(md3dDevice,pSkyBox_Shader,pSkyBox_Texture);
+	pSkyBox = new Skybox(pSkyBox_Shader, pSkyBox_Texture);
 #endif
 #ifdef FLATPLANE
 	flatPlane = new FlatPlane(1000,1,1);
@@ -286,7 +286,7 @@ void DXApp::DrawScene()
 	pSkyBox_Shader->SendFogData(500, 5000, fogCol);
 	pSkyBox_Shader->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());
 	pSkyBox_Shader->SendWorld(*pSkyBox_World);
-	pSkyBox->Render(md3dImmediateContext);
+	pSkyBox->Render();
 #endif
 
 	eyeballRing->Render(md3dImmediateContext, &mCam, eyepos, fogStart, fogRange, fogCol);
@@ -299,7 +299,7 @@ void DXApp::DrawScene()
 #ifdef TERRAIN
 	//pTerrain_Shader->SetToContext(md3dImmediateContext);
 	//pTerrain_Shader->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());
-	pTerrain_Texture->SetToContext(md3dImmediateContext);
+	pTerrain_Texture->SetToContext();
 	pShaderTexLight->SendWorldAndMaterial(*pTerrain_World);
 
 	//pShaderColLight->SetToContext(md3dImmediateContext);
@@ -307,7 +307,7 @@ void DXApp::DrawScene()
 	//pShaderColLight->SendLightParameters(eyepos);
 	//pShaderColLight->SendWorldAndMaterial(*pTerrain_World);
 
-	pTerrain->Render(md3dImmediateContext);
+	pTerrain->Render();
 #endif
 #ifdef FLATPLANE
 	//pShaderTexLight->SendWorldAndMaterial(flatPlane_World);

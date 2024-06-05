@@ -10,7 +10,7 @@
 #include "FbxModelLoader.h"
 
 
-Worm::Worm(ID3D11Device * md3dDevice, ShaderColorLightTexture * pShaderTexLight)
+Worm::Worm(ShaderColorLightTexture * pShaderTexLight)
 {
 	Matrix tempMatrix = Matrix::RotY(180.5f) * Matrix::Scale(1.f) * Matrix::Trans(Vect(0.f, 0.f, -20.f));
 	mWorld_WormyBoi = new Matrix(tempMatrix);
@@ -18,10 +18,10 @@ Worm::Worm(ID3D11Device * md3dDevice, ShaderColorLightTexture * pShaderTexLight)
 	WormyBoi = new GraphicObject_TextureLight(pShaderTexLight, pModel_WormyBoi);
 	WormyBoi->SetWorld(*mWorld_WormyBoi);
 	ppTex_WormyBoi = new Texture*[4];
-	ppTex_WormyBoi[0] = new Texture(md3dDevice, L"../Assets/Textures/WormyBoi_Neck.tga");
-	ppTex_WormyBoi[1] = new Texture(md3dDevice, L"../Assets/Textures/WormyBoi_Eyes.tga");
-	ppTex_WormyBoi[2] = new Texture(md3dDevice, L"../Assets/Textures/WormyBoi_Teeth.tga");
-	ppTex_WormyBoi[3] = new Texture(md3dDevice, L"../Assets/Textures/WormyBoi_Face.tga");
+	ppTex_WormyBoi[0] = new Texture("../Assets/Textures/WormyBoi_Neck.tga");
+	ppTex_WormyBoi[1] = new Texture("../Assets/Textures/WormyBoi_Eyes.tga");
+	ppTex_WormyBoi[2] = new Texture("../Assets/Textures/WormyBoi_Teeth.tga");
+	ppTex_WormyBoi[3] = new Texture("../Assets/Textures/WormyBoi_Face.tga");
 	for (int i = 0; i < 4; i++)
 	{
 		WormyBoi->SetTexture(ppTex_WormyBoi[i], i);
@@ -33,7 +33,7 @@ Worm::Worm(ID3D11Device * md3dDevice, ShaderColorLightTexture * pShaderTexLight)
 
 	GroundSpheres = new GraphicObject_TextureLight*[7];
 
-	pTerrain_Texture = new Texture(md3dDevice, L"../Assets/Textures/brownsand.tga");
+	pTerrain_Texture = new Texture("../Assets/Textures/brownsand.tga");
 
 	for (int i = 0; i < 7; i++)
 	{

@@ -2,51 +2,35 @@
 #include "d3dUtil.h"
 #include <assert.h>
 
-TerrainModel::TerrainModel(ID3D11Device* dev, LPCWSTR heightmapFile, float len, float maxheight, float ytrans, int RepeatU, int RepeatV)
+TerrainModel::TerrainModel(std::string heightmapFile, float len, float maxheight, float ytrans, int RepeatU, int RepeatV)
+	: Model()
 {
 	ytrans;
 	DirectX::ScratchImage scrtTex;
-	HRESULT hr = LoadFromTGAFile(heightmapFile, nullptr, scrtTex);
+	HRESULT hr = LoadFromTGAFile((LPCWSTR)heightmapFile.c_str(), nullptr, scrtTex); // todo
 	assert(SUCCEEDED(hr));
 
 	const DirectX::Image* hgtmap = scrtTex.GetImage(0, 0, 0);
 	assert(hgtmap->height == hgtmap->width );
 
-	//size_t side = hgtmap->height;	// the image should be square
-
-	mDevice = dev;
 
 	WorldMat = Matrix::Scale(0.25f);
 
-	// ** much work to add below **
-	ConstructTerrain(hgtmap,maxheight,len,RepeatU,RepeatV); // how about two lines
-	LoadData();
-}
-
-void TerrainModel::Render(ID3D11DeviceContext* context)
-{
-	UINT stride = sizeof(StandardVertex);
-	UINT offset = 0;
-	context->IASetVertexBuffers(0, 1, &VertexBuffer, &stride, &offset);
-	context->IASetIndexBuffer(IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	context->DrawIndexed(ntris * 3, 0, 0);
+	ConstructTerrain(hgtmap, maxheight, len, RepeatU, RepeatV);
+	privLoadDataToGPU();
 }
 
 void TerrainModel::ConstructTerrain(const DirectX::Image* hMap,float maxHeight,float len,int repeatU, int repeatV)
 {
 	// do you have to be able and willing to ruin your life to have a semblance of what morality is
-
-
 	size_t height = hMap->height;
 	size_t width =  hMap->width;
 
-	ntris = (height-1)*(height-1) * 2;
-	nverts = ntris * 3;
+	numTris = (height-1)*(height-1) * 2;
+	numVerts = numTris * 3;
 
-	pVerts = new StandardVertex[nverts];
-	pTriList = new TriangleByIndex[ntris];
+	pStdVerts = new StandardVertex[numVerts];
+	pTriList = new TriangleByIndex[numTris];
 
 	for (size_t x = 0; x < width-1; x++)
 	{
@@ -73,12 +57,12 @@ void TerrainModel::ConstructTerrain(const DirectX::Image* hMap,float maxHeight,f
 
 			
 
-			pVerts[i + 0].set(x0*len, h_val_f0*len, y0*len, ((x0 / side)*repeatU), ((y0 / side)*repeatV), Vect(), Colors::White*h_val_f0);
-			pVerts[i + 1].set(x1*len, h_val_f1*len, y1*len, ((x1 / side)*repeatU), ((y1 / side)*repeatV), Vect(), Colors::White*h_val_f1);
-			pVerts[i + 2].set(x1*len, h_val_f2*len, y0*len, ((x1 / side)*repeatU), ((y0 / side)*repeatV), Vect(), Colors::White*h_val_f2);
-			pVerts[i + 3].set(x0*len, h_val_f3*len, y0*len, ((x0 / side)*repeatU), ((y0 / side)*repeatV), Vect(), Colors::White*h_val_f3);
-			pVerts[i + 4].set(x0*len, h_val_f4*len, y1*len, ((x0 / side)*repeatU), ((y1 / side)*repeatV), Vect(), Colors::White*h_val_f4);
-			pVerts[i + 5].set(x1*len, h_val_f5*len, y1*len, ((x1 / side)*repeatU), ((y1 / side)*repeatV), Vect(), Colors::White*h_val_f5);
+			pStdVerts[i + 0].set(x0*len, h_val_f0*len, y0*len, ((x0 / side)*repeatU), ((y0 / side)*repeatV), Vect(), Colors::White*h_val_f0);
+			pStdVerts[i + 1].set(x1*len, h_val_f1*len, y1*len, ((x1 / side)*repeatU), ((y1 / side)*repeatV), Vect(), Colors::White*h_val_f1);
+			pStdVerts[i + 2].set(x1*len, h_val_f2*len, y0*len, ((x1 / side)*repeatU), ((y0 / side)*repeatV), Vect(), Colors::White*h_val_f2);
+			pStdVerts[i + 3].set(x0*len, h_val_f3*len, y0*len, ((x0 / side)*repeatU), ((y0 / side)*repeatV), Vect(), Colors::White*h_val_f3);
+			pStdVerts[i + 4].set(x0*len, h_val_f4*len, y1*len, ((x0 / side)*repeatU), ((y1 / side)*repeatV), Vect(), Colors::White*h_val_f4);
+			pStdVerts[i + 5].set(x1*len, h_val_f5*len, y1*len, ((x1 / side)*repeatU), ((y1 / side)*repeatV), Vect(), Colors::White*h_val_f5);
 
 
 		}
@@ -91,91 +75,91 @@ void TerrainModel::ConstructTerrain(const DirectX::Image* hMap,float maxHeight,f
 			size_t i = (y * 6) + (x * 6 * (height-1));
 			if (x == 1 && y == 1) continue;
 				// BL
-				pVerts[i].normal =
+				pStdVerts[i].normal =
 					normalHelper(
 
-						pVerts[i].Pos,										// p
-						pVerts[i + 2].Pos,									// p6
-						pVerts[i - 3].Pos,									// p2
-						pVerts[i - (int)(6 * height) - 3].Pos,				// p1
-						pVerts[i - (int)(6 * height) - 2].Pos,				// p4
-						pVerts[i + 4].Pos,									// p8
-						pVerts[i + 1].Pos									// p9
+						pStdVerts[i].Pos,										// p
+						pStdVerts[i + 2].Pos,									// p6
+						pStdVerts[i - 3].Pos,									// p2
+						pStdVerts[i - (int)(6 * height) - 3].Pos,				// p1
+						pStdVerts[i - (int)(6 * height) - 2].Pos,				// p4
+						pStdVerts[i + 4].Pos,									// p8
+						pStdVerts[i + 1].Pos									// p9
 
 					);
 				i++;
 
 				//UR
-				pVerts[i].normal =
+				pStdVerts[i].normal =
 					normalHelper(
 
-						pVerts[i].Pos,										// p
-						pVerts[i + (int)(6 * height)].Pos,									// p6
-						pVerts[i + 1].Pos,								// p2
-						pVerts[i + 2].Pos,				// p1
-						pVerts[i + 3].Pos,				// p4
-						pVerts[i + 6].Pos,									// p8
-						pVerts[i + (int)(6 * height)+6].Pos									// p9
+						pStdVerts[i].Pos,										// p
+						pStdVerts[i + (int)(6 * height)].Pos,									// p6
+						pStdVerts[i + 1].Pos,								// p2
+						pStdVerts[i + 2].Pos,				// p1
+						pStdVerts[i + 3].Pos,				// p4
+						pStdVerts[i + 6].Pos,									// p8
+						pStdVerts[i + (int)(6 * height)+6].Pos									// p9
 
 					);
 				i++;
 
 				//BR
-				pVerts[i].normal =
+				pStdVerts[i].normal =
 					normalHelper(
 
-						pVerts[i].Pos,										// p
-						pVerts[i + (int)(6 * height)].Pos,									// p6
-						pVerts[i - 6].Pos,									// p2
-						pVerts[i - 8].Pos,				// p1
-						pVerts[i + 1].Pos,				// p4
-						pVerts[i - 1].Pos,									// p8
-						pVerts[i + (int)(6 * height) - 1].Pos									// p9
+						pStdVerts[i].Pos,										// p
+						pStdVerts[i + (int)(6 * height)].Pos,									// p6
+						pStdVerts[i - 6].Pos,									// p2
+						pStdVerts[i - 8].Pos,				// p1
+						pStdVerts[i + 1].Pos,				// p4
+						pStdVerts[i - 1].Pos,									// p8
+						pStdVerts[i + (int)(6 * height) - 1].Pos									// p9
 
 					);
 				i++;
 
 				//BL2
-				pVerts[i].normal =
+				pStdVerts[i].normal =
 					normalHelper(
 
-						pVerts[i].Pos,										// p
-						pVerts[i - 1].Pos,									// p6
-						pVerts[i - 6].Pos,									// p2
-						pVerts[i - (int)(6 * height)-6].Pos,				// p1
-						pVerts[i - (int)(6 * height)].Pos,				// p4
-						pVerts[i + 1].Pos,									// p8
-						pVerts[i + 2].Pos									// p9
+						pStdVerts[i].Pos,										// p
+						pStdVerts[i - 1].Pos,									// p6
+						pStdVerts[i - 6].Pos,									// p2
+						pStdVerts[i - (int)(6 * height)-6].Pos,				// p1
+						pStdVerts[i - (int)(6 * height)].Pos,				// p4
+						pStdVerts[i + 1].Pos,									// p8
+						pStdVerts[i + 2].Pos									// p9
 
 					);
 				i++;
 
 				//UL
-				pVerts[i].normal =
+				pStdVerts[i].normal =
 					normalHelper(
 
-						pVerts[i].Pos,										// p
-						pVerts[i + 1].Pos,									// p6
-						pVerts[i - 1].Pos,									// p2
-						pVerts[i - (int)(6 * height) - 1].Pos,				// p1
-						pVerts[i - (int)(6 * height)].Pos,				// p4
-						pVerts[i + 6].Pos,									// p8
-						pVerts[i + 7].Pos									// p9
+						pStdVerts[i].Pos,										// p
+						pStdVerts[i + 1].Pos,									// p6
+						pStdVerts[i - 1].Pos,									// p2
+						pStdVerts[i - (int)(6 * height) - 1].Pos,				// p1
+						pStdVerts[i - (int)(6 * height)].Pos,				// p4
+						pStdVerts[i + 6].Pos,									// p8
+						pStdVerts[i + 7].Pos									// p9
 
 					);
 				i++;
 
 				//UR2
-				pVerts[i].normal =
+				pStdVerts[i].normal =
 					normalHelper(
 
-						pVerts[i].Pos,										// p
-						pVerts[i + (int)(6 * height)].Pos,									// p6
-						pVerts[i - 3].Pos,									// p2
-						pVerts[i - 2].Pos,				// p1
-						pVerts[i - 1].Pos,				// p4
-						pVerts[i + 2].Pos,									// p8
-						pVerts[i + (int)(6 * height) + 2].Pos									// p9
+						pStdVerts[i].Pos,										// p
+						pStdVerts[i + (int)(6 * height)].Pos,									// p6
+						pStdVerts[i - 3].Pos,									// p2
+						pStdVerts[i - 2].Pos,				// p1
+						pStdVerts[i - 1].Pos,				// p4
+						pStdVerts[i + 2].Pos,									// p8
+						pStdVerts[i + (int)(6 * height) + 2].Pos									// p9
 
 					);
 				i++;
@@ -183,7 +167,7 @@ void TerrainModel::ConstructTerrain(const DirectX::Image* hMap,float maxHeight,f
 	}
 	//assert(numLoops == nverts);
 	int j = 0;
-	for (int i = 0; i < (ntris); i+=2)
+	for (int i = 0; i < (numTris); i+=2)
 	{
 		pTriList[i].set(j, 
 						j + 1, 
@@ -195,6 +179,7 @@ void TerrainModel::ConstructTerrain(const DirectX::Image* hMap,float maxHeight,f
 	}
 	//assert(numLoops == ntris);
 }
+
 Vect TerrainModel::normalHelper(Vect p, Vect p6, Vect p2, Vect p1, Vect p4, Vect p8, Vect p9) 
 {
 	Vect v1 = p9 - p; // urr
@@ -232,39 +217,4 @@ Vect TerrainModel::normalHelper(Vect p, Vect p6, Vect p2, Vect p1, Vect p4, Vect
 		norm.set(norm.x, 1, norm.z);
 
 	return norm;
-}
-
-void TerrainModel::LoadData()
-{
-	// Vertex buffer
-	D3D11_BUFFER_DESC bd;
-	ZeroMemory(&bd, sizeof(bd));
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(StandardVertex) * nverts;
-	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bd.CPUAccessFlags = 0;
-
-	D3D11_SUBRESOURCE_DATA InitData;
-	ZeroMemory(&InitData, sizeof(InitData));
-	InitData.pSysMem = pVerts;
-	HRESULT hr = mDevice->CreateBuffer(&bd, &InitData, &VertexBuffer); 
-	assert(SUCCEEDED(hr));
-
-	// Index buffer
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(TriangleByIndex) * ntris;
-	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	bd.CPUAccessFlags = 0;
-	InitData.pSysMem = pTriList;
-	hr = mDevice->CreateBuffer(&bd, &InitData, &IndexBuffer);
-	assert(SUCCEEDED(hr));
-}
-
-TerrainModel::~TerrainModel()
-{
-	delete[] pVerts;
-	delete[] pTriList;
-
-	ReleaseAndDeleteCOMobject(VertexBuffer);
-	ReleaseAndDeleteCOMobject(IndexBuffer);
 }
