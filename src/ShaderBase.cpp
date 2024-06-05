@@ -101,6 +101,7 @@ HRESULT ShaderBase::CompileShaderFromFile(const WCHAR* szFileName, LPCSTR szEntr
 
 
 	ID3DBlob* pErrorBlob = nullptr;
+
 	hr = D3DCompileFromFile(szFileName, nullptr, nullptr, szEntryPoint, szShaderModel,
 		dwShaderFlags, 0, ppBlobOut, &pErrorBlob);
 	if (FAILED(hr))

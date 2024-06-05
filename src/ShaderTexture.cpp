@@ -4,7 +4,7 @@
 #include "d3dUtil.h"
 
 ShaderTexture::ShaderTexture(ID3D11Device*device) :
-	ShaderBase(device, L"../Assets/Shaders/Texture.hlsl")
+	ShaderBase(device, L"../Assets/Shaders/D3D/Texture.hlsl")
 {
 	// Define the input layout
 	D3D11_INPUT_ELEMENT_DESC layout[] =
@@ -48,7 +48,7 @@ ShaderTexture::ShaderTexture(ID3D11Device*device) :
 	hr = this->GetDevice()->CreateBuffer(&bd, nullptr, &mpFog);
 	assert(SUCCEEDED(hr));
 
-	mTex = new Texture(GetDevice(), L"../Assets/Textures/CrateFace.tga");
+	// mTex = new Texture(GetDevice(), L"../Assets/Textures/CrateFace.tga");
 }
 
 ShaderTexture::~ShaderTexture()

@@ -5,7 +5,7 @@
 
 
 ShaderWireframe::ShaderWireframe(ID3D11Device* device)
-	: ShaderBase(device, L"../Assets/Shaders/ColorSelected3D.hlsl")
+	: ShaderBase(device, L"../Assets/Shaders/D3D/ColorSelected3D.hlsl")
 {
 	// Define the input layout
 	D3D11_INPUT_ELEMENT_DESC layout[] =

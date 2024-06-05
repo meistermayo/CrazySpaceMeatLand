@@ -11,7 +11,7 @@ GraphicObject_Wireframe::GraphicObject_Wireframe(ShaderWireframe* shader, int me
 	pShader = (ShaderWireframe*)shader;
 
 	Color = color;
-	*pWorld = Matrix::Identity;
+	pWorld = new Matrix(Matrix::Identity);
 }
 
 GraphicObject_Wireframe::GraphicObject_Wireframe(Model* mod, ShaderBase* shader, Vect& color)
@@ -20,7 +20,7 @@ GraphicObject_Wireframe::GraphicObject_Wireframe(Model* mod, ShaderBase* shader,
 	pShader = (ShaderWireframe*)shader;
 
 	Color = color;
-	*pWorld = Matrix::Identity;
+	pWorld = new Matrix(Matrix::Identity);
 }
 
 // NOTE can prob get rid of ptrs to lights...

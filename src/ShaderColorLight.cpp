@@ -4,7 +4,7 @@
 #include <assert.h>
 
 ShaderColorLight::ShaderColorLight(ID3D11Device* dev)
-	: ShaderBase(dev, L"../Assets/Shaders/ColorLight.hlsl")
+	: ShaderBase(dev, L"../Assets/Shaders/D3D/ColorLight.hlsl")
 {
 	// Define the input layout
 	D3D11_INPUT_ELEMENT_DESC layout[] =

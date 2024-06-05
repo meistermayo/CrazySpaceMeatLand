@@ -4,7 +4,7 @@
 #include <assert.h>
 
 ShaderColorLightTexture::ShaderColorLightTexture(ID3D11Device* dev)
-	: ShaderBase(dev, L"../Assets/Shaders/ColorLightTexture.hlsl")
+	: ShaderBase(dev, L"../Assets/Shaders/D3D/ColorLightTexture.hlsl")
 {
 	// Define the input layout
 	D3D11_INPUT_ELEMENT_DESC layout[] =
@@ -66,7 +66,7 @@ ShaderColorLightTexture::ShaderColorLightTexture(ID3D11Device* dev)
 	ZeroMemory(&PointLightData3, sizeof(PointLightData3));
 	ZeroMemory(&SpotLightData, sizeof(SpotLightData));
 
-	mTex = new Texture(GetDevice(), L"../Assets/Textures/CrateFace.tga");
+	// mTex = new Texture(GetDevice(), L"../Assets/Textures/CrateFace.tga"); // todo
 }
 
 ShaderColorLightTexture::~ShaderColorLightTexture()

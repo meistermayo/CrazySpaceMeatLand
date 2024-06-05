@@ -19,7 +19,7 @@ GraphicObject_ColorLight::GraphicObject_ColorLight(ShaderColorLight* shader, int
 	{
 		Color[i] = Vect(0,0,0, 1);
 	}
-	*pWorld = Matrix::Identity;
+	pWorld = new Matrix(Matrix::Identity);
 }
 // NOTE can prob get rid of ptrs to lights...
 GraphicObject_ColorLight::~GraphicObject_ColorLight()

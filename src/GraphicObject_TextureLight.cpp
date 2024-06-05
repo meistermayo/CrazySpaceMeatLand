@@ -10,7 +10,7 @@ GraphicObject_TextureLight::GraphicObject_TextureLight(ShaderColorLightTexture* 
 	pShader = shader;
 	SetModel(mod);
 	tex = new Texture * [mod->GetMeshCount()];
-	*pWorld = Matrix::Identity;
+	pWorld = new Matrix(Matrix::Identity);
 	pShader->SetTextureResourceAndSampler(NULL);
 }
 
@@ -25,7 +25,7 @@ GraphicObject_TextureLight::GraphicObject_TextureLight(Model* mod, ShaderBase* s
 	tex = new Texture * [mod->GetMeshCount()];
 	tex[0] = inTexture;
 
-	*pWorld = Matrix::Identity;
+	pWorld = new Matrix(Matrix::Identity);
 	pShader->SetTextureResourceAndSampler(NULL);
 }
 

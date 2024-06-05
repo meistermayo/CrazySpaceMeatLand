@@ -11,7 +11,7 @@ GraphicObject_Color::GraphicObject_Color(ShaderColor* shader, int meshCount, Mod
 	pShader = (ShaderColor*)shader;
 
 	Color = color;
-	World = Matrix::Identity;
+	pWorld = new Matrix(Matrix::Identity);
 }
 
 GraphicObject_Color::GraphicObject_Color(Model* mod, ShaderBase* shader, const Vect& color)
@@ -20,7 +20,7 @@ GraphicObject_Color::GraphicObject_Color(Model* mod, ShaderBase* shader, const V
 	pShader = (ShaderColor*)shader;
 
 	Color = color;
-	World = Matrix::Identity;
+	pWorld = new Matrix(Matrix::Identity);
 }
 
 // NOTE can prob get rid of ptrs to lights...
@@ -29,18 +29,13 @@ GraphicObject_Color::~GraphicObject_Color()
 
 }
 
-void GraphicObject_Color::SetWorld(const Matrix& m) 
-{ 
-	World = m;
-}
-
 void GraphicObject_Color::Render()
 {
 	//pShader->SendWorldAndMaterial(World,material->Ambient,material->Diffuse,material->Specular); 
 	pModel->BindVertexIndexBuffers(pShader->GetContext());
 	for (int i = 0; i < pModel->GetMeshCount(); i++)
 	{
-		pShader->SendWorldColor(World, Color);
+		pShader->SendWorldColor(*pWorld, Color);
 		pModel->RenderMesh(pShader->GetContext(),i);
 	}
 }
