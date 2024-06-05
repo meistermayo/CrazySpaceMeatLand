@@ -124,7 +124,7 @@ void DXApp::InitDemo()
 #ifdef TERRAIN
 	pTerrain_Texture = new Texture(md3dDevice, L"../Assets/Textures/brownsand.tga");
 	float len = 3;
-	pTerrain = new TerrainModel(md3dDevice, L"../Assets/Textures/canyon2.tga",len,50,0,8,8);
+	pTerrain = new TerrainModel(md3dDevice, L"../Assets/Textures/canyon2.tga", len, 50.f, 0.f, 8, 8);
 	pTerrain_Shader = new ShaderTexture(md3dDevice);
 	pTerrain_Shader->SetTextureResourceAndSampler(NULL);
 	pTerrain_World = new Matrix(Matrix::Trans(Vect(-128.0f*len, 0.0f, -128.0f*len))); // why tf is this a pointer???

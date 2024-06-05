@@ -14,7 +14,7 @@ GraphicObject_Color::GraphicObject_Color(ShaderColor* shader, int meshCount, Mod
 	World = Matrix::Identity;
 }
 
-GraphicObject_Color::GraphicObject_Color(Model* mod, ShaderBase* shader, Vect& color)
+GraphicObject_Color::GraphicObject_Color(Model* mod, ShaderBase* shader, const Vect& color)
 {
 	SetModel(mod);
 	pShader = (ShaderColor*)shader;

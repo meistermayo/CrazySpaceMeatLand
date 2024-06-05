@@ -96,6 +96,7 @@ private:
 	// Model information
 	TriangleByIndex *pTriList;
 	StandardVertex* pStdVerts;
+	Vect* pVectList;
 	int numVerts;
 	int numTris;
 
@@ -143,7 +144,7 @@ public:
 	Vect GetCenter() const { return Vect(1, 1, 1); }
 	float GetRadius() const { return 10.0f; } // TODO
 
-	Vect* GetVectList();
+	Vect* GetVectList() { return pVectList; }
 	int GetVectNum() { return numVerts; }
 };
 

@@ -2,7 +2,6 @@
 #include "d3dUtil.h"
 #include <assert.h>
 
-
 TerrainModel::TerrainModel(ID3D11Device* dev, LPCWSTR heightmapFile, float len, float maxheight, float ytrans, int RepeatU, int RepeatV)
 {
 	ytrans;

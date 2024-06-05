@@ -16,9 +16,11 @@ Model::Model(ID3D11Device* dev, StandardVertex *pVerts, int nverts, TriangleByIn
 	// Copy Data
 	numVerts = nverts;
 	pStdVerts = new StandardVertex[numVerts];
+	pVectList = new Vect[numVerts];
 	for (int i = 0; i < numVerts; i++)
 	{
 		pStdVerts[i] = pVerts[i];
+		pVectList[i] = pVerts[i].Pos;
 	}
 	numTris = ntri;
 	pTriList = new TriangleByIndex[numTris];
@@ -97,6 +99,7 @@ Model::~Model()
 {
 	delete[] pTriList;
 	delete[] pStdVerts;
+	delete[] pVectList;
 
 	ReleaseAndDeleteCOMobject(mpVertexBuffer);
 	ReleaseAndDeleteCOMobject(mpIndexBuffer);
