@@ -19,7 +19,7 @@ GraphicObject_ColorLight::GraphicObject_ColorLight(ShaderColorLight* shader, int
 	{
 		Color[i] = Vect(0,0,0, 1);
 	}
-	World = Matrix::Identity;
+	*pWorld = Matrix::Identity;
 }
 // NOTE can prob get rid of ptrs to lights...
 GraphicObject_ColorLight::~GraphicObject_ColorLight()
@@ -33,18 +33,13 @@ void GraphicObject_ColorLight::SetColor(const Vect& col, int meshNum)
 	Color[meshNum] = col;
 }
 
-void GraphicObject_ColorLight::SetWorld(const Matrix& m) 
-{ 
-	World = m;
-}
-
 void GraphicObject_ColorLight::Render()
 {
 	//pShader->SendWorldAndMaterial(World,material->Ambient,material->Diffuse,material->Specular); 
 	pModel->BindVertexIndexBuffers(pShader->GetContext());
 	for (int i = 0; i < pModel->GetMeshCount(); i++)
 	{
-		pShader->SendWorldAndMaterial(World, material->Ambient, material->Diffuse, material->Specular);
+		pShader->SendWorldAndMaterial(*pWorld, material->Ambient, material->Diffuse, material->Specular);
 		pModel->RenderMesh(pShader->GetContext(),i);
 	}
 }

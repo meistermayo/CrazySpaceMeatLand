@@ -23,14 +23,13 @@ public:
 	GraphicObject_Texture() = delete;
 
 	void SetTexture(Texture* _tex, int i);
-	void SetWorld(const Matrix& m);
 	virtual void Render() override;
 
 	GraphicObject_Texture(ShaderTexture* shader, Model* mod);
+	GraphicObject_Texture(Model* mod, ShaderTexture* shader, Texture* texture);
 
 private:
 	Texture ** tex;
-	Matrix world;
 	ShaderTexture* pShader;
 };
 

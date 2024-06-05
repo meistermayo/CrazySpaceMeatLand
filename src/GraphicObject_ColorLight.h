@@ -21,7 +21,6 @@ public:
 	GraphicObject_ColorLight() = delete;
 
 	void SetColor(const Vect& col, int meshNum);
-	void SetWorld(const Matrix& m);
 	virtual void Render() override;
 
 	void SetLights(ShaderColorLight::DirectionalLight* _dirLight, ShaderColorLight::SpotLight* _sptLight, ShaderColorLight::PointLight* _pntLight);
@@ -43,7 +42,6 @@ private:
 
 	ShaderColorLight*					pShader;
 	Vect*							Color;
-	Matrix							World;
 	ShaderColorLight::Material* material;
 };
 

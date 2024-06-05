@@ -22,7 +22,6 @@ public:
 
 	GraphicObject_Wireframe() = delete;
 
-	void SetWorld(const Matrix& m);
 	void SetColor(const Vect& inColor) { Color = inColor; }
 	virtual void Render() override;
 
@@ -32,7 +31,6 @@ public:
 private:
 	ShaderWireframe*				pShader;
 	Vect							Color;
-	Matrix							World;
 };
 
 #endif _GraphicObject_Color

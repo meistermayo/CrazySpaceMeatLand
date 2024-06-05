@@ -23,8 +23,6 @@ public:
 	GraphicObject_TextureLight() = delete;
 
 	void SetTexture(Texture* _tex, int i);
-	void SetWorld(const Matrix& m);
-	Matrix& GetWorld();
 	virtual void Render() override;
 
 	GraphicObject_TextureLight(ShaderColorLightTexture* shader, Model* mod);
@@ -32,7 +30,6 @@ public:
 
 private:
 	Texture ** tex;
-	Matrix world;
 	ShaderColorLightTexture* pShader;
 	Vect ambColor;
 	Vect difColor;

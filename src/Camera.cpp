@@ -2,14 +2,23 @@
 #include <assert.h>
 #include <math.h>
 
-void Camera::setPerspective(const float Fovy, const float Aspect, const float NearDist, const float FarDist)
+void Camera::setPerspective(float Fovy, float Aspect, float NearDist, float FarDist)
 {
 	this->aspectRatio = Aspect;
 	this->fovy = Fovy;
 	this->nearDist = NearDist;
 	this->farDist = FarDist;
-};
+}
 
+void Camera::setViewport(float x, float y, int width, int height)
+{
+	this->aspectRatio = static_cast<float>(y) / static_cast<float>(x);
+}
+
+void Camera::setOrthographic(float left, float right, float top, float bottom, float near, float far)
+{
+	setPerspective(this->fovy, (right-left)/(bottom-top), near, far); // todo : check me
+}
 
 void Camera::setOrientAndPosition(const Vect &inUp, const Vect &inLookAt, const Vect &inPos)
 {

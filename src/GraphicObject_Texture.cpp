@@ -8,17 +8,22 @@ GraphicObject_Texture::GraphicObject_Texture(ShaderTexture* shader,Model* mod)
 	pShader = shader;
 	SetModel(mod);
 	tex = new Texture*[mod->GetMeshCount()];
-	world = Matrix::Identity;
+	*pWorld = Matrix::Identity;
+	pShader->SetTextureResourceAndSampler(NULL);
+}
+
+GraphicObject_Texture::GraphicObject_Texture(Model* mod, ShaderTexture* shader, Texture* texture)
+{
+	pShader = shader;
+	SetModel(mod);
+	tex = new Texture * [mod->GetMeshCount()];
+	tex[0] = texture;
+	*pWorld = Matrix::Identity;
 	pShader->SetTextureResourceAndSampler(NULL);
 }
 
 GraphicObject_Texture::~GraphicObject_Texture() {
 	delete tex;
-}
-
-void GraphicObject_Texture::SetWorld(const Matrix& m)
-{
-	world = m;
 }
 
 void GraphicObject_Texture::SetTexture(Texture* _tex, int i)
@@ -33,7 +38,7 @@ void GraphicObject_Texture::Render()
 	for (int i = 0; i < pModel->GetMeshCount(); i++)
 	{
 		tex[i]->SetToContext(pShader->GetContext());
-		pShader->SendWorld(world);
+		pShader->SendWorld(*pWorld);
 		pModel->RenderMesh(pShader->GetContext(), i);
 	}
 }

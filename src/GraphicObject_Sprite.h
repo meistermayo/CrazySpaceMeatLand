@@ -15,7 +15,7 @@ public:
 	GraphicObject_Sprite(Model* model, ShaderBase* pShaderObj, Image* image, Rect* rect);
 	~GraphicObject_Sprite();
 
-protected:
+//protected:
 	// Rendermaterial contract
 	// virtual void privSetState() override;
 	// virtual void privSetDataGPU(Camera* pCam) override;
@@ -41,7 +41,6 @@ private:
 	// Matrix* pMatrix_orig;
 
 	Model* pModel;
-	Matrix* pWorld;
 	ShaderBase* pShader;
 };
 

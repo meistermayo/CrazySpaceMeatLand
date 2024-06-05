@@ -3,8 +3,9 @@
 
 #include "Math/Vect.h"
 #include "Math/Matrix.h"
+#include "Align16.h"
 
-class Camera
+class Camera : public Align16
 {
 
 public:
@@ -14,7 +15,9 @@ public:
 	~Camera() = default;
 
 	// Setup on single camera
-	void setPerspective(const float FieldOfView_Degs, const float AspectRatio, const float NearDist, const float FarDist);
+	void setPerspective(float FieldOfView_Degs, float AspectRatio, float NearDist, float FarDist);
+	void setViewport(float x, float y, int width, int height);
+	void setOrthographic(float left, float right, float top, float bottom, float near, float far);
 	void setOrientAndPosition(const Vect &Up_vect, const Vect &inLookAt_pt, const Vect &pos_pt);
 
 	// update camera system
