@@ -5,13 +5,16 @@
 #include "Texture.h"
 #include "Math/Matrix.h"
 
+template <typename T>
+struct GenericBufferObject;
+
 class ShaderTexture : public ShaderBase
 {
 public:
-	ShaderTexture(ID3D11Device* device);
+	ShaderTexture();
 	~ShaderTexture();
 
-	virtual void SetToContext(ID3D11DeviceContext* devcon) override;
+	virtual void SetToContext() override;
 
 	void SetTextureResourceAndSampler(Texture* _tex);
 	void SendCamMatrices(const Matrix& view, const Matrix& proj);
@@ -29,7 +32,7 @@ private:
 		Matrix Projection;
 	};
 
-	ID3D11Buffer*           mpBufferCamMatrices;
+	GenericBufferObject<CamMatrices>*           mpBufferCamMatrices;
 
 	struct InstanceData
 	{
@@ -37,7 +40,7 @@ private:
 		Matrix WorldInv;
 	};
 
-	ID3D11Buffer*           mpBuffWordColor;
+	GenericBufferObject<InstanceData>*           mpBuffWordColor;
 	
 	// Texture stuff
 	ID3D11ShaderResourceView* mpTextureRV;
@@ -51,7 +54,7 @@ public:
 		Vect eyePos;
 	};
 private:
-	ID3D11Buffer * mpFog;
+	GenericBufferObject<FogData>* mpFog;
 	Vect eyepos;
 };
 #endif

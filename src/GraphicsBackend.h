@@ -84,6 +84,54 @@ struct IndexBufferObject : public Align16
 	void Bind();
 };
 
+template <typename T>
+struct GenericBufferObject : public Align16
+{
+#ifdef BACKEND_D3D
+	ID3D11Buffer* mpBuffer;
+	int index = 0;
+#endif
+
+	void CreateBuffer(int inIndex)
+	{
+#ifdef BACKEND_D3D
+		index = inIndex;
+
+		D3D11_BUFFER_DESC bd;
+		bd.Usage = D3D11_USAGE_DEFAULT;
+		bd.ByteWidth = sizeof(T);
+		bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		bd.CPUAccessFlags = 0;
+		bd.MiscFlags = 0;
+		bd.StructureByteStride = 0;
+		HRESULT hr = GraphicsBackend::GetDevice().md3dDevice->CreateBuffer(&bd, nullptr, &mpBuffer);
+		assert(SUCCEEDED(hr));
+#endif
+	}
+
+	void UpdateBuffer(T* t)
+	{
+#ifdef BACKEND_D3D
+		GraphicsBackend::GetContext().md3dImmediateContext->UpdateSubresource(mpBuffer, 0, nullptr, t, 0, 0);
+#endif
+	}
+
+	void Bind()
+	{
+#ifdef BACKEND_D3D
+		GraphicsBackend::GetContext().md3dImmediateContext->VSSetConstantBuffers(index, 1, &mpBuffer);
+		GraphicsBackend::GetContext().md3dImmediateContext->PSSetConstantBuffers(index, 1, &mpBuffer);
+#endif
+	}
+
+	~GenericBufferObject()
+	{
+#ifdef BACKEND_D3D
+		ReleaseAndDeleteCOMobject(mpBuffer);
+#endif
+	}
+};
+
 struct TextureSampler : public Align16
 {
 #ifdef BACKEND_D3D
@@ -100,6 +148,87 @@ struct TextureSampler : public Align16
 	void SetToContext(int texResSlot, int sampSlot);
 
 	~TextureSampler();
+};
+
+struct ShaderInterface : public Align16
+{
+#ifdef BACKEND_D3D
+	// Actual objects managed by this class
+	ID3D11VertexShader* mpVertexShader;
+	ID3D11PixelShader* mpPixelShader;
+	ID3D11InputLayout* mpVertexLayout;
+
+	// Needed for building shaders
+	ID3DBlob* pVSBlob;
+	ID3DBlob* pPSBlob;
+#endif
+
+	// Compile and send the VS and PS shaders to the GPU
+	void BuildShaders(std::string filename, std::string vsModel, std::string psModel);
+
+	void CreateInputLayout(D3D11_INPUT_ELEMENT_DESC* layoutdesc, UINT size);
+
+	// Sets the DX context to use these VS, PS and input layout
+	void SetToContext_VS_PS_InputLayout();
+
+#ifdef BACKEND_D3D
+	HRESULT CompileShaderFromFileD3D(const WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
+#endif
+
+	void DefineInputLayout() // todo
+	{
+#ifdef BACKEND_D3D
+		// Define the input layout
+		D3D11_INPUT_ELEMENT_DESC layout[] =
+		{
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		};
+		UINT numElements = ARRAYSIZE(layout);
+		CreateInputLayout(layout, numElements);
+#endif
+	}
+	void DefineInputLayoutNormal() {
+#ifdef BACKEND_D3D
+		// Define the input layout
+		D3D11_INPUT_ELEMENT_DESC layout[] =
+		{
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "NORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		};
+		UINT numElements = ARRAYSIZE(layout);
+		this->CreateInputLayout(layout, numElements);
+#endif
+	} // todo again
+
+	void DefineInputLayoutNormalTex() // todo again
+	{
+#ifdef BACKEND_D3D
+		// Define the input layout
+		D3D11_INPUT_ELEMENT_DESC layout[] =
+		{
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "NORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		};
+		UINT numElements = ARRAYSIZE(layout);
+		this->CreateInputLayout(layout, numElements);
+
+#endif
+	}
+	void DefineInputLayoutTex()
+	{
+#ifdef BACKEND_D3D
+		// Define the input layout
+		D3D11_INPUT_ELEMENT_DESC layout[] =
+		{
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT , D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		};
+		UINT numElements = ARRAYSIZE(layout);
+		this->CreateInputLayout(layout, numElements);
+#endif
+	}
+	~ShaderInterface();
 };
 
 #ifdef BACKEND_OGL

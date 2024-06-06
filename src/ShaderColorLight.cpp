@@ -2,61 +2,24 @@
 #include "d3dUtil.h"
 #include <d3d11.h>
 #include <assert.h>
+#include "GraphicsBackend.h"
 
-ShaderColorLight::ShaderColorLight(ID3D11Device* dev)
-	: ShaderBase(dev, L"../Assets/Shaders/D3D/ColorLight.hlsl")
+ShaderColorLight::ShaderColorLight()
+	: ShaderBase("../Assets/Shaders/D3D/ColorLight.hlsl", "", "")
 {
-	// Define the input layout
-	D3D11_INPUT_ELEMENT_DESC layout[] =
-	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
- 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-	};
-	UINT numElements = ARRAYSIZE(layout);
-	this->CreateInputLayout(layout, numElements);
+	mpShaderInterface->DefineInputLayoutNormal();
 
-	HRESULT hr = S_OK;
+	mpBufferCamMatrices = new GenericBufferObject<CamMatrices>();
+	mpBufferCamMatrices->CreateBuffer(0);
 
-	// View Projection buffer
-	D3D11_BUFFER_DESC bd;
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(CamMatrices);
-	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bd.CPUAccessFlags = 0;
-	bd.MiscFlags = 0;
-	bd.StructureByteStride = 0;
-	hr = this->GetDevice()->CreateBuffer(&bd, nullptr, &mpBufferCamMatrices);
-	assert(SUCCEEDED(hr));
+	mpBufferLightParams = new GenericBufferObject<Data_LightParams>();
+	mpBufferLightParams->CreateBuffer(1);
 
-	// light param
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(Data_LightParams);
-	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bd.CPUAccessFlags = 0;
-	bd.MiscFlags = 0;
-	bd.StructureByteStride = 0;
-	hr = this->GetDevice()->CreateBuffer(&bd, nullptr, &mpBufferLightParams);
-	assert(SUCCEEDED(hr));
+	mpBuffWordAndMaterial = new GenericBufferObject<Data_WorldAndMaterial>();
+	mpBuffWordAndMaterial->CreateBuffer(2);
 
-	// Color buffer
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(Data_WorldAndMaterial);
-	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bd.CPUAccessFlags = 0;
-	bd.MiscFlags = 0;
-	bd.StructureByteStride = 0;
-	hr = this->GetDevice()->CreateBuffer(&bd, nullptr, &mpBuffWordAndMaterial);
-	assert(SUCCEEDED(hr));
-
-	// Fog buffer
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(FogData);
-	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bd.CPUAccessFlags = 0;
-	bd.MiscFlags = 0;
-	bd.StructureByteStride = 0;
-	hr = this->GetDevice()->CreateBuffer(&bd, nullptr, &mpFog);
-	assert(SUCCEEDED(hr));
+	mpFog = new GenericBufferObject<FogData>();
+	mpFog->CreateBuffer(3);
 
 	// Zeroing the light data
 	ZeroMemory(&DirLightData, sizeof(DirLightData));
@@ -68,10 +31,10 @@ ShaderColorLight::ShaderColorLight(ID3D11Device* dev)
 
 ShaderColorLight::~ShaderColorLight()
 {
-	ReleaseAndDeleteCOMobject(mpBuffWordAndMaterial);
-	ReleaseAndDeleteCOMobject(mpBufferLightParams);
-	ReleaseAndDeleteCOMobject(mpBufferCamMatrices);
-	ReleaseAndDeleteCOMobject(mpFog);
+	delete mpBuffWordAndMaterial;
+	delete mpBufferLightParams;
+	delete mpBufferCamMatrices;
+	delete mpFog;
 }
 
 void ShaderColorLight::SendCamMatrices(const Matrix& view, const Matrix& proj)
@@ -80,7 +43,7 @@ void ShaderColorLight::SendCamMatrices(const Matrix& view, const Matrix& proj)
 	mCamMatrices.View = view;
 	mCamMatrices.Projection = proj;
 
-	this->GetContext()->UpdateSubresource(mpBufferCamMatrices, 0, nullptr, &mCamMatrices, 0, 0);
+	mpBufferCamMatrices->UpdateBuffer(&mCamMatrices);
 }
 
 void ShaderColorLight::SetDirectionalLightParameters(const Vect& dir, const Vect& amb, const Vect& dif, const Vect& sp)
@@ -141,7 +104,7 @@ void ShaderColorLight::SendLightParameters( const Vect& eyepos)
 	dl.SptLight = SpotLightData;
 	dl.EyePosWorld = eyepos;
 
-	this->GetContext()->UpdateSubresource(mpBufferLightParams, 0, nullptr, &dl, 0, 0);
+	mpBufferLightParams->UpdateBuffer(&dl);
 }
 
 void ShaderColorLight::SendWorldAndMaterial(const Matrix& world, const Vect& amb, const Vect& dif, const Vect& sp)
@@ -153,23 +116,17 @@ void ShaderColorLight::SendWorldAndMaterial(const Matrix& world, const Vect& amb
 	wm.Mat.Diffuse = dif;
 	wm.Mat.Specular = sp;
 
-	this->GetContext()->UpdateSubresource(mpBuffWordAndMaterial, 0, nullptr, &wm, 0, 0);
+	mpBuffWordAndMaterial->UpdateBuffer(&wm);
 }
 
-void ShaderColorLight::SetToContext(ID3D11DeviceContext* devcon)
+void ShaderColorLight::SetToContext()
 {
-	ShaderBase::SetContext(devcon);
 	ShaderBase::SetToContext_VS_PS_InputLayout();
 
-	devcon->VSSetConstantBuffers(0, 1, &mpBufferCamMatrices);
-	devcon->VSSetConstantBuffers(1, 1, &mpBufferLightParams);
-	devcon->VSSetConstantBuffers(2, 1, &mpBuffWordAndMaterial);
-	devcon->VSSetConstantBuffers(3, 1, &mpFog);
-
-	devcon->PSSetConstantBuffers(0, 1, &mpBufferCamMatrices);
-	devcon->PSSetConstantBuffers(1, 1, &mpBufferLightParams);
-	devcon->PSSetConstantBuffers(2, 1, &mpBuffWordAndMaterial);
-	devcon->PSSetConstantBuffers(3, 1, &mpFog);
+	mpBufferCamMatrices->Bind();
+	mpBufferLightParams->Bind();
+	mpBuffWordAndMaterial->Bind();
+	mpFog->Bind();
 }
 
 void ShaderColorLight::SendFogData(const float& fogMin, const float& fogMax, const Vect& fogCol)
@@ -179,5 +136,5 @@ void ShaderColorLight::SendFogData(const float& fogMin, const float& fogMax, con
 	fogData.fogMax = fogMax;
 	fogData.fogCol = fogCol;
 
-	this->GetContext()->UpdateSubresource(mpFog, 0, nullptr, &fogData, 0, 0);
+	mpFog->UpdateBuffer(&fogData);
 }

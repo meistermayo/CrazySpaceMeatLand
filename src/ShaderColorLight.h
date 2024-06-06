@@ -7,8 +7,8 @@
 #include "ShaderBase.h"
 #include "Math/Matrix.h"
 
-struct ID3D11Buffer;
-struct ID3D11Device;
+template <typename T>
+struct GenericBufferObject;
 
 class ShaderColorLight : public ShaderBase
 {
@@ -20,9 +20,9 @@ public:
 	ShaderColorLight& operator=(ShaderColorLight&&) & = default;       // Move assignment operator
 	~ShaderColorLight();		  							         // Destructor
 
-	ShaderColorLight(ID3D11Device* device);
+	ShaderColorLight();
 
-	virtual void SetToContext(ID3D11DeviceContext* devcon) override;
+	virtual void SetToContext() override;
 
 	void SetDirectionalLightParameters(const Vect& dir, const Vect& amb = Vect::One, const Vect& dif = Vect::One, const Vect& sp = Vect::One);
 	void SetPointLightParameters1(const Vect& pos, float r, const Vect& att, const Vect& amb = Vect::One, const Vect& dif = Vect::One, const Vect& sp = Vect::One);
@@ -90,7 +90,7 @@ private:
 		Matrix Projection;
 	};
 
-	ID3D11Buffer*  mpBufferCamMatrices;
+	GenericBufferObject<CamMatrices>*  mpBufferCamMatrices;
 
 	struct Data_WorldAndMaterial
 	{
@@ -99,7 +99,7 @@ private:
 		Material Mat;
 	};
 
-	ID3D11Buffer*	mpBuffWordAndMaterial;
+	GenericBufferObject<Data_WorldAndMaterial>*	mpBuffWordAndMaterial;
 
 	struct Data_LightParams
 	{
@@ -111,7 +111,7 @@ private:
 		Vect EyePosWorld;
 	};
 
-	ID3D11Buffer*  mpBufferLightParams;
+	GenericBufferObject<Data_LightParams>*  mpBufferLightParams;
 	public:
 		struct FogData {
 			float fogMin;
@@ -120,7 +120,7 @@ private:
 		};
 
 private:
-	ID3D11Buffer * mpFog;
+	GenericBufferObject<FogData>* mpFog;
 };
 
 #endif _ShaderColorLight

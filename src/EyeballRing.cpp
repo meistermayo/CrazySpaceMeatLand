@@ -45,9 +45,9 @@ EyeballRing::EyeballRing(ShaderColorLightTexture* pShaderTexLight)
 	this->pShaderTexLight = pShaderTexLight;
 }
 
-void EyeballRing::Render(ID3D11DeviceContext* md3dImmediateContext, Camera* pCam, Vect eyepos, float fogStart, float fogRange, Vect fogCol)
+void EyeballRing::Render(Camera* pCam, Vect eyepos, float fogStart, float fogRange, Vect fogCol)
 {
-	pShaderTexLight->SetToContext(md3dImmediateContext);
+	pShaderTexLight->SetToContext();
 	pShaderTexLight->SendFogData(fogStart, fogRange, fogCol);
 	pShaderTexLight->SendCamMatrices(pCam->getViewMatrix(), pCam->getProjMatrix());
 	pShaderTexLight->SendLightParameters(eyepos);

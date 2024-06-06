@@ -60,9 +60,9 @@ void DXApp::InitDemo()
 
 
 
-	pShaderTex = new ShaderTexture(md3dDevice);
+	pShaderTex = new ShaderTexture();
 
-	pShaderTexLight = new ShaderColorLightTexture(md3dDevice);
+	pShaderTexLight = new ShaderColorLightTexture();
 
 	pShaderTexLight->SetPointLightParameters1(pointLightPos1, pointLightRadius1, pointLightAtt1, pointLightAmb1, pointLightDif1, pointLightSpc1);
 	pShaderTexLight->SetPointLightParameters2(pointLightPos2, pointLightRadius2, pointLightAtt2, pointLightAmb2, pointLightDif2, pointLightSpc2);
@@ -96,7 +96,7 @@ void DXApp::InitDemo()
 	pModel_Cube3 = new Model(fbxModelInfo.meshInfo[2]);
 	//pModel_Cube = new Model(Model::UnitSphere, 12.0f);
 	mWorld_Cube = new Matrix(Matrix::Trans(Vect(0.f, 10.f, 0.f))); /// ??? pointer???
-	pShader_Cube = new ShaderColorLightTexture(md3dDevice);
+	pShader_Cube = new ShaderColorLightTexture();
 	Cube1 = new GraphicObject_TextureLight((ShaderColorLightTexture*)(pShader_Cube), pModel_Cube1);// Vect(1, 0, 0, 1), Vect(1, 0, 0, 1), Vect(1, 1, 1, 1));
 	Cube2 = new GraphicObject_TextureLight((ShaderColorLightTexture*)(pShader_Cube), pModel_Cube2);// Vect(1, 0, 0, 1), Vect(1, 0, 0, 1), Vect(1, 1, 1, 1));
 	Cube3 = new GraphicObject_TextureLight((ShaderColorLightTexture*)(pShader_Cube), pModel_Cube3);// Vect(1, 0, 0, 1), Vect(1, 0, 0, 1), Vect(1, 1, 1, 1));
@@ -115,7 +115,7 @@ void DXApp::InitDemo()
 
 #ifdef _TEST
 	_TEST_model = new Model("../Assets/Models/CubeTest2.azul");
-	_TEST_tex = new Texture(md3dDevice, L"../Assets/Textures/CubeTex.tga");
+	_TEST_tex = new Texture(L"../Assets/Textures/CubeTex.tga");
 	_TEST_go = new GraphicObject_Texture(pShaderTex, _TEST_model);
 	_TEST_go->SetWorld(Matrix::Scale( 1, 1, 1) * Matrix::Trans(0, 10, 0));
 	_TEST_go->SetTexture(_TEST_tex,0);
@@ -128,7 +128,7 @@ void DXApp::InitDemo()
 	pTerrain_Texture = new Texture("../Assets/Textures/brownsand.tga");
 	float len = 3;
 	pTerrain = new TerrainModel("../Assets/Textures/canyon2.tga", len, 50.f, 0.f, 8, 8);
-	pTerrain_Shader = new ShaderTexture(md3dDevice);
+	pTerrain_Shader = new ShaderTexture();
 	pTerrain_Shader->SetTextureResourceAndSampler(NULL);
 	pTerrain_World = new Matrix(Matrix::Trans(Vect(-128.0f*len, 0.0f, -128.0f*len))); // why tf is this a pointer???
 #endif
@@ -137,7 +137,7 @@ void DXApp::InitDemo()
 	Matrix _tempMatrix = Matrix::Scale(1.f) * Matrix::Trans(Vect::Zero); // why?
 	pSkyBox_World = new Matrix(_tempMatrix);
 	pSkyBox_Texture = new Texture("../Assets/Textures/redspace.tga");
-	pSkyBox_Shader = new ShaderTexture(md3dDevice);
+	pSkyBox_Shader = new ShaderTexture();
 	pSkyBox_Shader->SetTextureResourceAndSampler(NULL);
 	pSkyBox = new Skybox(pSkyBox_Shader, pSkyBox_Texture);
 #endif
@@ -270,11 +270,11 @@ void DXApp::DrawScene()
 	Vect fogCol = Vect(0.25f, 0, 0, 1);
 
 #ifdef _TEST
-	pShaderTex->SetToContext(md3dImmediateContext);
+	pShaderTex->SetToContext();
 	pShaderTex->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());
 	//pShaderTex->SendWorld();
 	_TEST_go->Render();
-	pShaderTexLight->SetToContext(md3dImmediateContext);
+	pShaderTexLight->SetToContext();
 	pShaderTexLight->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());
 	CubeGo->Render();
 #endif 
@@ -282,27 +282,27 @@ void DXApp::DrawScene()
 	Vect camPos;
 	mCam.getPos(camPos);
 	pSkyBox_World->SetTrans(camPos);
-	pSkyBox_Shader->SetToContext(md3dImmediateContext);
+	pSkyBox_Shader->SetToContext();
 	pSkyBox_Shader->SendFogData(500, 5000, fogCol);
 	pSkyBox_Shader->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());
 	pSkyBox_Shader->SendWorld(*pSkyBox_World);
 	pSkyBox->Render();
 #endif
 
-	eyeballRing->Render(md3dImmediateContext, &mCam, eyepos, fogStart, fogRange, fogCol);
-	worm->Render(md3dImmediateContext,&mCam, eyepos, fogStart, fogRange, fogCol);
+	eyeballRing->Render(&mCam, eyepos, fogStart, fogRange, fogCol);
+	worm->Render(&mCam, eyepos, fogStart, fogRange, fogCol);
 
 	GO_Frigate->Render();
 
 	// myBullet->Render();
 
 #ifdef TERRAIN
-	//pTerrain_Shader->SetToContext(md3dImmediateContext);
+	//pTerrain_Shader->SetToContext();
 	//pTerrain_Shader->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());
 	pTerrain_Texture->SetToContext();
 	pShaderTexLight->SendWorldAndMaterial(*pTerrain_World);
 
-	//pShaderColLight->SetToContext(md3dImmediateContext);
+	//pShaderColLight->SetToContext();
 	//pShaderColLight->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());
 	//pShaderColLight->SendLightParameters(eyepos);
 	//pShaderColLight->SendWorldAndMaterial(*pTerrain_World);
@@ -311,13 +311,13 @@ void DXApp::DrawScene()
 #endif
 #ifdef FLATPLANE
 	//pShaderTexLight->SendWorldAndMaterial(flatPlane_World);
-	pShaderColLight->SetToContext(md3dImmediateContext);
+	pShaderColLight->SetToContext();
 	pShaderColLight->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());
 	pShaderColLight->SendLightParameters(eyepos);
 	pShaderColLight->SendWorldAndMaterial(flatPlane_World);
 	//flatPlane->Render();
 #endif
-	pShader_Cube->SetToContext(md3dImmediateContext);
+	pShader_Cube->SetToContext();
 	pShader_Cube->SendFogData(fogStart, fogRange, fogCol);
 	pShader_Cube->SendLightParameters(eyepos);
 	pShader_Cube->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());

@@ -3,8 +3,8 @@
 #include "ShaderBase.h"
 #include "Math/Matrix.h"
 
-struct ID3D11Buffer;
-struct ID3D11Device;
+template <typename T>
+struct GenericBufferObject;
 
 class ShaderWireframe : public ShaderBase
 {
@@ -15,9 +15,9 @@ public:
 	ShaderWireframe& operator=(ShaderWireframe&&) & = default;       // Move assignment operator
 	~ShaderWireframe();		  							         // Destructor
 
-	ShaderWireframe(ID3D11Device* device);
+	ShaderWireframe();
 
-	virtual void SetToContext(ID3D11DeviceContext* devcon) override;
+	virtual void SetToContext() override;
 
 	void SendCamMatrices(const Matrix& view, const Matrix& proj);
 	void SendWorldColor(const Matrix& world, const Vect& col);
@@ -31,7 +31,7 @@ private:
 		Matrix Projection;
 	};
 
-	ID3D11Buffer*           mpBufferCamMatrices;
+	GenericBufferObject<CamMatrices>*           mpBufferCamMatrices;
 
 	struct Data_WorldColor
 	{
@@ -40,7 +40,7 @@ private:
 		Vect Color;
 	};
 
-	ID3D11Buffer*           mpBuffWordColor;
+	GenericBufferObject<Data_WorldColor>*           mpBuffWordColor;
 public:
 	struct FogData {
 		float fogMin;
@@ -49,6 +49,6 @@ public:
 		Vect eyePos;
 	};
 private:
-	ID3D11Buffer * mpFog;
+	GenericBufferObject<FogData>* mpFog;
 	Vect eyepos;
 };

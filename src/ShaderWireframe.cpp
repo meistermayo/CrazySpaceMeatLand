@@ -2,58 +2,29 @@
 #include "d3dUtil.h"
 #include <d3d11.h>
 #include <assert.h>
+#include "GraphicsBackend.h"
 
 
-ShaderWireframe::ShaderWireframe(ID3D11Device* device)
-	: ShaderBase(device, L"../Assets/Shaders/D3D/ColorSelected3D.hlsl")
+ShaderWireframe::ShaderWireframe()
+	: ShaderBase("../Assets/Shaders/D3D/ColorSelected3D.hlsl", "", "")
 {
-	// Define the input layout
-	D3D11_INPUT_ELEMENT_DESC layout[] =
-	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-	};
-	UINT numElements = ARRAYSIZE(layout);  
-	this->CreateInputLayout(layout, numElements);
+	mpShaderInterface->DefineInputLayout();
 
-	HRESULT hr;  
+	mpBufferCamMatrices = new GenericBufferObject<CamMatrices>();
+	mpBufferCamMatrices->CreateBuffer(0);
 
-	// View Projection buffer
-	D3D11_BUFFER_DESC bd;
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(CamMatrices);
-	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bd.CPUAccessFlags = 0;
-	bd.MiscFlags = 0;
-	bd.StructureByteStride = 0;
-	hr = this->GetDevice()->CreateBuffer(&bd, nullptr, &mpBufferCamMatrices);
-	assert(SUCCEEDED(hr));
+	mpBuffWordColor = new GenericBufferObject<Data_WorldColor>();
+	mpBuffWordColor->CreateBuffer(1);
 
-	// Color buffer
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(Data_WorldColor);
-	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bd.CPUAccessFlags = 0;
-	bd.MiscFlags = 0;
-	bd.StructureByteStride = 0;
-	hr = this->GetDevice()->CreateBuffer(&bd, nullptr, &mpBuffWordColor);
-	assert(SUCCEEDED(hr));
-
-	// Foggoe buffer
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(FogData);
-	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bd.CPUAccessFlags = 0;
-	bd.MiscFlags = 0;
-	bd.StructureByteStride = 0;
-	hr = this->GetDevice()->CreateBuffer(&bd, nullptr, &mpFog);
-	assert(SUCCEEDED(hr));
+	mpFog = new GenericBufferObject<FogData>();
+	mpFog->CreateBuffer(2);
 }
 
 ShaderWireframe::~ShaderWireframe()
 {
-	ReleaseAndDeleteCOMobject(mpBuffWordColor);
-	ReleaseAndDeleteCOMobject(mpBufferCamMatrices);
-	ReleaseAndDeleteCOMobject(mpFog);
+	delete mpBuffWordColor;
+	delete mpBufferCamMatrices;
+	delete mpFog;
 }
 
 void ShaderWireframe::SendCamMatrices( const Matrix& view, const Matrix& proj)
@@ -62,7 +33,7 @@ void ShaderWireframe::SendCamMatrices( const Matrix& view, const Matrix& proj)
 	mCamMatrices.View = view;  
 	mCamMatrices.Projection = proj;
 
-	this->GetContext()->UpdateSubresource(mpBufferCamMatrices, 0, nullptr, &mCamMatrices, 0, 0);
+	mpBufferCamMatrices->UpdateBuffer(&mCamMatrices);
 }
 
 void ShaderWireframe::SendWorldColor(const Matrix& world, const Vect& col)
@@ -72,21 +43,16 @@ void ShaderWireframe::SendWorldColor(const Matrix& world, const Vect& col)
 	wc.WorldInv = world.GetWorldInverse();
 	wc.Color = col;
 
-	this->GetContext()->UpdateSubresource(mpBuffWordColor, 0, nullptr, &wc, 0, 0);
+	mpBuffWordColor->UpdateBuffer(&wc);
 }
 
-void ShaderWireframe::SetToContext(ID3D11DeviceContext* devcon)
+void ShaderWireframe::SetToContext()
 {
-	ShaderBase::SetContext(devcon);
 	ShaderBase::SetToContext_VS_PS_InputLayout();
 
-	devcon->VSSetConstantBuffers(0, 1, &mpBufferCamMatrices);
-	devcon->VSSetConstantBuffers(1, 1, &mpBuffWordColor);
-	devcon->VSSetConstantBuffers(2, 1, &mpFog);
-
-	devcon->PSSetConstantBuffers(0, 1, &mpBufferCamMatrices);
-	devcon->PSSetConstantBuffers(1, 1, &mpBuffWordColor);
-	devcon->PSSetConstantBuffers(2, 1, &mpFog);
+	mpBufferCamMatrices->Bind();
+	mpBuffWordColor->Bind();
+	mpFog->Bind();
 }
 
 
@@ -97,7 +63,7 @@ void ShaderWireframe::SendFogData(const float& fogMin, const float& fogMax, cons
 	fogData.fogMax = fogMax;
 	fogData.fogCol = fogCol;
 	fogData.eyePos = eyepos;
-	this->GetContext()->UpdateSubresource(mpFog, 0, nullptr, &fogData, 0, 0);
+	mpFog->UpdateBuffer(&fogData);
 }
 void ShaderWireframe::GetEyePos(const Vect& _eyepos)
 {

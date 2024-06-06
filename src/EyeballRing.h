@@ -8,14 +8,12 @@ class ShaderColorLightTexture;
 class Matrix;
 class Texture;
 class Camera;
-struct ID3D11Device;
-struct ID3D11DeviceContext;
 
 class EyeballRing
 {
 public:
 	EyeballRing(ShaderColorLightTexture* pShaderTexLight);
-	void Render(ID3D11DeviceContext* immediateContext, Camera* camera, Vect eyepos, float fogStart, float fogRange, Vect fogColor);
+	void Render(Camera* camera, Vect eyepos, float fogStart, float fogRange, Vect fogColor);
 private:
 	// EYEBALL BOI 0.0
 	Model * pModel_EyeballBoi;

@@ -1,6 +1,13 @@
 #include "GraphicsBackend.h"
 #include "src/Graphics/CrazySpaceMeatLand/src/Model.h"
 
+#ifdef BACKEND_D3D
+#include <d3d11.h>
+#include "d3dUtil.h"
+#include <d3dcompiler.h>
+#include <d3dcommon.h>
+#endif
+
 GraphicsBackend_Base* GraphicsBackend::pInst = nullptr;
 
 void VertexBufferObject::LoadToGPU()
@@ -137,3 +144,96 @@ TextureSampler::~TextureSampler()
 	ReleaseAndDeleteCOMobject(mpSampler);
 #endif
 }
+
+void ShaderInterface::BuildShaders(std::string filename, std::string vsModel, std::string psModel)
+{
+#ifdef BACKEND_D3D
+	LPCSTR wPsModel = "vs_4_0"; // todo - check if empty
+	LPCSTR wVsModel = "ps_4_0";
+	WCHAR* wFilename = L"";
+
+	pVSBlob = nullptr;
+	HRESULT hr = CompileShaderFromFileD3D(wFilename, "VS", wVsModel, &pVSBlob);
+	assert(SUCCEEDED(hr));
+
+	hr = GraphicsBackend::GetDevice().md3dDevice->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), nullptr, &mpVertexShader);
+	assert(SUCCEEDED(hr));
+
+	pPSBlob = nullptr;
+	hr = CompileShaderFromFileD3D(wFilename, "PS", wPsModel, &pPSBlob);
+	assert(SUCCEEDED(hr));
+
+	// Create the pixel shader
+	hr = GraphicsBackend::GetDevice().md3dDevice->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, &mpPixelShader);
+	assert(SUCCEEDED(hr));
+#endif
+}
+
+void ShaderInterface::CreateInputLayout(D3D11_INPUT_ELEMENT_DESC* layoutdesc, UINT size)
+{
+#ifdef BACKEND_D3D
+	// Create the input layout
+	HRESULT hr = GraphicsBackend::GetDevice().md3dDevice->CreateInputLayout(layoutdesc, size, pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), &mpVertexLayout);
+	assert(SUCCEEDED(hr));
+#endif
+}
+
+// Sets the DX context to use these VS, PS and input layout
+void ShaderInterface::SetToContext_VS_PS_InputLayout()
+{
+#ifdef BACKEND_D3D
+	assert(GraphicsBackend::GetContext().md3dImmediateContext != nullptr && "ERROR: Context not set.");
+	GraphicsBackend::GetContext().md3dImmediateContext->VSSetShader(mpVertexShader, nullptr, 0);
+	GraphicsBackend::GetContext().md3dImmediateContext->PSSetShader(mpPixelShader, nullptr, 0);
+	GraphicsBackend::GetContext().md3dImmediateContext->IASetInputLayout(mpVertexLayout);
+#endif
+}
+
+#ifdef BACKEND_D3D
+HRESULT ShaderInterface::CompileShaderFromFileD3D(const WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut)
+{
+	HRESULT hr = S_OK;
+
+	DWORD dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
+#ifdef _DEBUG
+	// Set the D3DCOMPILE_DEBUG flag to embed debug information in the shaders.
+	// Setting this flag improves the shader debugging experience, but still allows 
+	// the shaders to be optimized and to run exactly the way they will run in 
+	// the release configuration of this program.
+	dwShaderFlags |= D3DCOMPILE_DEBUG;
+
+	// Disable optimizations to further improve shader debugging
+	dwShaderFlags |= D3DCOMPILE_SKIP_OPTIMIZATION;
+#endif
+
+
+	ID3DBlob* pErrorBlob = nullptr;
+
+	hr = D3DCompileFromFile(szFileName, nullptr, nullptr, szEntryPoint, szShaderModel,
+		dwShaderFlags, 0, ppBlobOut, &pErrorBlob);
+	if (FAILED(hr))
+	{
+		if (pErrorBlob)
+		{
+			OutputDebugStringA(reinterpret_cast<const char*>(pErrorBlob->GetBufferPointer()));
+			pErrorBlob->Release();
+		}
+		return hr;
+	}
+	if (pErrorBlob) pErrorBlob->Release();
+
+	return S_OK;
+}
+
+ShaderInterface::~ShaderInterface()
+{
+#ifdef BACKEND_D3D
+	ReleaseAndDeleteCOMobject(pVSBlob);
+	ReleaseAndDeleteCOMobject(pPSBlob);
+	ReleaseAndDeleteCOMobject(mpVertexShader);
+	ReleaseAndDeleteCOMobject(mpPixelShader);
+	ReleaseAndDeleteCOMobject(mpVertexLayout);
+#endif
+}
+
+#endif
