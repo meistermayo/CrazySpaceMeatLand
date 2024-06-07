@@ -8,6 +8,18 @@
 #include <d3dcommon.h>
 #endif
 
+std::wstring stringToWString(std::string inStr)
+{
+	// this resizes by inStr.size() scales by wchar_t-sizes, not bytes.
+	std::wstring wStr;
+	wStr.resize(inStr.size());
+
+	// may have to check this later... seems to return 0 but doesn't fail what I want it to do...
+	MultiByteToWideChar(CP_ACP, 0, inStr.c_str(), -1, &wStr[0], inStr.size());
+
+	return wStr;
+}
+
 GraphicsBackend_Base* GraphicsBackend::pInst = nullptr;
 
 void VertexBufferObject::LoadToGPU()
@@ -75,20 +87,22 @@ IndexBufferObject::~IndexBufferObject()
 
 void TextureSampler::LoadTexture(std::string filepath, bool ComputeMip, size_t miplevel, uint32_t filterflags)
 {
-	LPCWSTR lpFilepath = L"";
+#ifdef BACKEND_D3D
+	std::wstring lpFilepath = stringToWString(filepath);
 
-	std::wstring fpath(lpFilepath);
-	std::wstring ext = fpath.substr(fpath.find_last_of(L".") + 1);
+	size_t pos = lpFilepath.find_last_of(L'.');
+	std::wstring ext = lpFilepath.substr(pos + 1);
 
 	DirectX::ScratchImage scrtTex;
 	HRESULT hr = S_OK;
+
 	if (ext == L"tga" || ext == L"TGA")
 	{
-		hr = LoadFromTGAFile(lpFilepath, nullptr, scrtTex);
+		hr = LoadFromTGAFile(lpFilepath.c_str(), nullptr, scrtTex);
 	}
 	else if (ext == L"dds" || ext == L"DDS")
 	{
-		hr = LoadFromDDSFile(lpFilepath, DirectX::DDS_FLAGS_NONE, nullptr, scrtTex);
+		hr = LoadFromDDSFile(lpFilepath.c_str(), DirectX::DDS_FLAGS_NONE, nullptr, scrtTex);
 	}
 	else
 	{
@@ -109,6 +123,24 @@ void TextureSampler::LoadTexture(std::string filepath, bool ComputeMip, size_t m
 	{
 		CreateShaderResourceView(GraphicsBackend::GetDevice().md3dDevice, scrtTex.GetImage(0, 0, 0), scrtTex.GetImageCount(), scrtTex.GetMetadata(), &mpTextureRV);
 	}
+#endif
+}
+
+void TextureSampler::LoadColorTexture(Vect color)
+{
+#ifdef BACKEND_D3D
+	float colArr[4]{ color.x, color.y, color.z, color.w };
+
+	DirectX::ScratchImage scrtTex;
+	DirectX::Image image;
+	image.format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+	image.height = 1;
+	image.width = 1;
+	image.pixels = reinterpret_cast<uint8_t*>(colArr);
+	scrtTex.InitializeFromImage(image);
+
+	CreateShaderResourceView(GraphicsBackend::GetDevice().md3dDevice, scrtTex.GetImage(0, 0, 0), scrtTex.GetImageCount(), scrtTex.GetMetadata(), &mpTextureRV);
+#endif
 }
 
 void TextureSampler::CreateSampleState(uint32_t filter, uint32_t isotropic_level)
@@ -148,9 +180,10 @@ TextureSampler::~TextureSampler()
 void ShaderInterface::BuildShaders(std::string filename, std::string vsModel, std::string psModel)
 {
 #ifdef BACKEND_D3D
-	LPCSTR wPsModel = "vs_4_0"; // todo - check if empty
-	LPCSTR wVsModel = "ps_4_0";
-	WCHAR* wFilename = L"";
+	LPCSTR wVsModel = vsModel.size() == 0 ? "vs_4_0" : vsModel.c_str();
+	LPCSTR wPsModel = psModel.size() == 0 ? "ps_4_0" : psModel.c_str();
+	std::wstring wFilestr = stringToWString(filename + GraphicsBackend::GetVertexShaderExt()); // todo - check if this ext exists
+	const WCHAR* wFilename = wFilestr.c_str();
 
 	pVSBlob = nullptr;
 	HRESULT hr = CompileShaderFromFileD3D(wFilename, "VS", wVsModel, &pVSBlob);

@@ -1,6 +1,8 @@
 #ifndef GRAPHICS_BACKEND_H
 #define GRAPHICS_BACKEND_H
 
+#include <string>
+
 #define BACKEND_D3D
 
 #include "src/Graphics/CrazySpaceMeatLand/src/Align16.h"
@@ -37,6 +39,9 @@ protected:
 	virtual void privSetClearColor(float r, float g, float b, float a = 1.0f) = 0;
 	virtual const GraphicsDevice& privGetDevice() const = 0;
 	virtual const GraphicsContext& privGetContext() const = 0;
+	virtual const std::string& privGetBackendFolder() const = 0;
+	virtual const std::string& privGetVertexShaderExt() const = 0;
+	virtual const std::string& privGetFragmentShaderExt() const = 0;
 
 	virtual void privSetPrimitiveTopologyAsTriList() const = 0;
 	virtual void privDrawIndexed(int indexCount, int startIndex, int baseVertex) const = 0;
@@ -141,7 +146,7 @@ struct TextureSampler : public Align16
 
 #ifdef BACKEND_D3D
 	void LoadTexture(std::string filepath, bool ComputeMip = false, size_t miplevel = 0, uint32_t filterflags = DirectX::TEX_FILTER_LINEAR);
-
+	void LoadColorTexture(Vect color);
 	void CreateSampleState(uint32_t filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR, uint32_t isotropic_level = 4);
 #endif BACKEND_D3D
 
@@ -233,6 +238,11 @@ struct ShaderInterface : public Align16
 
 #ifdef BACKEND_OGL
 class OGL_GraphicsBackend : public GraphicsBackend_Base {
+
+	// use these
+	const std::string VertexShaderExt = ".vs.glsl";
+	const std::string FragmentShaderExt = ".fs.glsl";
+
 public:
 };
 #endif
@@ -245,6 +255,10 @@ class D3D_GraphicsBackend : public GraphicsBackend_Base
 	HINSTANCE               hInst = nullptr;
 	HWND                    hWnd = nullptr;
 	int nCmdShow = 0;
+
+	const std::string mBackendFolder = "D3D/";
+	const std::string mVertexShaderExt = ".hlsl";
+	const std::string mFragmentShaderExt = ".hlsl";
 
 	Vect BackgroundColor;
 
@@ -267,23 +281,19 @@ public:
 
 protected:
 	virtual int privInitialize() override;
-
 	virtual void privInitApp() override;
-
 	virtual bool privStillOpen() override;
-
 	virtual void privPoll() override;
-
 	virtual void privPrepare() override;
-
 	virtual void privPresent() override;
-
 	virtual void privCleanupApp() override;
-
 	virtual void privSetClearColor(float r, float g, float b, float a);
 
 	virtual const GraphicsDevice& privGetDevice() const override;
 	virtual const GraphicsContext& privGetContext() const override;
+	virtual const std::string& privGetBackendFolder() const override;
+	virtual const std::string& privGetVertexShaderExt() const override;
+	virtual const std::string& privGetFragmentShaderExt() const override;
 
 	virtual void privDrawIndexed(int indexCount, int startIndex, int baseVertex) const override;
 	virtual void privSetPrimitiveTopologyAsTriList() const override;
@@ -359,7 +369,10 @@ public:
 	static void SetClearColor(float r, float g, float b, float a = 1.0f) { Instance()->privSetClearColor(r, g, b, a); }
 	static const GraphicsDevice& GetDevice() { return Instance()->privGetDevice(); }
 	static const GraphicsContext& GetContext() { return Instance()->privGetContext(); }
-	
+	static const std::string& GetBackendFolder() { return Instance()->privGetBackendFolder(); }
+	static const std::string& GetVertexShaderExt() { return Instance()->privGetVertexShaderExt(); }
+	static const std::string& GetFragmentShaderExt() { return Instance()->privGetFragmentShaderExt(); }
+
 	static void SetPrimitiveTopologyAsTriList() { Instance()->privSetPrimitiveTopologyAsTriList(); }
 	static void DrawIndexed(int indexCount, int startIndex, int baseVertex) { Instance()->privDrawIndexed(indexCount, startIndex, baseVertex); }
 };

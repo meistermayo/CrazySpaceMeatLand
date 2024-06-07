@@ -105,6 +105,9 @@ void D3D_GraphicsBackend::privSetClearColor(float r, float g, float b, float a)
 
 const GraphicsDevice& D3D_GraphicsBackend::privGetDevice() const { return mDev; }
 const GraphicsContext& D3D_GraphicsBackend::privGetContext() const { return mCon; }
+const std::string& D3D_GraphicsBackend::privGetBackendFolder() const { return mBackendFolder; }
+const std::string& D3D_GraphicsBackend::privGetVertexShaderExt() const { return mVertexShaderExt; }
+const std::string& D3D_GraphicsBackend::privGetFragmentShaderExt() const { return mFragmentShaderExt; }
 
 void D3D_GraphicsBackend::privDrawIndexed(int indexCount, int startIndex, int baseVertex) const
 {

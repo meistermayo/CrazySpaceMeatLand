@@ -109,6 +109,7 @@ protected:
 
 	void privLoadDataToGPU();
 	void privLoadDataFromFile(const char * const _modelName, StandardVertex*& pVerts, int& nverts, TriangleByIndex*& ptlist, int& ntri, bool flipU, bool flipV, float scale);
+	void privPopulateHelperData();
 
 public:
 	Model(const Model&) = delete;				// Copy constructor

@@ -129,12 +129,6 @@ void ShaderColorLightTexture::SendWorldAndMaterial(const Matrix& world, const Ve
 
 	mpBuffWordAndMaterial->UpdateBuffer(&wm);
 }
-/*
-void ShaderColorLightTexture::FuckYouMom()
-{
-	this->GetContext()->UpdateSubresource(urMumGay, 0, nullptr, &ym, 0, 0);
-}
-*/
 void ShaderColorLightTexture::SetToContext()
 {
 	ShaderBase::SetToContext_VS_PS_InputLayout();

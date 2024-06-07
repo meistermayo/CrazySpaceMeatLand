@@ -27,8 +27,8 @@ Texture::~Texture()
 
 Texture::Texture(float r, float g, float b, float a)
 {
-	r; g; b; a; 
-	// create red image :) todo
+	mpTextureSampler = new TextureSampler();
+	mpTextureSampler->LoadColorTexture(Vect(r, g, b, a));
 }
 
 void Texture::SetToContext(int texResSlot,  int sampSlot)

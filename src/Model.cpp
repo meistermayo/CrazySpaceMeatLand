@@ -15,11 +15,9 @@ Model::Model(StandardVertex *pVerts, int nverts, TriangleByIndex *ptlist, int nt
 	// Copy Data
 	numVerts = nverts;
 	pStdVerts = new StandardVertex[numVerts];
-	pVectList = new Vect[numVerts];
 	for (int i = 0; i < numVerts; i++)
 	{
 		pStdVerts[i] = pVerts[i];
-		pVectList[i] = pVerts[i].Pos;
 	}
 	numTris = ntri;
 	pTriList = new TriangleByIndex[numTris];
@@ -29,6 +27,7 @@ Model::Model(StandardVertex *pVerts, int nverts, TriangleByIndex *ptlist, int nt
 	}
 
 	meshes = new MeshSeparator(pStdVerts, numVerts, pTriList, numTris);
+	privPopulateHelperData();
 	privLoadDataToGPU();
 }
 
@@ -41,6 +40,7 @@ Model::Model(const char * const _modelName, bool flipU, bool flipV, float scale)
 
 	privLoadDataFromFile(_modelName, pStdVerts, numVerts, pTriList, numTris, flipU, flipV, scale );
 	meshes = new MeshSeparator(pStdVerts, numVerts, pTriList, numTris);
+	privPopulateHelperData();
 	privLoadDataToGPU();
 }
 
@@ -53,6 +53,7 @@ Model::Model(FbxMeshInfo& fbxMeshInfo)
 	pTriList = fbxMeshInfo.pTris;
 	
 	meshes = new MeshSeparator(pStdVerts, numVerts, pTriList, numTris);
+	privPopulateHelperData();
 	privLoadDataToGPU();
 }
 
@@ -86,6 +87,7 @@ Model::Model(Model::PreMadeModels pm, float scale)
 
 	meshes = new MeshSeparator(pStdVerts, numVerts, pTriList, numTris);
 
+	privPopulateHelperData();
 	privLoadDataToGPU();
 }
 
@@ -215,6 +217,15 @@ void Model::privLoadDataFromFile(const char * const _modelName, StandardVertex*&
 	
 	// *************************
 
+}
+
+void Model::privPopulateHelperData()
+{
+	pVectList = new Vect[numVerts];
+	for (int i = 0; i < numVerts; i++)
+	{
+		pVectList[i] = pStdVerts[i].Pos;
+	}
 }
 
 void  Model::privLoadDataToGPU()
