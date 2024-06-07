@@ -4,8 +4,8 @@
 #include "d3dUtil.h"
 #include "GraphicsBackend.h"
 
-ShaderTexture::ShaderTexture() :
-	ShaderBase("../Assets/Shaders/D3D/Texture.hlsl", "", "")
+ShaderTexture::ShaderTexture(std::string filename) :
+	ShaderBase(filename)
 {
 	mpShaderInterface->DefineInputLayoutTex();
 

@@ -4,8 +4,8 @@
 #include <assert.h>
 #include "GraphicsBackend.h"
 
-ShaderColor::ShaderColor()
-	: ShaderBase("../Assets/Shaders/D3D/ColorSelected3D.hlsl", "", "")
+ShaderColor::ShaderColor(std::string filename)
+	: ShaderBase(filename)
 {
 	mpShaderInterface->DefineInputLayout();
 

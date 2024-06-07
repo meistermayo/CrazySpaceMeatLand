@@ -11,7 +11,8 @@ struct GenericBufferObject;
 class ShaderTexture : public ShaderBase
 {
 public:
-	ShaderTexture();
+	ShaderTexture(std::string filename);
+	ShaderTexture() = delete;
 	~ShaderTexture();
 
 	virtual void SetToContext() override;

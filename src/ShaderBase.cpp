@@ -6,10 +6,10 @@
 #include <string>
 #include <assert.h>
 
-ShaderBase::ShaderBase(std::string filename, std::string vsModel, std::string psModel)
+ShaderBase::ShaderBase(std::string filename)
 {
 	mpShaderInterface = new ShaderInterface();
-	mpShaderInterface->BuildShaders(filename, vsModel, psModel);
+	mpShaderInterface->BuildShaders(filename);
 }
 
 ShaderBase::~ShaderBase()

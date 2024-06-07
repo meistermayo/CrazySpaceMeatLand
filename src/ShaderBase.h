@@ -20,11 +20,11 @@ protected:
 	virtual void SetToContext() {};
 
 public:
-	ShaderBase(std::string filename, std::string vsModel = "", std::string psModel = "");
-	ShaderBase(const ShaderBase&) = default;				  // Copy constructor
-	ShaderBase(ShaderBase&&) = delete;                    // Move constructor
-	ShaderBase& operator=(const ShaderBase&) & = delete;  // Copy assignment operator
-	ShaderBase& operator=(ShaderBase&&) & = delete;       // Move assignment operator
+	ShaderBase(std::string filename);
+	ShaderBase(const ShaderBase&) = default;				// Copy constructor
+	ShaderBase(ShaderBase&&) = delete;						// Move constructor
+	ShaderBase& operator=(const ShaderBase&) & = delete;	// Copy assignment operator
+	ShaderBase& operator=(ShaderBase&&) & = delete;			// Move assignment operator
 	ShaderBase() = delete;
 	virtual ~ShaderBase();
 };

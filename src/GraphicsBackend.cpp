@@ -177,11 +177,11 @@ TextureSampler::~TextureSampler()
 #endif
 }
 
-void ShaderInterface::BuildShaders(std::string filename, std::string vsModel, std::string psModel)
+void ShaderInterface::BuildShaders(std::string filename)
 {
 #ifdef BACKEND_D3D
-	LPCSTR wVsModel = vsModel.size() == 0 ? "vs_4_0" : vsModel.c_str();
-	LPCSTR wPsModel = psModel.size() == 0 ? "ps_4_0" : psModel.c_str();
+	LPCSTR wVsModel = "vs_4_0";
+	LPCSTR wPsModel = "ps_4_0";
 	std::wstring wFilestr = stringToWString(filename + GraphicsBackend::GetVertexShaderExt()); // todo - check if this ext exists
 	const WCHAR* wFilename = wFilestr.c_str();
 

@@ -5,8 +5,8 @@
 #include "GraphicsBackend.h"
 
 
-ShaderWireframe::ShaderWireframe()
-	: ShaderBase("../Assets/Shaders/D3D/ColorSelected3D.hlsl", "", "")
+ShaderWireframe::ShaderWireframe(std::string filename)
+	: ShaderBase(filename)
 {
 	mpShaderInterface->DefineInputLayout();
 

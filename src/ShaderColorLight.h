@@ -20,7 +20,8 @@ public:
 	ShaderColorLight& operator=(ShaderColorLight&&) & = default;       // Move assignment operator
 	~ShaderColorLight();		  							         // Destructor
 
-	ShaderColorLight();
+	ShaderColorLight(std::string filename);
+	ShaderColorLight() = delete;
 
 	virtual void SetToContext() override;
 

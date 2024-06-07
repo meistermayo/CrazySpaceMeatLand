@@ -19,7 +19,8 @@ public:
 	ShaderColor& operator=(ShaderColor&&) & = default;       // Move assignment operator
 	~ShaderColor();		  							         // Destructor
 
-	ShaderColor();
+	ShaderColor(std::string filename);
+	ShaderColor() = delete;
 
 	virtual void SetToContext() override;
 

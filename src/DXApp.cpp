@@ -60,9 +60,9 @@ void DXApp::InitDemo()
 
 
 
-	pShaderTex = new ShaderTexture();
+	pShaderTex = new ShaderTexture("../Assets/Shaders/D3D/Texture.hlsl");
 
-	pShaderTexLight = new ShaderColorLightTexture();
+	pShaderTexLight = new ShaderColorLightTexture("../Assets/Shaders/D3D/ColorLightTexture.hlsl");
 
 	pShaderTexLight->SetPointLightParameters1(pointLightPos1, pointLightRadius1, pointLightAtt1, pointLightAmb1, pointLightDif1, pointLightSpc1);
 	pShaderTexLight->SetPointLightParameters2(pointLightPos2, pointLightRadius2, pointLightAtt2, pointLightAmb2, pointLightDif2, pointLightSpc2);
@@ -96,7 +96,7 @@ void DXApp::InitDemo()
 	pModel_Cube3 = new Model(fbxModelInfo.meshInfo[2]);
 	//pModel_Cube = new Model(Model::UnitSphere, 12.0f);
 	mWorld_Cube = new Matrix(Matrix::Trans(Vect(0.f, 10.f, 0.f))); /// ??? pointer???
-	pShader_Cube = new ShaderColorLightTexture();
+	pShader_Cube = new ShaderColorLightTexture("../Assets/Shaders/D3D/ColorLightTexture.hlsl");
 	Cube1 = new GraphicObject_TextureLight((ShaderColorLightTexture*)(pShader_Cube), pModel_Cube1);// Vect(1, 0, 0, 1), Vect(1, 0, 0, 1), Vect(1, 1, 1, 1));
 	Cube2 = new GraphicObject_TextureLight((ShaderColorLightTexture*)(pShader_Cube), pModel_Cube2);// Vect(1, 0, 0, 1), Vect(1, 0, 0, 1), Vect(1, 1, 1, 1));
 	Cube3 = new GraphicObject_TextureLight((ShaderColorLightTexture*)(pShader_Cube), pModel_Cube3);// Vect(1, 0, 0, 1), Vect(1, 0, 0, 1), Vect(1, 1, 1, 1));
@@ -128,7 +128,7 @@ void DXApp::InitDemo()
 	pTerrain_Texture = new Texture("../Assets/Textures/brownsand.tga");
 	float len = 3;
 	pTerrain = new TerrainModel("../Assets/Textures/canyon2.tga", len, 50.f, 0.f, 8, 8);
-	pTerrain_Shader = new ShaderTexture();
+	pTerrain_Shader = new ShaderTexture("../Assets/Shaders/D3D/Texture.hlsl");
 	pTerrain_Shader->SetTextureResourceAndSampler(NULL);
 	pTerrain_World = new Matrix(Matrix::Trans(Vect(-128.0f*len, 0.0f, -128.0f*len))); // why tf is this a pointer???
 #endif
@@ -137,7 +137,7 @@ void DXApp::InitDemo()
 	Matrix _tempMatrix = Matrix::Scale(1.f) * Matrix::Trans(Vect::Zero); // why?
 	pSkyBox_World = new Matrix(_tempMatrix);
 	pSkyBox_Texture = new Texture("../Assets/Textures/redspace.tga");
-	pSkyBox_Shader = new ShaderTexture();
+	pSkyBox_Shader = new ShaderTexture("../Assets/Shaders/D3D/Texture.hlsl");
 	pSkyBox_Shader->SetTextureResourceAndSampler(NULL);
 	pSkyBox = new Skybox(pSkyBox_Shader, pSkyBox_Texture);
 #endif

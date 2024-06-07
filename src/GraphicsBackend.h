@@ -169,7 +169,7 @@ struct ShaderInterface : public Align16
 #endif
 
 	// Compile and send the VS and PS shaders to the GPU
-	void BuildShaders(std::string filename, std::string vsModel, std::string psModel);
+	void BuildShaders(std::string filename);
 
 	void CreateInputLayout(D3D11_INPUT_ELEMENT_DESC* layoutdesc, UINT size);
 

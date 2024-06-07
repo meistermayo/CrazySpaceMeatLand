@@ -4,8 +4,8 @@
 #include <assert.h>
 #include "GraphicsBackend.h"
 
-ShaderColorLightTexture::ShaderColorLightTexture()
-	: ShaderBase("../Assets/Shaders/D3D/ColorLightTexture.hlsl", "", "")
+ShaderColorLightTexture::ShaderColorLightTexture(std::string filename)
+	: ShaderBase(filename)
 {
 	mpShaderInterface->DefineInputLayoutNormalTex();
 
