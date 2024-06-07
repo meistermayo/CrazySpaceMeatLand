@@ -81,6 +81,9 @@ Model::Model(Model::PreMadeModels pm, float scale)
 	case UnitPlaneXY:
 		ModelTools::CreateUnitPlaneXY(pStdVerts, numVerts, pTriList, numTris);
 		break;
+	case UnitPlaneXZ:
+		ModelTools::CreateUnitPlaneXZ(pStdVerts, numVerts, pTriList, numTris);
+		break;
 	default:
 		assert(false && "Invalid option");
 	}

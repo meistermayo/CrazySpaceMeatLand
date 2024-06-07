@@ -19,6 +19,7 @@ struct TriangleByIndex;
 #include "src/Graphics/CrazySpaceMeatLand/src/DXApp.h"
 #include "src/i Engine/i.h"
 #include "src/Graphics/CrazySpaceMeatLand/src/Math/Vect.h"
+#include "src/i Engine/Input/Keys.h" // todo -- no no
 
 #endif
 
@@ -42,9 +43,14 @@ protected:
 	virtual const std::string& privGetBackendFolder() const = 0;
 	virtual const std::string& privGetVertexShaderExt() const = 0;
 	virtual const std::string& privGetFragmentShaderExt() const = 0;
+	virtual const float privGetTime() const = 0;
+	virtual const bool privGetKeyState(KEY_CODE key) const = 0;
 
 	virtual void privSetPrimitiveTopologyAsTriList() const = 0;
 	virtual void privDrawIndexed(int indexCount, int startIndex, int baseVertex) const = 0;
+
+public:
+	virtual void OnKey(KEY_CODE key, bool down) = 0;
 };
 
 struct GraphicsDevice : public Align16
@@ -262,6 +268,8 @@ class D3D_GraphicsBackend : public GraphicsBackend_Base
 
 	Vect BackgroundColor;
 
+	bool keyStates[KEY_CODE::KEY_COUNT] { false };
+
 	// DX application elements
 	GraphicsDevice mDev;						// Connects to the graphics card
 	GraphicsContext mCon;						// Settings for the GPU to use
@@ -294,11 +302,38 @@ protected:
 	virtual const std::string& privGetBackendFolder() const override;
 	virtual const std::string& privGetVertexShaderExt() const override;
 	virtual const std::string& privGetFragmentShaderExt() const override;
+	virtual const float privGetTime() const override
+	{
+		static LARGE_INTEGER frequency;
+		static bool initialized = false;
+		static LARGE_INTEGER start;
+
+		if (!initialized) {
+			// Get the frequency of the performance counter
+			QueryPerformanceFrequency(&frequency);
+
+			// Get the initial time
+			QueryPerformanceCounter(&start);
+
+			initialized = true;
+		}
+
+		// Get the current time
+		LARGE_INTEGER current;
+		QueryPerformanceCounter(&current);
+
+		// Calculate elapsed time in seconds
+		return static_cast<float>(current.QuadPart - start.QuadPart) / frequency.QuadPart;
+	}
+	virtual const bool privGetKeyState(KEY_CODE key) const { return keyStates[key]; }
 
 	virtual void privDrawIndexed(int indexCount, int startIndex, int baseVertex) const override;
 	virtual void privSetPrimitiveTopologyAsTriList() const override;
 
 	void InitDirect3D();
+
+public:
+	virtual void OnKey(KEY_CODE key, bool down) override { keyStates[key] = down; }
 
 protected:
 	HRESULT InitWindow()
@@ -372,6 +407,8 @@ public:
 	static const std::string& GetBackendFolder() { return Instance()->privGetBackendFolder(); }
 	static const std::string& GetVertexShaderExt() { return Instance()->privGetVertexShaderExt(); }
 	static const std::string& GetFragmentShaderExt() { return Instance()->privGetFragmentShaderExt(); }
+	static const float GetTime() { return Instance()->privGetTime(); }
+	static const bool GetKeyState(KEY_CODE key) { return Instance()->privGetKeyState(key); }
 
 	static void SetPrimitiveTopologyAsTriList() { Instance()->privSetPrimitiveTopologyAsTriList(); }
 	static void DrawIndexed(int indexCount, int startIndex, int baseVertex) { Instance()->privDrawIndexed(indexCount, startIndex, baseVertex); }
@@ -393,6 +430,11 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 			PostQuitMessage(0);
 			return 0;
 		}
+		pBackend->OnKey(static_cast<KEY_CODE>(wParam), true);
+		break;
+
+	case WM_KEYUP:
+		pBackend->OnKey(static_cast<KEY_CODE>(wParam), false);
 		break;
 
 	case WM_PAINT:

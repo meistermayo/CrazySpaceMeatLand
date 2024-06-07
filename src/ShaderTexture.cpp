@@ -18,6 +18,8 @@ ShaderTexture::ShaderTexture(std::string filename) :
 	mpFog = new GenericBufferObject<FogData>();
 	mpFog->CreateBuffer(2);
 	
+	eyepos = Vect::Zero;
+	SendFogData(1000.0f, 10000.0f, Vect(1.f, 0.f, 1.f));
 	// mTex = new Texture(GetDevice(), L"../Assets/Textures/CrateFace.tga");
 }
 

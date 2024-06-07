@@ -21,6 +21,11 @@ ShaderColorLightTexture::ShaderColorLightTexture(std::string filename)
 	mpFog = new GenericBufferObject<FogData>();
 	mpFog->CreateBuffer(3);
 
+	// todo
+	SendLightParameters(Vect::Zero);
+	SendFogData(100.f, 1000.f, Vect(1.f, 0.f, 1.f, 1.f));
+	
+
 	// Zeroing the light data
 	ZeroMemory(&DirLightData, sizeof(DirLightData));
 	ZeroMemory(&PointLightData1, sizeof(PointLightData1));

@@ -7,7 +7,12 @@
 #include "Matrix.h"
 #include "Quat.h"
 
-const Matrix Matrix::Identity(Vect::Right_0, Vect::Up_0, Vect::Forward_0, Vect::Zero);
+const Matrix Matrix::Identity(
+	Vect(1.0f, 0.0f, 0.0f, 0.0f),
+	Vect(0.0f, 1.0f, 0.0f, 0.0f),
+	Vect(0.0f, 0.0f, 1.0f, 0.0f),
+	Vect(0.0f, 0.0f, 0.0f, 1.0f)
+);
 
 //*/
 Matrix Matrix::operator * (const Matrix& t)
@@ -32,7 +37,7 @@ Matrix Matrix::operator * (const Matrix& t)
 			this->v3.dot(Vect(t.m00, t.m10, t.m20, t.m30)),
 			this->v3.dot(Vect(t.m01, t.m11, t.m21, t.m31)),
 			this->v3.dot(Vect(t.m02, t.m12, t.m22, t.m32)),
-			this->v3.dot(Vect(t.m03, t.m13, t.m23, t.m33)))
+			1.0f)
 	);
 }
 

@@ -124,6 +124,7 @@ void TextureSampler::LoadTexture(std::string filepath, bool ComputeMip, size_t m
 		CreateShaderResourceView(GraphicsBackend::GetDevice().md3dDevice, scrtTex.GetImage(0, 0, 0), scrtTex.GetImageCount(), scrtTex.GetMetadata(), &mpTextureRV);
 	}
 #endif
+	// crash 3 - scratch image ??? todo
 }
 
 void TextureSampler::LoadColorTexture(Vect color)

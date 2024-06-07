@@ -40,22 +40,22 @@ public:
 private:
 	struct Material
 	{
-		Vect Ambient;
-		Vect Diffuse;
-		Vect Specular;
+		Vect Ambient{ 1.f, 1.f, 0.f, 1.f };
+		Vect Diffuse{ 1.f, 1.f, 0.f, 1.f };
+		Vect Specular{ 1.f, 1.f, 0.f, 1.f };
 	};
 
 	struct PhongADS
 	{
-		Vect Ambient;
-		Vect Diffuse;
-		Vect Specular;
+		Vect Ambient{ 1.f, 1.f, 0.f, 1.f };
+		Vect Diffuse{ 1.f, 1.f, 0.f, 1.f };
+		Vect Specular{ 1.f, 1.f, 0.f, 1.f };
 	};
 
 	struct DirectionalLight
 	{
 		PhongADS Light;
-		Vect Direction;
+		Vect Direction{ 1.f, 1.f, 0.f, 1.f };
 	};
 
 	DirectionalLight DirLightData;
@@ -63,9 +63,9 @@ private:
 	struct PointLight
 	{
 		PhongADS Light;
-		Vect Position;
-		Vect Attenuation;
-		float Range;
+		Vect Position{ 1.f, 1.f, 0.f, 1.f };
+		Vect Attenuation{ 1.f, 1.f, 0.f, 1.f };
+		float Range = 1.0f;
 	};
 
 	PointLight PointLightData1;
@@ -75,11 +75,11 @@ private:
 	struct SpotLight
 	{
 		PhongADS Light;
-		Vect Position;
-		Vect Attenuation;
-		Vect Direction;
-		float SpotExp;
-		float Range;
+		Vect Position{ 1.f, 1.f, 0.f, 1.f };
+		Vect Attenuation{ 1.f, 1.f, 0.f, 1.f };
+		Vect Direction{ 1.f, 1.f, 0.f, 1.f };
+		float SpotExp = 1.0f;
+		float Range = 1.0f;
 	};
 
 	SpotLight SpotLightData;
@@ -119,9 +119,9 @@ private:
 	Texture *mTex;
 	public:
 		struct FogData {
-			float fogMin;
-			float fogMax;
-			Vect fogCol;
+			float fogMin = 1000.0f;
+			float fogMax = 10000.0f;
+			Vect fogCol{ 1.0f, 0.0f, 1.0f, 1.0f };
 		};
 
 private:
