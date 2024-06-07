@@ -48,6 +48,8 @@ protected:
 
 	virtual void privSetPrimitiveTopologyAsTriList() const = 0;
 	virtual void privDrawIndexed(int indexCount, int startIndex, int baseVertex) const = 0;
+	virtual const int privGetWindowWidth() const = 0;
+	virtual const int privGetWindowHeight() const = 0;
 
 public:
 	virtual void OnKey(KEY_CODE key, bool down) = 0;
@@ -326,6 +328,8 @@ protected:
 		return static_cast<float>(current.QuadPart - start.QuadPart) / frequency.QuadPart;
 	}
 	virtual const bool privGetKeyState(KEY_CODE key) const { return keyStates[key]; }
+	virtual const int privGetWindowHeight() const override { return mClientHeight; }
+	virtual const int privGetWindowWidth() const override { return mClientWidth; }
 
 	virtual void privDrawIndexed(int indexCount, int startIndex, int baseVertex) const override;
 	virtual void privSetPrimitiveTopologyAsTriList() const override;
@@ -409,6 +413,8 @@ public:
 	static const std::string& GetFragmentShaderExt() { return Instance()->privGetFragmentShaderExt(); }
 	static const float GetTime() { return Instance()->privGetTime(); }
 	static const bool GetKeyState(KEY_CODE key) { return Instance()->privGetKeyState(key); }
+	static const int GetWindowHeight() { return Instance()->privGetWindowHeight(); }
+	static const int GetWindowWidth() { return Instance()->privGetWindowWidth(); }
 
 	static void SetPrimitiveTopologyAsTriList() { Instance()->privSetPrimitiveTopologyAsTriList(); }
 	static void DrawIndexed(int indexCount, int startIndex, int baseVertex) { Instance()->privDrawIndexed(indexCount, startIndex, baseVertex); }
