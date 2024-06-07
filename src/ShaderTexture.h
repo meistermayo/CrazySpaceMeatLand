@@ -2,7 +2,6 @@
 #define _SHADER_TEXTURE
 
 #include "ShaderBase.h"
-#include "Texture.h"
 #include "Math/Matrix.h"
 
 template <typename T>
@@ -17,7 +16,6 @@ public:
 
 	virtual void SetToContext() override;
 
-	void SetTextureResourceAndSampler(Texture* _tex);
 	void SendCamMatrices(const Matrix& view, const Matrix& proj);
 	void ShaderTexture::SendWorld(const Matrix& world);
 	void SendFogData(const float& fogMin, const float& fogMax, const Vect& fogCol);
@@ -43,10 +41,6 @@ private:
 
 	GenericBufferObject<InstanceData>*           mpBuffWordColor;
 	
-	// Texture stuff
-	ID3D11ShaderResourceView* mpTextureRV;
-	ID3D11SamplerState* mpSampler;
-	Texture *mTex;
 public:
 	struct FogData {
 		float fogMin;

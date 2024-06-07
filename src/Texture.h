@@ -23,8 +23,9 @@ public:
 
 	void SetToContext(int texResSlot = 0, int sampSlot = 0);
 	
-	int GetWidth() { return 0; }
-	int GetHeight() { return 0; } // todo
+	int GetWidth();
+	int GetHeight();
+
 private:
 	TextureSampler* mpTextureSampler;
 

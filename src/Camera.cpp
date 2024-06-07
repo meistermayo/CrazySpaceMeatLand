@@ -4,6 +4,7 @@
 
 void Camera::setPerspective(float Fovy, float Aspect, float NearDist, float FarDist)
 {
+	bIsPerspective = true;
 	this->aspectRatio = Aspect;
 	this->fovy = Fovy;
 	this->nearDist = NearDist;
@@ -23,6 +24,7 @@ void Camera::setViewport(int inX, int inY, int inWidth, int inHeight)
 
 void Camera::setOrthographic(float left, float right, float top, float bottom, float near, float far)
 {
+	bIsPerspective = false;
 	setPerspective(this->fovy, (right-left)/(bottom-top), near, far); // todo : check me
 }
 
@@ -80,26 +82,51 @@ void Camera::privUpdateProjectionMatrix(void)
 	this->projMatrix[14] = (-2.0f * this->farDist * this->nearDist) / (this->farDist - this->nearDist);
 	this->projMatrix[15] = 0.0f;
 	//*/
-	float d = 1.0f / tanf(fovy / 2.0f);
-	this->projMatrix[0] = d / aspectRatio;
-	this->projMatrix[1] = 0.0f;
-	this->projMatrix[2] = 0.0f;
-	this->projMatrix[3] = 0.0f;
+	if (bIsPerspective)
+	{
+		float d = 1.0f / tanf(fovy / 2.0f);
+		this->projMatrix[0] = d / aspectRatio;
+		this->projMatrix[1] = 0.0f;
+		this->projMatrix[2] = 0.0f;
+		this->projMatrix[3] = 0.0f;
 
-	this->projMatrix[4] = 0.0f;
-	this->projMatrix[5] = d;
-	this->projMatrix[6] = 0.0f;
-	this->projMatrix[7] = 0.0f;
+		this->projMatrix[4] = 0.0f;
+		this->projMatrix[5] = d;
+		this->projMatrix[6] = 0.0f;
+		this->projMatrix[7] = 0.0f;
 
-	this->projMatrix[8] = 0.0f;
-	this->projMatrix[9] = 0.0f;
-	this->projMatrix[10] = -(this->farDist + this->nearDist) / (this->farDist - this->nearDist);
-	this->projMatrix[11] = -1.0f;
+		this->projMatrix[8] = 0.0f;
+		this->projMatrix[9] = 0.0f;
+		this->projMatrix[10] = -(this->farDist + this->nearDist) / (this->farDist - this->nearDist);
+		this->projMatrix[11] = -1.0f;
 
-	this->projMatrix[12] = 0.0f;
-	this->projMatrix[13] = 0.0f;
-	this->projMatrix[14] = (-2.0f * this->farDist * this->nearDist) / (this->farDist - this->nearDist);
-	this->projMatrix[15] = 0.0f;
+		this->projMatrix[12] = 0.0f;
+		this->projMatrix[13] = 0.0f;
+		this->projMatrix[14] = (-2.0f * this->farDist * this->nearDist) / (this->farDist - this->nearDist);
+		this->projMatrix[15] = 0.0f;
+	}
+	else
+	{
+		this->projMatrix[0] = 2.0f / width;
+		this->projMatrix[1] = 0.0f;
+		this->projMatrix[2] = 0.0f;
+		this->projMatrix[3] = 0.0f;
+
+		this->projMatrix[4] = 0.0f;
+		this->projMatrix[5] = 2.0f / height;
+		this->projMatrix[6] = 0.0f;
+		this->projMatrix[7] = 0.0f;
+
+		this->projMatrix[8] = 0.0f;
+		this->projMatrix[9] = 0.0f;
+		this->projMatrix[10] = -2.0f / (this->farDist - this->nearDist);
+		this->projMatrix[11] = -1.0f;
+
+		this->projMatrix[12] = -1.0f;
+		this->projMatrix[13] = 1.0f;
+		this->projMatrix[14] = (-1.0f * this->farDist * this->nearDist) / (this->farDist - this->nearDist);
+		this->projMatrix[15] = 1.0f;
+	}
 	//*/
 
 	// Converting from OpenGL-style NDC of [-1,1] to DX's [0,1].  See note: https://anteru.net/blog/2011/12/27/1830/

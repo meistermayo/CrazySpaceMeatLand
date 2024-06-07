@@ -10,7 +10,6 @@ GraphicObject_Texture::GraphicObject_Texture(ShaderTexture* shader,Model* mod)
 	SetModel(mod);
 	tex = new Texture*[mod->GetMeshCount()];
 	pWorld = new Matrix(Matrix::Identity);
-	pShader->SetTextureResourceAndSampler(NULL);
 }
 
 GraphicObject_Texture::GraphicObject_Texture(Model* mod, ShaderTexture* shader, Texture* texture)
@@ -20,7 +19,6 @@ GraphicObject_Texture::GraphicObject_Texture(Model* mod, ShaderTexture* shader, 
 	tex = new Texture * [mod->GetMeshCount()];
 	tex[0] = texture;
 	pWorld = new Matrix(Matrix::Identity);
-	pShader->SetTextureResourceAndSampler(NULL);
 }
 
 GraphicObject_Texture::~GraphicObject_Texture() {

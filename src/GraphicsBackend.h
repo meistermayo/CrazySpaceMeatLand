@@ -145,8 +145,12 @@ struct GenericBufferObject : public Align16
 	}
 };
 
+// class? todo
 struct TextureSampler : public Align16
 {
+	int width;
+	int height;
+
 #ifdef BACKEND_D3D
 	ID3D11ShaderResourceView* mpTextureRV;
 	ID3D11SamplerState* mpSampler;
@@ -159,6 +163,9 @@ struct TextureSampler : public Align16
 #endif BACKEND_D3D
 
 	void SetToContext(int texResSlot, int sampSlot);
+
+	int GetWidth() { return width; }
+	int GetHeight() { return height; }
 
 	~TextureSampler();
 };

@@ -6,7 +6,6 @@
 
 #include "ShaderBase.h"
 #include "Math/Matrix.h"
-#include "Texture.h"
 
 template <typename T>
 struct GenericBufferObject;
@@ -33,8 +32,6 @@ public:
 	void SendCamMatrices(const Matrix& view, const Matrix& proj);
 	void SendLightParameters(const Vect& eyepos);
 	void SendWorldAndMaterial(const Matrix& world, const Vect& amb = Vect(.5f, .5f, .5f), const Vect& dif = Vect(.5f, .5f, .5f), const Vect& sp = Vect(.5f, .5f, .5f));
-	// Destructor
-	void SetTextureResourceAndSampler(Texture* _tex);	
 	void SendFogData(const float& fogMin, const float& fogMax, const Vect& fogCol);
 
 private:
@@ -113,10 +110,6 @@ private:
 
 	GenericBufferObject<Data_LightParams>*  mpBufferLightParams;
 
-	// Texture stuff
-	ID3D11ShaderResourceView* mpTextureRV;
-	ID3D11SamplerState* mpSampler;
-	Texture *mTex;
 	public:
 		struct FogData {
 			float fogMin = 1000.0f;

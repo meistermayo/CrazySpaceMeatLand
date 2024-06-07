@@ -123,18 +123,24 @@ void TextureSampler::LoadTexture(std::string filepath, bool ComputeMip, size_t m
 	{
 		CreateShaderResourceView(GraphicsBackend::GetDevice().md3dDevice, scrtTex.GetImage(0, 0, 0), scrtTex.GetImageCount(), scrtTex.GetMetadata(), &mpTextureRV);
 	}
+
+	width = scrtTex.GetMetadata().width;
+	height = scrtTex.GetMetadata().height;
 #endif
 	// crash 3 - scratch image ??? todo
 }
 
 void TextureSampler::LoadColorTexture(Vect color)
 {
+	width = 1;
+	height = 1;
+
 #ifdef BACKEND_D3D
 	float colArr[4]{ color.x, color.y, color.z, color.w };
 
 	DirectX::ScratchImage scrtTex;
 	DirectX::Image image;
-	image.format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+	image.format = DXGI_FORMAT_R32G32B32_FLOAT;
 	image.height = 1;
 	image.width = 1;
 	image.pixels = reinterpret_cast<uint8_t*>(colArr);

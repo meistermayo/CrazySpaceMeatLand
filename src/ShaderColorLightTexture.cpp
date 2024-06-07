@@ -24,7 +24,6 @@ ShaderColorLightTexture::ShaderColorLightTexture(std::string filename)
 	// todo
 	SendLightParameters(Vect::Zero);
 	SendFogData(100.f, 1000.f, Vect(1.f, 0.f, 1.f, 1.f));
-	
 
 	// Zeroing the light data
 	ZeroMemory(&DirLightData, sizeof(DirLightData));
@@ -142,34 +141,4 @@ void ShaderColorLightTexture::SetToContext()
 	mpBufferLightParams->Bind();
 	mpBuffWordAndMaterial->Bind();
 	mpFog->Bind();
-
-	// mTex->SetToContext(); // todo
-}
-
-void ShaderColorLightTexture::SetTextureResourceAndSampler(Texture* _tex)
-{
-	// mpSampler
-	// mpTextureRV
-	_tex;
-	//tex->Texture::SetToContext(GetContext());
-	DirectX::ScratchImage testTexture;
-	HRESULT hr = LoadFromTGAFile(L"../Assets/Textures/CrateFace.tga", nullptr, testTexture);
-	assert(SUCCEEDED(hr));
-	ID3D11Device *d3dDev = GraphicsBackend::GetDevice().md3dDevice;
-
-	CreateShaderResourceView(d3dDev, testTexture.GetImage(0, 0, 0), testTexture.GetImageCount(), testTexture.GetMetadata(), &mpTextureRV);
-
-	// Create the sample state
-	D3D11_SAMPLER_DESC sampDesc;
-	ZeroMemory(&sampDesc, sizeof(sampDesc));
-	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-	sampDesc.MinLOD = 0;
-	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
-	hr = d3dDev->CreateSamplerState(&sampDesc, &mpSampler);
-	assert(SUCCEEDED(hr));
-	// todo ???
 }

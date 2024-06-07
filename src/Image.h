@@ -4,6 +4,7 @@
 #include "Rect.h"
 #include "Texture.h"
 
+// Implicitly owns the rect... fow now (todo)
 class Image
 {
 public:
@@ -11,16 +12,19 @@ public:
 	Image()
 		: pText(nullptr), pImageRect(nullptr) {}
 
-	Image(Texture* pTexture, Rect* pRect)
-		: pText(pTexture), pImageRect(pRect) {}
+	Image(Texture* pTexture, const Rect& inRect)
+		: pText(pTexture), pImageRect(new Rect(inRect)) {}
 
-	void Set(Texture* pTexture, Rect* pRect)
+	void Set(Texture* pTexture, const Rect& inRect)
 	{
 		pText = pTexture;
-		pImageRect = pRect;
+		pImageRect = new Rect(inRect);
 	}
 
-	~Image() {}
+	~Image()
+	{
+		delete pImageRect;
+	}
 
 public:
 	// data: -----------------------------------------------------------------------

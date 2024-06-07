@@ -36,3 +36,13 @@ void Texture::SetToContext(int texResSlot,  int sampSlot)
 	mpTextureSampler->SetToContext(texResSlot, sampSlot);
 }
 
+int Texture::GetWidth()
+{
+	return mpTextureSampler->GetWidth();
+}
+
+int Texture::GetHeight()
+{
+	return mpTextureSampler->GetHeight();
+}
+

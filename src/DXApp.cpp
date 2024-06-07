@@ -68,10 +68,6 @@ void DXApp::InitDemo()
 	pShaderTexLight->SetPointLightParameters2(pointLightPos2, pointLightRadius2, pointLightAtt2, pointLightAmb2, pointLightDif2, pointLightSpc2);
 	pShaderTexLight->SetSpotLightParameters(spotLightPos , spotLightRadius, spotLightAtt, spotDir, spotExp, spotLightAmb, spotLightDif, spotLightSpc);
 
-
-	pShaderTex->SetTextureResourceAndSampler(NULL);
-	pShaderTexLight->SetTextureResourceAndSampler(NULL);
-
 	eyeballRing = new EyeballRing(pShaderTexLight);
 	
 
@@ -129,7 +125,6 @@ void DXApp::InitDemo()
 	float len = 3;
 	pTerrain = new TerrainModel("../Assets/Textures/canyon2.tga", len, 50.f, 0.f, 8, 8);
 	pTerrain_Shader = new ShaderTexture("../Assets/Shaders/D3D/Texture.hlsl");
-	pTerrain_Shader->SetTextureResourceAndSampler(NULL);
 	pTerrain_World = new Matrix(Matrix::Trans(Vect(-128.0f*len, 0.0f, -128.0f*len))); // why tf is this a pointer???
 #endif
 
@@ -138,7 +133,6 @@ void DXApp::InitDemo()
 	pSkyBox_World = new Matrix(_tempMatrix);
 	pSkyBox_Texture = new Texture("../Assets/Textures/redspace.tga");
 	pSkyBox_Shader = new ShaderTexture("../Assets/Shaders/D3D/Texture.hlsl");
-	pSkyBox_Shader->SetTextureResourceAndSampler(NULL);
 	pSkyBox = new Skybox(pSkyBox_Shader, pSkyBox_Texture);
 #endif
 #ifdef FLATPLANE

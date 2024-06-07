@@ -257,9 +257,12 @@ void ModelTools::CreateUnitSphere(int vslice, int hslice, StandardVertex *&pVert
 				float sin2 = sinf(angle2 * j);
 				float cos2 = cosf(angle2 * j);
 
-				pVerts[j + (i*hslice)].set(sin1*cos2*scale, cos1*scale, sin1*sin2*scale, (float)i / (float)vslice, (float)j / (float)hslice, sin1*cos2, cos1, sin1*sin2);
+				int ind = j + (i * hslice);
+				assert(ind < nverts);
+				pVerts[ind].set(sin1*cos2*scale, cos1*scale, sin1*sin2*scale, (float)i / (float)vslice, (float)j / (float)hslice, sin1*cos2, cos1, sin1*sin2);
 			}
 		}
+		assert((vslice*hslice) < nverts);
 		pVerts[vslice*hslice].set(0.0f, -1.0f, 0.0f, 1, 1, 0.0f, -1.0f, 0.0f);
 	}
 
@@ -273,10 +276,13 @@ void ModelTools::CreateUnitSphere(int vslice, int hslice, StandardVertex *&pVert
 
 		for (int i = 0; i < hslice - 1; i++)
 		{
-			pTriList[tri++].set(0, s++, l++);
-
+			assert(tri < ntri);
+			pTriList[tri].set(0, s++, l++);
+			tri++;
 		}
-		pTriList[tri++].set(0, hslice, (2 * hslice) - 1);
+		assert(tri < ntri);
+		pTriList[tri].set(0, hslice, (2 * hslice) - 1);
+		tri++;
 
 
 		for (int i = 1; i < vslice - 1; i++)
@@ -287,14 +293,23 @@ void ModelTools::CreateUnitSphere(int vslice, int hslice, StandardVertex *&pVert
 
 			for (int j = 0; j < hslice - 1; j++)
 			{
-				pTriList[tri++].set(f, s++, l);
-				pTriList[tri++].set(f++, s, l + hslice);
+				assert(tri < ntri);
+				pTriList[tri].set(f, s++, l);
+				tri++;
+
+				assert(tri < ntri);
+				pTriList[tri].set(f++, s, l + hslice);
+				tri++;
 				l++;
 			}
 			f = hslice * i;
-			pTriList[tri++].set(f, s++, l);
+			assert(tri < ntri);
+			pTriList[tri].set(f, s++, l);
+			tri++;
 			s = hslice + (hslice*i);
-			pTriList[tri++].set(f, s, l + hslice);
+			assert(tri < ntri);
+			pTriList[tri].set(f, s, l + hslice);
+			tri++;
 		}
 
 		f = hslice * vslice;
@@ -303,8 +318,13 @@ void ModelTools::CreateUnitSphere(int vslice, int hslice, StandardVertex *&pVert
 
 		for (int i = 0; i < hslice - 1; i++)
 		{
-			pTriList[tri++].set(f, s--, l--);
+			assert(tri < ntri);
+			pTriList[tri].set(f, s--, l--);
+			tri++;
 		}
-		pTriList[tri++].set(f, f - 1, f - hslice);
+
+		assert(tri < ntri);
+		pTriList[tri].set(f, f - 1, f - hslice);
+		tri++;
 	}
 }

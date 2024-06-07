@@ -7,7 +7,7 @@
 
 class Camera : public Align16
 {
-
+	bool bIsPerspective = false;
 public:
 
 	// Default constructor
@@ -48,8 +48,8 @@ private:  // methods should never be public
 
 
 private:  // data  (Keep it private)
-	float x, y;
-	float height, width;
+	float x, y, width, height;
+
 		  // Projection Matrix
 	Matrix	projMatrix;
 	Matrix	viewMatrix;
