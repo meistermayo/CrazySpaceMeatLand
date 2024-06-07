@@ -16,7 +16,7 @@ public:
 
 	// Setup on single camera
 	void setPerspective(float FieldOfView_Degs, float AspectRatio, float NearDist, float FarDist);
-	void setViewport(float x, float y, int width, int height);
+	void setViewport(int inX, int inY, int inWidth, int inHeight);
 	void setOrthographic(float left, float right, float top, float bottom, float near, float far);
 	void setOrientAndPosition(const Vect &Up_vect, const Vect &inLookAt_pt, const Vect &pos_pt);
 
@@ -48,7 +48,8 @@ private:  // methods should never be public
 
 
 private:  // data  (Keep it private)
-
+	float x, y;
+	float height, width;
 		  // Projection Matrix
 	Matrix	projMatrix;
 	Matrix	viewMatrix;

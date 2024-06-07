@@ -10,10 +10,15 @@ void Camera::setPerspective(float Fovy, float Aspect, float NearDist, float FarD
 	this->farDist = FarDist;
 }
 
-void Camera::setViewport(float x, float y, int width, int height)
+void Camera::setViewport(int inX, int inY, int inWidth, int inHeight)
 {
-	width; height;//todo
-	this->aspectRatio = static_cast<float>(y) / static_cast<float>(x);
+	x = static_cast<float>(inX);
+	y = static_cast<float>(inY);
+
+	width = static_cast<float>(inWidth);
+	height = static_cast<float>(inHeight);
+
+	this->aspectRatio = height / width;
 }
 
 void Camera::setOrthographic(float left, float right, float top, float bottom, float near, float far)
@@ -54,8 +59,28 @@ void Camera::setOrientAndPosition(const Vect &inUp, const Vect &inLookAt, const 
 // The projection matrix 
 void Camera::privUpdateProjectionMatrix(void)
 {
-	float d = 1 / tanf(fovy / 2);
+	/*/
+	this->projMatrix[0] = 2.0f * nearDist / width;
+	this->projMatrix[1] = 0.0f;
+	this->projMatrix[2] = 0.0f;
+	this->projMatrix[3] = 0.0f;
 
+	this->projMatrix[4] = 0.0f;
+	this->projMatrix[5] = 2.0f * nearDist / (height);
+	this->projMatrix[6] = 0.0f;
+	this->projMatrix[7] = 0.0f;
+
+	this->projMatrix[8] = 0.0f;
+	this->projMatrix[9] = 0.0f;
+	this->projMatrix[10] = -(this->farDist + this->nearDist) / (this->farDist - this->nearDist);
+	this->projMatrix[11] = -1.0f;
+
+	this->projMatrix[12] = 0.0f;
+	this->projMatrix[13] = 0.0f;
+	this->projMatrix[14] = (-2.0f * this->farDist * this->nearDist) / (this->farDist - this->nearDist);
+	this->projMatrix[15] = 0.0f;
+	//*/
+	float d = 1.0f / tanf(fovy / 2.0f);
 	this->projMatrix[0] = d / aspectRatio;
 	this->projMatrix[1] = 0.0f;
 	this->projMatrix[2] = 0.0f;
@@ -75,6 +100,7 @@ void Camera::privUpdateProjectionMatrix(void)
 	this->projMatrix[13] = 0.0f;
 	this->projMatrix[14] = (-2.0f * this->farDist * this->nearDist) / (this->farDist - this->nearDist);
 	this->projMatrix[15] = 0.0f;
+	//*/
 
 	// Converting from OpenGL-style NDC of [-1,1] to DX's [0,1].  See note: https://anteru.net/blog/2011/12/27/1830/
 	// (Note: NDCConvert should be precomputed once and stored for reuse)
@@ -108,9 +134,9 @@ void Camera::privUpdateViewMatrix(void)
 	this->viewMatrix[11] = 0.0f;
 
 	// Apply R^t( -Pos ). Use dot-product with the basis vectors
-	this->viewMatrix[12] = -vPos.dot(vRight);
-	this->viewMatrix[13] = -vPos.dot(vUp);
-	this->viewMatrix[14] = -vPos.dot(vDir);
+	this->viewMatrix[12] = -vPos.dot(vRight) + 1.0f; // todo : check
+	this->viewMatrix[13] = -vPos.dot(vUp) + 1.0f;
+	this->viewMatrix[14] = -vPos.dot(vDir) + 1.0f;
 	this->viewMatrix[15] = 1.0f;
 };
 

@@ -1,6 +1,7 @@
 #include "src/Graphics/CrazySpaceMeatLand/src/GraphicObject_TextureLight.h"
 #include "Model.h"
 #include <assert.h>
+#include "src/Graphics/CrazySpaceMeatLand/src/Camera.h"
 
 
 GraphicObject_TextureLight::GraphicObject_TextureLight(ShaderColorLightTexture* shader, Model* mod)
@@ -39,13 +40,15 @@ void GraphicObject_TextureLight::SetTexture(Texture* _tex, int i)
 	this->tex[i] = _tex;
 }
 
-void GraphicObject_TextureLight::Render()
+void GraphicObject_TextureLight::Render(Camera* inCamera)
 {
 	pModel->BindVertexIndexBuffers();
 	for (int i = 0; i < pModel->GetMeshCount(); i++)
 	{
 		tex[i]->SetToContext();
 		pShader->SendWorldAndMaterial(*pWorld, ambColor, difColor, Vect::One);
+		pShader->SendCamMatrices(inCamera->getViewMatrix(), inCamera->getProjMatrix());
+		pShader->SetToContext();
 		pModel->RenderMesh(i);
 	}
 }

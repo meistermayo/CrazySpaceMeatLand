@@ -23,7 +23,7 @@ public:
 	GraphicObject_Wireframe() = delete;
 
 	void SetColor(const Vect& inColor) { Color = inColor; }
-	virtual void Render() override;
+	virtual void Render(Camera* inCamera) override;
 
 	GraphicObject_Wireframe(ShaderWireframe* shader, int meshCount, Model* mod, const Vect& color);
 	GraphicObject_Wireframe(Model* mod, ShaderBase* shader, Vect& color);

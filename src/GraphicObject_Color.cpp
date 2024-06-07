@@ -2,6 +2,7 @@
 #include "Model.h"
 #include "ShaderColor.h"
 #include <assert.h>
+#include "src/Graphics/CrazySpaceMeatLand/src/Camera.h"
 
 GraphicObject_Color::GraphicObject_Color(ShaderColor* shader, int meshCount, Model* mod, const Vect& color)
 {
@@ -29,13 +30,15 @@ GraphicObject_Color::~GraphicObject_Color()
 
 }
 
-void GraphicObject_Color::Render()
+void GraphicObject_Color::Render(Camera* inCamera)
 {
 	//pShader->SendWorldAndMaterial(World,material->Ambient,material->Diffuse,material->Specular); 
 	pModel->BindVertexIndexBuffers();
 	for (int i = 0; i < pModel->GetMeshCount(); i++)
 	{
 		pShader->SendWorldColor(*pWorld, Color);
+		pShader->SendCamMatrices(inCamera->getViewMatrix(), inCamera->getProjMatrix());
+		pShader->SetToContext();
 		pModel->RenderMesh(i);
 	}
 }

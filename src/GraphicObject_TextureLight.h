@@ -23,7 +23,7 @@ public:
 	GraphicObject_TextureLight() = delete;
 
 	void SetTexture(Texture* _tex, int i);
-	virtual void Render() override;
+	virtual void Render(Camera* inCamera) override;
 
 	GraphicObject_TextureLight(ShaderColorLightTexture* shader, Model* mod);
 	GraphicObject_TextureLight(Model* mod, ShaderBase* shader, Texture* inTexture, const Vect& inAmb, const Vect& inDif);

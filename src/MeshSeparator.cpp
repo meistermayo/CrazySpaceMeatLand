@@ -19,6 +19,7 @@ MeshSeparator::MeshSeparator(StandardVertex *pVerts, int nverts, TriangleByIndex
 		// triangles in one mesh shouldn't share vertices with another mesh
 		assert((pVerts[ind.v0].meshNum == pVerts[ind.v1].meshNum) && (pVerts[ind.v0].meshNum == pVerts[ind.v2].meshNum));
 
+		// crash 1 todo
 		KEY key = (KEY) pVerts[ind.v0].meshNum;
 		meshes[key].push_back(ind);
 	}
@@ -46,6 +47,7 @@ MeshSeparator::MeshSeparator(StandardVertex *pVerts, int nverts, TriangleByIndex
 		offsetval += meshes[i].size();
 	}
 
+	// crash 2 todo
 	delete[] pTriList;		// Delete the original triangle array
 	pTriList = templist;	// Replace it with new re-ordered one
 

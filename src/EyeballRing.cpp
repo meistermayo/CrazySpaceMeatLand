@@ -52,5 +52,5 @@ void EyeballRing::Render(Camera* pCam, Vect eyepos, float fogStart, float fogRan
 	pShaderTexLight->SendCamMatrices(pCam->getViewMatrix(), pCam->getProjMatrix());
 	pShaderTexLight->SendLightParameters(eyepos);
 	for (int i = 0; i<eyeballBoiCount; i++)
-		EyeballBois[i]->Render();
+		EyeballBois[i]->Render(pCam);
 }

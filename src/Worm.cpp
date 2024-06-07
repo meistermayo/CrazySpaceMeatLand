@@ -58,7 +58,7 @@ void Worm::Render(Camera * pCam, Vect eyepos, float fogStart, float fogRange, Ve
 	pShaderTexLight->SendFogData(fogStart, fogRange, fogCol);
 	pShaderTexLight->SendCamMatrices(pCam->getViewMatrix(), pCam->getProjMatrix());
 	pShaderTexLight->SendLightParameters(eyepos);
-	WormyBoi->Render();
+	WormyBoi->Render(pCam);
 	for (int i = 0; i < 7; i++)
-		GroundSpheres[i]->Render();
+		GroundSpheres[i]->Render(pCam);
 }

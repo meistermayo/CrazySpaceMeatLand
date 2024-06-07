@@ -17,9 +17,9 @@ protected:
 
 	ShaderInterface* mpShaderInterface;
 
+public:
 	virtual void SetToContext() {};
 
-public:
 	ShaderBase(std::string filename);
 	ShaderBase(const ShaderBase&) = default;				// Copy constructor
 	ShaderBase(ShaderBase&&) = delete;						// Move constructor

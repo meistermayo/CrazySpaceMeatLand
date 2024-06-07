@@ -321,7 +321,7 @@ protected:
 			return E_FAIL;
 
 		// Create window
-		RECT rc = { 0, 0, 1920, 1080 }; // Initial window dimentions. 
+		RECT rc = { 0, 0, 1280, 720}; // Initial window dimentions. 
 
 		AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 		hWnd = CreateWindow((LPCSTR)L"MainlWindowClass", (LPCSTR)L"Main Window",

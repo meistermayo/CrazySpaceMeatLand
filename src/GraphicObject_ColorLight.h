@@ -21,7 +21,7 @@ public:
 	GraphicObject_ColorLight() = delete;
 
 	void SetColor(const Vect& col, int meshNum);
-	virtual void Render() override;
+	virtual void Render(Camera* inCamera) override;
 
 	void SetLights(ShaderColorLight::DirectionalLight* _dirLight, ShaderColorLight::SpotLight* _sptLight, ShaderColorLight::PointLight* _pntLight);
 

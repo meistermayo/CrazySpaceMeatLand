@@ -23,7 +23,7 @@ public:
 	GraphicObject_Color() = delete;
 
 	void SetColor(const Vect& inColor) { Color = inColor; }
-	virtual void Render() override;
+	virtual void Render(Camera* inCamera) override;
 
 	GraphicObject_Color(ShaderColor* shader, int meshCount, Model* mod, const Vect& color);
 	GraphicObject_Color(Model* mod, ShaderBase* shader, const Vect& color);

@@ -10,6 +10,7 @@ class Model;
 class ShaderMeshData;
 struct ID3D11DeviceContext;
 class ShaderBase;
+class Camera;
 
 
 class GraphicObject_Base : public Align16
@@ -24,7 +25,7 @@ public:
 
 	Model* GetModel() { return pModel; }
 	void SetModel(Model* mod);
-	virtual void Render() = 0;
+	virtual void Render(Camera* inCamera) = 0;
 	virtual Matrix& GetWorld() const { return *pWorld; }
 	void SetWorld(const Matrix& m) { *pWorld = m; }
 

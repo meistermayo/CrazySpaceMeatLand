@@ -138,13 +138,11 @@ void ShaderColorLightTexture::SetToContext()
 	mpBuffWordAndMaterial->Bind();
 	mpFog->Bind();
 
-	mTex->SetToContext();
+	// mTex->SetToContext(); // todo
 }
 
 void ShaderColorLightTexture::SetTextureResourceAndSampler(Texture* _tex)
 {
-	_tex;
-	/*
 	// mpSampler
 	// mpTextureRV
 	_tex;
@@ -152,7 +150,7 @@ void ShaderColorLightTexture::SetTextureResourceAndSampler(Texture* _tex)
 	DirectX::ScratchImage testTexture;
 	HRESULT hr = LoadFromTGAFile(L"../Assets/Textures/CrateFace.tga", nullptr, testTexture);
 	assert(SUCCEEDED(hr));
-	ID3D11Device *d3dDev = GetDevice();
+	ID3D11Device *d3dDev = GraphicsBackend::GetDevice().md3dDevice;
 
 	CreateShaderResourceView(d3dDev, testTexture.GetImage(0, 0, 0), testTexture.GetImageCount(), testTexture.GetMetadata(), &mpTextureRV);
 
@@ -168,5 +166,5 @@ void ShaderColorLightTexture::SetTextureResourceAndSampler(Texture* _tex)
 	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 	hr = d3dDev->CreateSamplerState(&sampDesc, &mpSampler);
 	assert(SUCCEEDED(hr));
-	*/ // todo ???
+	// todo ???
 }

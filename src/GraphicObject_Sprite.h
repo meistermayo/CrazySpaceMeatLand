@@ -22,7 +22,7 @@ public:
 	// virtual void privDraw() override;
 	// virtual void privRestoreState() override;
 
-	virtual void Render() override;
+	virtual void Render(Camera* inCamera) override;
 
 public:
 	// data:  place uniform instancing here

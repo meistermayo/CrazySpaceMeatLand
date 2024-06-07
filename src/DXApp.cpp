@@ -273,10 +273,10 @@ void DXApp::DrawScene()
 	pShaderTex->SetToContext();
 	pShaderTex->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());
 	//pShaderTex->SendWorld();
-	_TEST_go->Render();
+	_TEST_go->Render(&mCam);
 	pShaderTexLight->SetToContext();
 	pShaderTexLight->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());
-	CubeGo->Render();
+	CubeGo->Render(&mCam);
 #endif 
 #ifdef SKYBOX
 	Vect camPos;
@@ -292,7 +292,7 @@ void DXApp::DrawScene()
 	eyeballRing->Render(&mCam, eyepos, fogStart, fogRange, fogCol);
 	worm->Render(&mCam, eyepos, fogStart, fogRange, fogCol);
 
-	GO_Frigate->Render();
+	GO_Frigate->Render(&mCam);
 
 	// myBullet->Render();
 
@@ -321,9 +321,9 @@ void DXApp::DrawScene()
 	pShader_Cube->SendFogData(fogStart, fogRange, fogCol);
 	pShader_Cube->SendLightParameters(eyepos);
 	pShader_Cube->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());
-	Cube1->Render();
-	Cube2->Render();
-	Cube3->Render();
+	Cube1->Render(&mCam);
+	Cube2->Render(&mCam);
+	Cube3->Render(&mCam);
 
 	// Switches the display to show the now-finished back-buffer
 	mSwapChain->Present(0, 0);

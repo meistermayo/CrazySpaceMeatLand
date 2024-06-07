@@ -26,8 +26,8 @@ ShaderTexture::~ShaderTexture()
 	delete mTex;
 	delete mpBufferCamMatrices;
 	delete mpBuffWordColor;
-	delete mpTextureRV; // todo ???
-	delete mpSampler;
+	// delete mpTextureRV; // todo ??? // C5205... v143 issue??
+	// delete mpSampler;
 	delete mpFog;
 }
 
@@ -39,18 +39,17 @@ void ShaderTexture::SetToContext()
 	mpBuffWordColor->Bind();
 	mpFog->Bind();
 
-	mTex->SetToContext();
+	// mTex->SetToContext(); // todo
 }
 
 void ShaderTexture::SetTextureResourceAndSampler(Texture* _tex)
 {
-	_tex;
-	/* // todo ????
+	// todo ????
 	_tex;
 	DirectX::ScratchImage testTexture;
 	HRESULT hr = LoadFromTGAFile(L"../Assets/Textures/CrateFace.tga", nullptr, testTexture);
 	assert(SUCCEEDED(hr));
-	ID3D11Device *d3dDev = GetDevice();
+	ID3D11Device *d3dDev = GraphicsBackend::GetDevice().md3dDevice;
 
 	CreateShaderResourceView(d3dDev, testTexture.GetImage(0, 0, 0), testTexture.GetImageCount(), testTexture.GetMetadata(), &mpTextureRV);
 
@@ -66,7 +65,6 @@ void ShaderTexture::SetTextureResourceAndSampler(Texture* _tex)
 	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 	hr = d3dDev->CreateSamplerState(&sampDesc, &mpSampler);
 	assert(SUCCEEDED(hr));
-	*/
 }
 
 void ShaderTexture::SendCamMatrices(const Matrix& view, const Matrix& proj)
