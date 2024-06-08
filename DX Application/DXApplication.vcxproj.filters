@@ -35,29 +35,8 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{7b94717d-e347-4c1b-b644-f822ad171613}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Tools">
-      <UniqueIdentifier>{c6b91704-0352-4999-90a6-1edb274c4c0c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Model">
-      <UniqueIdentifier>{0377c4e8-3072-445b-ab53-b04373828c75}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Shader">
-      <UniqueIdentifier>{cd4801cc-cbb0-42e9-b86e-b521fcb97831}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Texture">
-      <UniqueIdentifier>{1a66ea2c-b7e6-4981-b52e-52a455d934f0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\GraphicObject">
-      <UniqueIdentifier>{63ff5b21-e702-4450-bc34-3c3a50f96be0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Diagrams">
       <UniqueIdentifier>{9d2b7810-f42c-4448-8ba3-aaddda4ea0a0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Bullet">
-      <UniqueIdentifier>{4180e640-83b0-4b96-9ba3-eceed9e510a9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Math">
-      <UniqueIdentifier>{22d38477-287a-4041-bb23-5a99948c7939}</UniqueIdentifier>
     </Filter>
     <Filter Include="_Libs\FBX">
       <UniqueIdentifier>{2586c888-b048-4f8e-8d1a-f58ab2f804ca}</UniqueIdentifier>
@@ -68,83 +47,124 @@
     <Filter Include="_Libs\FBX\include">
       <UniqueIdentifier>{0c0bfd7e-ecb5-4fa0-9b02-26f0cd441916}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Graphics">
+      <UniqueIdentifier>{4d8da592-27f6-4b1c-96e6-44288786326e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Graphics\GraphicObject">
+      <UniqueIdentifier>{63ff5b21-e702-4450-bc34-3c3a50f96be0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Graphics\Math">
+      <UniqueIdentifier>{22d38477-287a-4041-bb23-5a99948c7939}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Graphics\Model">
+      <UniqueIdentifier>{0377c4e8-3072-445b-ab53-b04373828c75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Graphics\Shader">
+      <UniqueIdentifier>{cd4801cc-cbb0-42e9-b86e-b521fcb97831}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Graphics\Texture">
+      <UniqueIdentifier>{1a66ea2c-b7e6-4981-b52e-52a455d934f0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainWindow.cpp" />
-    <ClCompile Include="..\src\d3dUtil.cpp">
-      <Filter>Source\Main DX App</Filter>
-    </ClCompile>
+    <ClCompile Include="..\src\EyeballRing.cpp" />
+    <ClCompile Include="..\src\Worm.cpp" />
     <ClCompile Include="..\src\DXApp.cpp">
       <Filter>Source\Main DX App</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\GraphicObject\GraphicObject_Base.cpp">
+      <Filter>Source\Graphics\GraphicObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\GraphicObject\GraphicObject_Color.cpp">
+      <Filter>Source\Graphics\GraphicObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\GraphicObject\GraphicObject_ColorLight.cpp">
+      <Filter>Source\Graphics\GraphicObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\GraphicObject\GraphicObject_Sprite.cpp">
+      <Filter>Source\Graphics\GraphicObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\GraphicObject\GraphicObject_Texture.cpp">
+      <Filter>Source\Graphics\GraphicObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\GraphicObject\GraphicObject_TextureLight.cpp">
+      <Filter>Source\Graphics\GraphicObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\GraphicObject\GraphicObject_Wireframe.cpp">
+      <Filter>Source\Graphics\GraphicObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\Math\Matrix.cpp">
+      <Filter>Source\Graphics\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\Math\Quat.cpp">
+      <Filter>Source\Graphics\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\Math\Vect.cpp">
+      <Filter>Source\Graphics\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\Model\FbxModelLoader.cpp">
+      <Filter>Source\Graphics\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\Model\MeshSeparator.cpp">
+      <Filter>Source\Graphics\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\Model\Model.cpp">
+      <Filter>Source\Graphics\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\Model\ModelTools.cpp">
+      <Filter>Source\Graphics\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\Model\Skybox.cpp">
+      <Filter>Source\Graphics\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\Model\TerrainModel.cpp">
+      <Filter>Source\Graphics\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\Shader\LightStructs.cpp">
+      <Filter>Source\Graphics\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\Shader\ShaderBase.cpp">
+      <Filter>Source\Graphics\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\Shader\ShaderColor.cpp">
+      <Filter>Source\Graphics\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\Shader\ShaderColorLight.cpp">
+      <Filter>Source\Graphics\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\Shader\ShaderColorLightTexture.cpp">
+      <Filter>Source\Graphics\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\Shader\ShaderTexture.cpp">
+      <Filter>Source\Graphics\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\Shader\ShaderWireframe.cpp">
+      <Filter>Source\Graphics\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\Texture\Texture.cpp">
+      <Filter>Source\Graphics\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\Camera.cpp">
+      <Filter>Source\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\D3D_GraphicsBackend.cpp">
+      <Filter>Source\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\d3dUtil.cpp">
+      <Filter>Source\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\GraphicsBackend.cpp">
+      <Filter>Source\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\stb_image.cpp">
+      <Filter>Source\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\src\GameTimer.cpp">
       <Filter>Source\Main DX App</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Camera.cpp">
-      <Filter>Source\Tools</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Model.cpp">
-      <Filter>Source\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\ModelTools.cpp">
-      <Filter>Source\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\ShaderBase.cpp">
-      <Filter>Source\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\ShaderColor.cpp">
-      <Filter>Source\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Texture.cpp">
-      <Filter>Source\Texture</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\FlatPlane.cpp">
-      <Filter>Source\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\ShaderColorLight.cpp">
-      <Filter>Source\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\GraphicObject_Base.cpp">
-      <Filter>Source\GraphicObject</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\GraphicObject_Color.cpp">
-      <Filter>Source\GraphicObject</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\MeshSeparator.cpp">
-      <Filter>Source\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\GraphicObject_Texture.cpp">
-      <Filter>Source\GraphicObject</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\GraphicObject_TextureL.cpp">
-      <Filter>Source\GraphicObject</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\ShaderColorLightTexture.cpp">
-      <Filter>Source\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\ShaderTexture.cpp">
-      <Filter>Source\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Skybox.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\TerrainModel.cpp">
-      <Filter>Source\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\LightStructs.cpp">
-      <Filter>Source\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Bullet.cpp">
-      <Filter>Source\Bullet</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\FbxModelLoader.cpp" />
-    <ClCompile Include="..\src\EyeballRing.cpp" />
-    <ClCompile Include="..\src\Worm.cpp" />
-    <ClCompile Include="..\src\Math\Matrix.cpp">
-      <Filter>Source\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Math\Vect.cpp">
-      <Filter>Source\Math</Filter>
+    <ClCompile Include="..\src\Graphics\Keys.cpp">
+      <Filter>Source\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -157,89 +177,118 @@
     <ClInclude Include="..\dist\File\include\File.h">
       <Filter>_Libs\File\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\d3dUtil.h">
-      <Filter>Source\Main DX App</Filter>
-    </ClInclude>
+    <ClInclude Include="..\src\EyeballRing.h" />
+    <ClInclude Include="..\src\Worm.h" />
     <ClInclude Include="..\src\DXApp.h">
       <Filter>Source\Main DX App</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\GraphicObject\GraphicObject_Base.h">
+      <Filter>Source\Graphics\GraphicObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\GraphicObject\GraphicObject_Color.h">
+      <Filter>Source\Graphics\GraphicObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\GraphicObject\GraphicObject_ColorLight.h">
+      <Filter>Source\Graphics\GraphicObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\GraphicObject\GraphicObject_Sprite.h">
+      <Filter>Source\Graphics\GraphicObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\GraphicObject\GraphicObject_Texture.h">
+      <Filter>Source\Graphics\GraphicObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\GraphicObject\GraphicObject_TextureLight.h">
+      <Filter>Source\Graphics\GraphicObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\GraphicObject\GraphicObject_Wireframe.h">
+      <Filter>Source\Graphics\GraphicObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\Math\Constants.h">
+      <Filter>Source\Graphics\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\Math\Matrix.h">
+      <Filter>Source\Graphics\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\Math\Quat.h">
+      <Filter>Source\Graphics\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\Math\Vect.h">
+      <Filter>Source\Graphics\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\Model\FbxModelLoader.h">
+      <Filter>Source\Graphics\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\Model\MeshSeparator.h">
+      <Filter>Source\Graphics\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\Model\Model.h">
+      <Filter>Source\Graphics\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\Model\ModelTools.h">
+      <Filter>Source\Graphics\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\Model\Skybox.h">
+      <Filter>Source\Graphics\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\Model\TerrainModel.h">
+      <Filter>Source\Graphics\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\Shader\LightStructs.h">
+      <Filter>Source\Graphics\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\Shader\ShaderBase.h">
+      <Filter>Source\Graphics\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\Shader\ShaderColor.h">
+      <Filter>Source\Graphics\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\Shader\ShaderColorLight.h">
+      <Filter>Source\Graphics\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\Shader\ShaderColorLightTexture.h">
+      <Filter>Source\Graphics\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\Shader\ShaderTexture.h">
+      <Filter>Source\Graphics\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\Shader\ShaderWireframe.h">
+      <Filter>Source\Graphics\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\Texture\Image.h">
+      <Filter>Source\Graphics\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\Texture\Rect.h">
+      <Filter>Source\Graphics\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\Texture\Texture.h">
+      <Filter>Source\Graphics\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\Align16.h">
+      <Filter>Source\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\Camera.h">
+      <Filter>Source\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\d3dUtil.h">
+      <Filter>Source\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\GraphicsBackend.h">
+      <Filter>Source\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\stb_image.h">
+      <Filter>Source\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\src\GameTimer.h">
       <Filter>Source\Main DX App</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Camera.h">
-      <Filter>Source\Tools</Filter>
+    <ClInclude Include="..\src\Graphics\Keys.h">
+      <Filter>Source\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Model.h">
-      <Filter>Source\Model</Filter>
+    <ClInclude Include="..\src\Graphics\Model\AzulFileHdr.h">
+      <Filter>Source\Graphics\Model</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\ModelTools.h">
-      <Filter>Source\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\ShaderBase.h">
-      <Filter>Source\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\ShaderColor.h">
-      <Filter>Source\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\FlatPlane.h">
-      <Filter>Source\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\ShaderColorLight.h">
-      <Filter>Source\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\GraphicObject_Base.h">
-      <Filter>Source\GraphicObject</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\GraphicObject_Color.h">
-      <Filter>Source\GraphicObject</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\AzulFileHdr.h">
-      <Filter>Source\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\MeshSeparator.h">
-      <Filter>Source\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\GraphicObject_Texture.h">
-      <Filter>Source\GraphicObject</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\GraphicObject_TextureL.h">
-      <Filter>Source\GraphicObject</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\ShaderColorLightTexture.h">
-      <Filter>Source\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\ShaderTexture.h">
-      <Filter>Source\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Skybox.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\TerrainModel.h">
-      <Filter>Source\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Texture.h">
-      <Filter>Source\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\LightStructs.h">
-      <Filter>Source\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Bullet.h">
-      <Filter>Source\Bullet</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\FbxModelLoader.h" />
-    <ClInclude Include="..\src\EyeballRing.h" />
-    <ClInclude Include="..\src\Worm.h" />
-    <ClInclude Include="..\src\Math\Vect.h">
-      <Filter>Source\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Math\Matrix.h">
-      <Filter>Source\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Align16.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Math\Constants.h">
-      <Filter>Source\Math</Filter>
+    <ClInclude Include="..\src\Graphics\VKeys.h">
+      <Filter>Source\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

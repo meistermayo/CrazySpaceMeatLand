@@ -44,7 +44,7 @@ public:
 	  */
 	//@{
 		//! Reset the audio to default values.
-        void Reset() override;
+		void Reset();
 	//@}
 
     /**
@@ -89,11 +89,11 @@ private:
 	void InitializeAnimFX();
 
 protected:
-    void Construct(const FbxObject* pFrom) override;
-    void ConstructProperties(bool pForceSet) override;
+    virtual void Construct(const FbxObject* pFrom);
+    virtual void ConstructProperties(bool pForceSet);
 
 public:
-	FbxObject& Copy(const FbxObject& pObject) override;
+	virtual FbxObject& Copy(const FbxObject& pObject);
 
 #endif /* !DOXYGEN_SHOULD_SKIP_THIS *****************************************************************************************/
 };

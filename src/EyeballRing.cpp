@@ -1,12 +1,12 @@
 #include "EyeballRing.h"
-#include "ShaderColorLightTexture.h"
-#include "src/Graphics/CrazySpaceMeatLand/src/GraphicObject_TextureLight.h"
-#include "Texture.h"
-#include "Math/Vect.h"
-#include "Math/Matrix.h"
-#include "Model.h"
-#include "Camera.h"
-#include "Math/Constants.h"
+#include "Graphics/Shader/ShaderColorLightTexture.h"
+#include "Graphics/GraphicObject/GraphicObject_TextureLight.h"
+#include "Graphics/Texture/Texture.h"
+#include "Graphics/Math/Vect.h"
+#include "Graphics/Math/Matrix.h"
+#include "Graphics/Model/Model.h"
+#include "Graphics/Camera.h"
+#include "Graphics/Math/Constants.h"
 #include <d3d11.h>
 
 EyeballRing::EyeballRing(ShaderColorLightTexture* pShaderTexLight)

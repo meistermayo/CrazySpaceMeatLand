@@ -1,13 +1,13 @@
 #include "Worm.h"
-#include "ShaderColorLightTexture.h"
-#include "GraphicObject_TextureLight.h"
-#include "Texture.h"
-#include "Math/Vect.h"
-#include "Math/Matrix.h"
-#include "Model.h"
-#include "Camera.h"
 #include <d3d11.h>
-#include "FbxModelLoader.h"
+#include "Graphics/Camera.h"
+#include "Graphics/GraphicObject/GraphicObject_TextureLight.h"
+#include "Graphics/Math/Vect.h"
+#include "Graphics/Math/Matrix.h"
+#include "Graphics/Model/Model.h"
+#include "Graphics/Model/FbxModelLoader.h"
+#include "Graphics/Shader/ShaderColorLightTexture.h"
+#include "Graphics/Texture/Texture.h"
 
 
 Worm::Worm(ShaderColorLightTexture * pShaderTexLight)

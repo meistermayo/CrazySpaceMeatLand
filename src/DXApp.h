@@ -34,20 +34,15 @@
 #ifndef _DXApp
 #define _DXApp
 #include <d3d11.h>
-#include "d3dUtil.h"
-#include "Align16.h"
+#include "Graphics/d3dUtil.h"
+#include "Graphics/Align16.h"
 #include "GameTimer.h"
 #include <string>
 
 // New includes for demo
-#include "Math/Vect.h"
-#include "Math/Matrix.h"
-#include "Camera.h"
-#include "ShaderColor.h"
-#include "ShaderColorLight.h"
-#include "src/Graphics/CrazySpaceMeatLand/src/GraphicObject_Texture.h"
-#include "src/Graphics/CrazySpaceMeatLand/src/GraphicObject_TextureLight.h"
-#include "TerrainModel.h"
+#include "Graphics/Math/Vect.h"
+#include "Graphics/Math/Matrix.h"
+#include "Graphics/Camera.h"
 
 class Skybox;
 class Model;
@@ -56,9 +51,12 @@ class FlatPlane;
 class TerrainModel;
 class GraphicObject_Color;
 class ShaderTexture;
+class ShaderColorLightTexture;
 class GraphicObject_Texture;
+class GraphicObject_TextureLight;
 class EyeballRing;
 class Worm;
+
 class DXApp : public Align16
 {
 	struct UserData
@@ -73,19 +71,11 @@ private:
 
 	Vect BackgroundColor;
 
-	// DX application elements
-	ID3D11Device* md3dDevice;					// Connects to the graphics card
-	ID3D11DeviceContext* md3dImmediateContext;	// Settings for the GPU to use
-	IDXGISwapChain* mSwapChain;					// image buffers used for rendering
-	ID3D11RenderTargetView* mRenderTargetView;	// Where to send rendring operations (typically: points to one of the swap buffers)
-	ID3D11DepthStencilView* mpDepthStencilView; // Needed to force depth-buffer operations
-
 	GameTimer mTimer;
 	std::wstring mMainWndCaption;
 	int mClientWidth;
 	int mClientHeight;
 
-	void InitDirect3D();
 	void InitDemo();
 	void UpdateScene();
 	void DrawScene();
@@ -93,9 +83,6 @@ private:
 
 	// Shader loading utility. SHould be moved elsewhere later...
 	HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
-
-	// Debug utility
-	void ReportLiveDXObjects();
 
 	// Demo specific additions
 	Camera mCam;

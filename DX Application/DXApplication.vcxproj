@@ -37,36 +37,36 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|X64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|X64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|X64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
@@ -92,6 +92,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|X64'">
     <LinkIncremental>true</LinkIncremental>
@@ -134,7 +135,7 @@
     </ClCompile>
     <Link>
       <AdditionalOptions> %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>zlib-md.lib;libxml2-md.lib;libfbxsdk-md.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libfbxsdk-md.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <LargeAddressAware>true</LargeAddressAware>
@@ -144,7 +145,7 @@
       <UACExecutionLevel>AsInvoker</UACExecutionLevel>
       <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalLibraryDirectories>$(SolutionDir)dist\Fbx\lib\vs2019\x86\debug\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)dist\Fbx\lib\vs2015\x86\debug</AdditionalLibraryDirectories>
     </Link>
     <Manifest>
       <EnableDPIAwareness>PerMonitorHighDPIAware</EnableDPIAwareness>
@@ -364,67 +365,83 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\Bullet.cpp" />
-    <ClCompile Include="..\src\Camera.cpp" />
-    <ClCompile Include="..\src\d3dUtil.cpp" />
     <ClCompile Include="..\src\DXApp.cpp" />
     <ClCompile Include="..\src\EyeballRing.cpp" />
-    <ClCompile Include="..\src\FbxModelLoader.cpp" />
-    <ClCompile Include="..\src\FlatPlane.cpp" />
     <ClCompile Include="..\src\GameTimer.cpp" />
-    <ClCompile Include="..\src\GraphicObject_Base.cpp" />
-    <ClCompile Include="..\src\GraphicObject_Color.cpp" />
-    <ClCompile Include="..\src\GraphicObject_Texture.cpp" />
-    <ClCompile Include="..\src\GraphicObject_TextureL.cpp" />
-    <ClCompile Include="..\src\LightStructs.cpp" />
-    <ClCompile Include="..\src\Math\Matrix.cpp" />
-    <ClCompile Include="..\src\Math\Vect.cpp" />
-    <ClCompile Include="..\src\MeshSeparator.cpp" />
-    <ClCompile Include="..\src\Model.cpp" />
-    <ClCompile Include="..\src\ModelTools.cpp" />
-    <ClCompile Include="..\src\ShaderBase.cpp" />
-    <ClCompile Include="..\src\ShaderColor.cpp" />
-    <ClCompile Include="..\src\ShaderColorLight.cpp" />
-    <ClCompile Include="..\src\ShaderColorLightTexture.cpp" />
-    <ClCompile Include="..\src\ShaderTexture.cpp" />
-    <ClCompile Include="..\src\Skybox.cpp" />
-    <ClCompile Include="..\src\TerrainModel.cpp" />
-    <ClCompile Include="..\src\Texture.cpp" />
+    <ClCompile Include="..\src\Graphics\Camera.cpp" />
+    <ClCompile Include="..\src\Graphics\d3dUtil.cpp" />
+    <ClCompile Include="..\src\Graphics\D3D_GraphicsBackend.cpp" />
+    <ClCompile Include="..\src\Graphics\GraphicObject\GraphicObject_Base.cpp" />
+    <ClCompile Include="..\src\Graphics\GraphicObject\GraphicObject_Color.cpp" />
+    <ClCompile Include="..\src\Graphics\GraphicObject\GraphicObject_ColorLight.cpp" />
+    <ClCompile Include="..\src\Graphics\GraphicObject\GraphicObject_Sprite.cpp" />
+    <ClCompile Include="..\src\Graphics\GraphicObject\GraphicObject_Texture.cpp" />
+    <ClCompile Include="..\src\Graphics\GraphicObject\GraphicObject_TextureLight.cpp" />
+    <ClCompile Include="..\src\Graphics\GraphicObject\GraphicObject_Wireframe.cpp" />
+    <ClCompile Include="..\src\Graphics\GraphicsBackend.cpp" />
+    <ClCompile Include="..\src\Graphics\Keys.cpp" />
+    <ClCompile Include="..\src\Graphics\Math\Matrix.cpp" />
+    <ClCompile Include="..\src\Graphics\Math\Quat.cpp" />
+    <ClCompile Include="..\src\Graphics\Math\Vect.cpp" />
+    <ClCompile Include="..\src\Graphics\Model\FbxModelLoader.cpp" />
+    <ClCompile Include="..\src\Graphics\Model\MeshSeparator.cpp" />
+    <ClCompile Include="..\src\Graphics\Model\Model.cpp" />
+    <ClCompile Include="..\src\Graphics\Model\ModelTools.cpp" />
+    <ClCompile Include="..\src\Graphics\Model\Skybox.cpp" />
+    <ClCompile Include="..\src\Graphics\Model\TerrainModel.cpp" />
+    <ClCompile Include="..\src\Graphics\Shader\LightStructs.cpp" />
+    <ClCompile Include="..\src\Graphics\Shader\ShaderBase.cpp" />
+    <ClCompile Include="..\src\Graphics\Shader\ShaderColor.cpp" />
+    <ClCompile Include="..\src\Graphics\Shader\ShaderColorLight.cpp" />
+    <ClCompile Include="..\src\Graphics\Shader\ShaderColorLightTexture.cpp" />
+    <ClCompile Include="..\src\Graphics\Shader\ShaderTexture.cpp" />
+    <ClCompile Include="..\src\Graphics\Shader\ShaderWireframe.cpp" />
+    <ClCompile Include="..\src\Graphics\stb_image.cpp" />
+    <ClCompile Include="..\src\Graphics\Texture\Texture.cpp" />
     <ClCompile Include="..\src\Worm.cpp" />
     <ClCompile Include="MainWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\dist\DXTex\include\DirectXTex.h" />
     <ClInclude Include="..\dist\File\include\File.h" />
-    <ClInclude Include="..\src\Align16.h" />
-    <ClInclude Include="..\src\AzulFileHdr.h" />
-    <ClInclude Include="..\src\Bullet.h" />
-    <ClInclude Include="..\src\Camera.h" />
-    <ClInclude Include="..\src\d3dUtil.h" />
     <ClInclude Include="..\src\DXApp.h" />
     <ClInclude Include="..\src\EyeballRing.h" />
-    <ClInclude Include="..\src\FbxModelLoader.h" />
-    <ClInclude Include="..\src\FlatPlane.h" />
     <ClInclude Include="..\src\GameTimer.h" />
-    <ClInclude Include="..\src\GraphicObject_Base.h" />
-    <ClInclude Include="..\src\GraphicObject_Color.h" />
-    <ClInclude Include="..\src\GraphicObject_Texture.h" />
-    <ClInclude Include="..\src\GraphicObject_TextureL.h" />
-    <ClInclude Include="..\src\LightStructs.h" />
-    <ClInclude Include="..\src\Math\Constants.h" />
-    <ClInclude Include="..\src\Math\Matrix.h" />
-    <ClInclude Include="..\src\Math\Vect.h" />
-    <ClInclude Include="..\src\MeshSeparator.h" />
-    <ClInclude Include="..\src\Model.h" />
-    <ClInclude Include="..\src\ModelTools.h" />
-    <ClInclude Include="..\src\ShaderBase.h" />
-    <ClInclude Include="..\src\ShaderColor.h" />
-    <ClInclude Include="..\src\ShaderColorLight.h" />
-    <ClInclude Include="..\src\ShaderColorLightTexture.h" />
-    <ClInclude Include="..\src\ShaderTexture.h" />
-    <ClInclude Include="..\src\Skybox.h" />
-    <ClInclude Include="..\src\TerrainModel.h" />
-    <ClInclude Include="..\src\Texture.h" />
+    <ClInclude Include="..\src\Graphics\Align16.h" />
+    <ClInclude Include="..\src\Graphics\Camera.h" />
+    <ClInclude Include="..\src\Graphics\d3dUtil.h" />
+    <ClInclude Include="..\src\Graphics\GraphicObject\GraphicObject_Base.h" />
+    <ClInclude Include="..\src\Graphics\GraphicObject\GraphicObject_Color.h" />
+    <ClInclude Include="..\src\Graphics\GraphicObject\GraphicObject_ColorLight.h" />
+    <ClInclude Include="..\src\Graphics\GraphicObject\GraphicObject_Sprite.h" />
+    <ClInclude Include="..\src\Graphics\GraphicObject\GraphicObject_Texture.h" />
+    <ClInclude Include="..\src\Graphics\GraphicObject\GraphicObject_TextureLight.h" />
+    <ClInclude Include="..\src\Graphics\GraphicObject\GraphicObject_Wireframe.h" />
+    <ClInclude Include="..\src\Graphics\GraphicsBackend.h" />
+    <ClInclude Include="..\src\Graphics\Keys.h" />
+    <ClInclude Include="..\src\Graphics\Math\Constants.h" />
+    <ClInclude Include="..\src\Graphics\Math\Matrix.h" />
+    <ClInclude Include="..\src\Graphics\Math\Quat.h" />
+    <ClInclude Include="..\src\Graphics\Math\Vect.h" />
+    <ClInclude Include="..\src\Graphics\Model\AzulFileHdr.h" />
+    <ClInclude Include="..\src\Graphics\Model\FbxModelLoader.h" />
+    <ClInclude Include="..\src\Graphics\Model\MeshSeparator.h" />
+    <ClInclude Include="..\src\Graphics\Model\Model.h" />
+    <ClInclude Include="..\src\Graphics\Model\ModelTools.h" />
+    <ClInclude Include="..\src\Graphics\Model\Skybox.h" />
+    <ClInclude Include="..\src\Graphics\Model\TerrainModel.h" />
+    <ClInclude Include="..\src\Graphics\Shader\LightStructs.h" />
+    <ClInclude Include="..\src\Graphics\Shader\ShaderBase.h" />
+    <ClInclude Include="..\src\Graphics\Shader\ShaderColor.h" />
+    <ClInclude Include="..\src\Graphics\Shader\ShaderColorLight.h" />
+    <ClInclude Include="..\src\Graphics\Shader\ShaderColorLightTexture.h" />
+    <ClInclude Include="..\src\Graphics\Shader\ShaderTexture.h" />
+    <ClInclude Include="..\src\Graphics\Shader\ShaderWireframe.h" />
+    <ClInclude Include="..\src\Graphics\stb_image.h" />
+    <ClInclude Include="..\src\Graphics\Texture\Image.h" />
+    <ClInclude Include="..\src\Graphics\Texture\Rect.h" />
+    <ClInclude Include="..\src\Graphics\Texture\Texture.h" />
+    <ClInclude Include="..\src\Graphics\VKeys.h" />
     <ClInclude Include="..\src\Worm.h" />
     <CLInclude Include="resource.h" />
     <ResourceCompile Include="DXApplication.rc" />

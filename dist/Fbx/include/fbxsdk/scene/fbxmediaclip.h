@@ -178,13 +178,13 @@ public:
 *****************************************************************************************************************************/
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 protected:
-    void Construct(const FbxObject* pFrom) override;
-    void ConstructProperties(bool pForceSet) override;
+    virtual void Construct(const FbxObject* pFrom);
+    virtual void ConstructProperties(bool pForceSet);
 
 public:
-    FbxObject& Copy(const FbxObject& pObject) override;
+	virtual FbxObject& Copy(const FbxObject& pObject);
 
-    FbxStringList GetTypeFlags() const override;
+    virtual FbxStringList GetTypeFlags() const;
 
     void SetOriginalFormat(bool pState);
     bool GetOriginalFormat() const;
