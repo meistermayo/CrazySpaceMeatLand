@@ -12,6 +12,7 @@ cbuffer InstanceData : register(b1)
     float4x4 WorldInv;
 	float4 SelectedColor;
 };
+
 cbuffer FogData : register(b2)
 {
     float fogMin;
@@ -52,5 +53,5 @@ float4 PS( VS_OUTPUT input ) : SV_Target
     float distToEye = length(msEyePos - input.PosMS);
     float FogPercent = saturate((distToEye - fogMin) / fogMax); // See https://msdn.microsoft.com/en-us/library/windows/desktop/bb509645(v=vs.85).aspx
 
-    return lerp(input.Color, fogCol, FogPercent); // See https://msdn.microsoft.com/en-us/library/windows/desktop/bb509618(v=vs.85).aspx
+    return lerp(input.Color, fogCol, 0.0); // See https://msdn.microsoft.com/en-us/library/windows/desktop/bb509618(v=vs.85).aspx
 }

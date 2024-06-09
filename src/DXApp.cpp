@@ -11,6 +11,8 @@
 #include "Graphics/d3dUtil.h"
 #include "Graphics/GraphicsObject/GraphicsObject_Color.h"
 #include "Graphics/GraphicsObject/GraphicsObject_TextureLight.h"
+#include "Graphics/GraphicsObject/GraphicsObject_Wireframe.h"
+#include "Graphics/GraphicsObject/GraphicsObject_Sprite.h"
 
 #include "Graphics/Model/Model.h"
 #include "Graphics/Model/FbxModelLoader.h"
@@ -19,9 +21,14 @@
 #include "Graphics/Model/Skybox.h"
 #endif
 
+
+#include "Graphics/Camera.h"
 #include "Graphics/Shader/ShaderColor.h"
 #include "Graphics/Shader/ShaderColorLightTexture.h"
+#include "Graphics/Shader/ShaderWireframe.h"
 #include "Graphics/Texture/Texture.h"
+#include "Graphics/Texture/Image.h"
+#include "Graphics/Texture/Rect.h"
 #include "Graphics/Math/Constants.h"
 
 #include "FlatPlane.h"
@@ -127,7 +134,7 @@ void DXApp::InitDemo()
 	float len = 3;
 	pTerrain = new TerrainModel("../Assets/Textures/canyon2.tga", len, 50.f, 0.f, 8, 8);
 	pTerrain_Shader = new ShaderTexture("../Assets/Shaders/D3D/Texture.hlsl");
-	pTerrain_World = new Matrix(Matrix::Trans(Vect(-128.0f*len, 0.0f, -128.0f*len))); // why tf is this a pointer???
+	pTerrain_World = new Matrix(Matrix::Trans(Vect(-128.0f*len, 0.0f, -128.0f*len)));
 #endif
 
 #ifdef SKYBOX
@@ -143,12 +150,28 @@ void DXApp::InitDemo()
 
 #endif
 
+	pModel_Sprite = new Model(Model::PreMadeModels::UnitPlaneXY, 100.0f);
+	pTex_Sprite = new Texture("../Assets/Textures/redspace.tga");
+	pShader_Sprite = new ShaderTexture("../Assets/Shaders/D3D/Texture.hlsl");
+	pRect_Sprite = new Rect(0.f, 0.f, 100.f, 100.f);
+	pImage_Sprite = new Image(pTex_Sprite, *pRect_Sprite);
+	pGO_Sprite = new GraphicsObject_Sprite(pModel_Sprite, pShader_Sprite, pImage_Sprite, pRect_Sprite);
+
+	pModel_WF = new Model(Model::PreMadeModels::UnitSphere, 10.0f);
+	pShader_WF = new ShaderWireframe("../Assets/Shaders/D3D/ColorSelected3D.hlsl");
+	Vect color = Vect(1.f, 0.f, 0.f, 1.f);
+	pGO_WF = new GraphicsObject_Wireframe(pModel_WF, pShader_WF, color);
+
 	// Initialize the projection matrix
-	mCam.setPerspective( 3.14159f*.45f, mClientWidth / (float)mClientHeight, 0.0001f, 5000.0f);
-	mCam.setOrientAndPosition(
+	pCam3D = new Camera();
+	pCam3D->setPerspective( 3.14159f*.45f, mClientWidth / (float)mClientHeight, 0.1f, 5000.0f);
+	pCam3D->setOrientAndPosition(
 		Vect( - 0.0507903174f, 0.857880533f, 0.511332929f),
 		Vect(-2.04233885f, 23.4840279f, -16.0365753f),
 		Vect(-1.95754349f, 23.9978771f, -16.8902550f));
+
+	pCam2D = new Camera();
+	pCam2D->setOrthographic(0.f, 0.f, (float)mClientWidth, (float)mClientHeight, 0.1f, 2.0f);
 
 	// Initialize gimmicky mouse control values
 	mTheta = .5f;
@@ -183,20 +206,20 @@ void DXApp::UpdateScene()
 	float camSpeed = 40 * mTimer.DeltaTime();
 	if (GetKeyState('W') & 0x08000)
 	{
-		mCam.TranslateFwdBack(camSpeed);
+		pCam3D->TranslateFwdBack(camSpeed);
 	}
 	else if (GetKeyState('S') & 0x08000)
 	{
-		mCam.TranslateFwdBack(-camSpeed);
+		pCam3D->TranslateFwdBack(-camSpeed);
 	}
 
 	if (GetKeyState('A') & 0x08000)
 	{
-		mCam.TranslateLeftRight(-camSpeed);
+		pCam3D->TranslateLeftRight(-camSpeed);
 	}
 	else if (GetKeyState('D') & 0x08000)
 	{
-		mCam.TranslateLeftRight(camSpeed);
+		pCam3D->TranslateLeftRight(camSpeed);
 	}
 	else if (GetKeyState('R') & 0x08000)
 	{
@@ -226,29 +249,29 @@ void DXApp::UpdateScene()
 	float rotSpeed = 3 * mTimer.DeltaTime();
 	if (GetKeyState(VK_LEFT) & 0x08000)
 	{
-		mCam.TurnLeftRight(rotSpeed);
+		pCam3D->TurnLeftRight(rotSpeed);
 	}
 	else if (GetKeyState(VK_RIGHT) & 0x08000)
 	{
-		mCam.TurnLeftRight(-rotSpeed);
+		pCam3D->TurnLeftRight(-rotSpeed);
 	}
 
 	if (GetKeyState(VK_UP) & 0x08000)
 	{
-		mCam.TiltUpDown(rotSpeed);
+		pCam3D->TiltUpDown(rotSpeed);
 	}
 	else if (GetKeyState(VK_DOWN) & 0x08000)
 	{
-		mCam.TiltUpDown(-rotSpeed);
+		pCam3D->TiltUpDown(-rotSpeed);
 	}
 
-	mCam.updateCamera();
+	pCam3D->updateCamera();
 }
 
 void DXApp::DrawScene()
 {
 	Vect eyepos;
-	mCam.getPos(eyepos);
+	pCam3D->getPos(eyepos);
 
 	float fogStart = 128;
 	float fogRange = 256;
@@ -256,38 +279,41 @@ void DXApp::DrawScene()
 
 #ifdef _TEST
 	pShaderTex->SetToContext();
-	pShaderTex->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());
+	pShaderTex->SendCamMatrices(pCam3D->getViewMatrix(), pCam3D->getProjMatrix());
 	//pShaderTex->SendWorld();
-	_TEST_go->Render(&mCam);
+	_TEST_go->Render(pCam3D);
 	pShaderTexLight->SetToContext();
-	pShaderTexLight->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());
-	CubeGo->Render(&mCam);
+	pShaderTexLight->SendCamMatrices(pCam3D->getViewMatrix(), pCam3D->getProjMatrix());
+	CubeGo->Render(pCam3D);
 #endif 
 #ifdef SKYBOX
 	Vect camPos;
-	mCam.getPos(camPos);
+	pCam3D->getPos(camPos);
 	pSkyBox_World->SetTrans(camPos);
 	pSkyBox_Shader->SetToContext();
 	pSkyBox_Shader->SendFogData(500, 5000, fogCol);
-	pSkyBox_Shader->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());
+	pSkyBox_Shader->SendCamMatrices(pCam3D->getViewMatrix(), pCam3D->getProjMatrix());
 	pSkyBox_Shader->SendWorld(*pSkyBox_World);
 	pSkyBox->Render();
 #endif
 
-	eyeballRing->Render(&mCam, eyepos, fogStart, fogRange, fogCol);
-	worm->Render(&mCam, eyepos, fogStart, fogRange, fogCol);
+	eyeballRing->Render(pCam3D, eyepos, fogStart, fogRange, fogCol);
+	worm->Render(pCam3D, eyepos, fogStart, fogRange, fogCol);
 
-	GO_Frigate->Render(&mCam);
+	GO_Frigate->Render(pCam3D);
 
+	pGO_WF->SetWorld(Matrix::Trans(0.f, 10.f,0.f) * Matrix::RotY(mTimer.TotalTime()));
+	pGO_WF->Render(pCam3D);
 
 #ifdef TERRAIN
 	//pTerrain_Shader->SetToContext();
-	//pTerrain_Shader->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());
+	//pTerrain_Shader->SendCamMatrices(pCam3D->getViewMatrix(), pCam3D->getProjMatrix());
 	pTerrain_Texture->SetToContext();
+	pShaderTexLight->SetToContext();
 	pShaderTexLight->SendWorldAndMaterial(*pTerrain_World);
 
 	//pShaderColLight->SetToContext();
-	//pShaderColLight->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());
+	//pShaderColLight->SendCamMatrices(pCam3D->getViewMatrix(), pCam3D->getProjMatrix());
 	//pShaderColLight->SendLightParameters(eyepos);
 	//pShaderColLight->SendWorldAndMaterial(*pTerrain_World);
 
@@ -296,7 +322,7 @@ void DXApp::DrawScene()
 #ifdef FLATPLANE
 	//pShaderTexLight->SendWorldAndMaterial(flatPlane_World);
 	pShaderColLight->SetToContext();
-	pShaderColLight->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());
+	pShaderColLight->SendCamMatrices(pCam3D->getViewMatrix(), pCam3D->getProjMatrix());
 	pShaderColLight->SendLightParameters(eyepos);
 	pShaderColLight->SendWorldAndMaterial(flatPlane_World);
 	//flatPlane->Render();
@@ -304,11 +330,13 @@ void DXApp::DrawScene()
 	pShader_Cube->SetToContext();
 	pShader_Cube->SendFogData(fogStart, fogRange, fogCol);
 	pShader_Cube->SendLightParameters(eyepos);
-	pShader_Cube->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());
+	pShader_Cube->SendCamMatrices(pCam3D->getViewMatrix(), pCam3D->getProjMatrix());
 
-	Cube1->Render(&mCam);
-	Cube2->Render(&mCam);
-	Cube3->Render(&mCam);
+	Cube1->Render(pCam3D);
+	Cube2->Render(pCam3D);
+	Cube3->Render(pCam3D);
+
+	pGO_Sprite->Render(pCam2D);
 }
 
 
@@ -381,6 +409,17 @@ DXApp::~DXApp()
 #ifdef FLATPLANE
 	delete flatPlane;
 #endif
+
+	delete pModel_Sprite;
+	delete pTex_Sprite;
+	delete pShader_Sprite;
+	delete pRect_Sprite;
+	delete pImage_Sprite;
+	delete pGO_Sprite;
+
+	delete pModel_WF;
+	delete pShader_WF;
+	delete pGO_WF;
 }
 
 void DXApp::CalculateFrameStats()
@@ -428,8 +467,8 @@ void DXApp::OnMouseDown(WPARAM btnState, int xval, int yval)
 	if (btnState & MK_LBUTTON)
 	{
 		Vect camPos, camDir;
-		mCam.getPos(camPos);
-		mCam.getDir(camDir);
+		pCam3D->getPos(camPos);
+		pCam3D->getDir(camDir);
 		Matrix camWorld;
 		camWorld = Matrix::RotY(0) * Matrix::Scale(1.f) * Matrix::Trans(camPos);
 
@@ -473,7 +512,7 @@ void DXApp::OnMouseMove(WPARAM btnState, int xval, int yval)
 		Vect target = Vect(0, 0, 0, 0);
 		Vect up = Vect(0, 1, 0, 0);
 		Vect pos = Vect(0, 0, -mRadius) * Matrix::RotY(mTheta) * Matrix::RotX(mPhi);
-		mCam.setOrientAndPosition(up, target, pos);
+		pCam3D->setOrientAndPosition(up, target, pos);
 	}
 
 	MousePos[x] = static_cast<float>(xval);

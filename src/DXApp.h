@@ -42,20 +42,26 @@
 // New includes for demo
 #include "Graphics/Math/Vect.h"
 #include "Graphics/Math/Matrix.h"
-#include "Graphics/Camera.h"
 
-class Skybox;
-class Model;
-class Texture;
+class Camera;
+class EyeballRing;
 class FlatPlane;
-class TerrainModel;
 class GraphicsObject_Color;
-class ShaderTexture;
-class ShaderColorLightTexture;
+class GraphicsObject_Sprite;
 class GraphicsObject_Texture;
 class GraphicsObject_TextureLight;
-class EyeballRing;
+class GraphicsObject_Wireframe;
+class Image;
+class Model;
+class ShaderWireframe;
+class ShaderTexture;
+class ShaderColorLightTexture;
+class Skybox;
+class Texture;
+class TerrainModel;
 class Worm;
+
+struct Rect;
 
 class DXApp : public Align16
 {
@@ -85,7 +91,8 @@ private:
 	HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
 
 	// Demo specific additions
-	Camera mCam;
+	Camera* pCam3D;
+	Camera* pCam2D;
 
 #ifdef _COL_L
 	ShaderColorLight* pShaderColLight;
@@ -106,6 +113,18 @@ private:
 	GraphicsObject_TextureLight* Cube1;
 	GraphicsObject_TextureLight* Cube2;
 	GraphicsObject_TextureLight* Cube3;
+
+	ShaderTexture* pShader_Sprite;
+	Model* pModel_Sprite;
+	Texture* pTex_Sprite;
+	Image* pImage_Sprite;
+	Rect* pRect_Sprite;
+	GraphicsObject_Sprite* pGO_Sprite;
+
+	ShaderWireframe* pShader_WF;
+	Model* pModel_WF;
+	GraphicsObject_Wireframe* pGO_WF;
+
 
 	// WORMY BOI >:D
 	Worm* worm;
