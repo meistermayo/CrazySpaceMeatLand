@@ -50,9 +50,6 @@
     <Filter Include="Source\Graphics">
       <UniqueIdentifier>{4d8da592-27f6-4b1c-96e6-44288786326e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Graphics\GraphicObject">
-      <UniqueIdentifier>{63ff5b21-e702-4450-bc34-3c3a50f96be0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\Graphics\Math">
       <UniqueIdentifier>{22d38477-287a-4041-bb23-5a99948c7939}</UniqueIdentifier>
     </Filter>
@@ -65,6 +62,9 @@
     <Filter Include="Source\Graphics\Texture">
       <UniqueIdentifier>{1a66ea2c-b7e6-4981-b52e-52a455d934f0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Graphics\GraphicsObject">
+      <UniqueIdentifier>{63ff5b21-e702-4450-bc34-3c3a50f96be0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainWindow.cpp" />
@@ -72,27 +72,6 @@
     <ClCompile Include="..\src\Worm.cpp" />
     <ClCompile Include="..\src\DXApp.cpp">
       <Filter>Source\Main DX App</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Graphics\GraphicObject\GraphicObject_Base.cpp">
-      <Filter>Source\Graphics\GraphicObject</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Graphics\GraphicObject\GraphicObject_Color.cpp">
-      <Filter>Source\Graphics\GraphicObject</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Graphics\GraphicObject\GraphicObject_ColorLight.cpp">
-      <Filter>Source\Graphics\GraphicObject</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Graphics\GraphicObject\GraphicObject_Sprite.cpp">
-      <Filter>Source\Graphics\GraphicObject</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Graphics\GraphicObject\GraphicObject_Texture.cpp">
-      <Filter>Source\Graphics\GraphicObject</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Graphics\GraphicObject\GraphicObject_TextureLight.cpp">
-      <Filter>Source\Graphics\GraphicObject</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Graphics\GraphicObject\GraphicObject_Wireframe.cpp">
-      <Filter>Source\Graphics\GraphicObject</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Graphics\Math\Matrix.cpp">
       <Filter>Source\Graphics\Math</Filter>
@@ -166,6 +145,27 @@
     <ClCompile Include="..\src\Graphics\Keys.cpp">
       <Filter>Source\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Graphics\GraphicsObject\GraphicsObject_Base.cpp">
+      <Filter>Source\Graphics\GraphicsObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\GraphicsObject\GraphicsObject_Color.cpp">
+      <Filter>Source\Graphics\GraphicsObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\GraphicsObject\GraphicsObject_ColorLight.cpp">
+      <Filter>Source\Graphics\GraphicsObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\GraphicsObject\GraphicsObject_Sprite.cpp">
+      <Filter>Source\Graphics\GraphicsObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\GraphicsObject\GraphicsObject_Texture.cpp">
+      <Filter>Source\Graphics\GraphicsObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\GraphicsObject\GraphicsObject_TextureLight.cpp">
+      <Filter>Source\Graphics\GraphicsObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\GraphicsObject\GraphicsObject_Wireframe.cpp">
+      <Filter>Source\Graphics\GraphicsObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">
@@ -181,27 +181,6 @@
     <ClInclude Include="..\src\Worm.h" />
     <ClInclude Include="..\src\DXApp.h">
       <Filter>Source\Main DX App</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Graphics\GraphicObject\GraphicObject_Base.h">
-      <Filter>Source\Graphics\GraphicObject</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Graphics\GraphicObject\GraphicObject_Color.h">
-      <Filter>Source\Graphics\GraphicObject</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Graphics\GraphicObject\GraphicObject_ColorLight.h">
-      <Filter>Source\Graphics\GraphicObject</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Graphics\GraphicObject\GraphicObject_Sprite.h">
-      <Filter>Source\Graphics\GraphicObject</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Graphics\GraphicObject\GraphicObject_Texture.h">
-      <Filter>Source\Graphics\GraphicObject</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Graphics\GraphicObject\GraphicObject_TextureLight.h">
-      <Filter>Source\Graphics\GraphicObject</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Graphics\GraphicObject\GraphicObject_Wireframe.h">
-      <Filter>Source\Graphics\GraphicObject</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Graphics\Math\Constants.h">
       <Filter>Source\Graphics\Math</Filter>
@@ -289,6 +268,27 @@
     </ClInclude>
     <ClInclude Include="..\src\Graphics\VKeys.h">
       <Filter>Source\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\GraphicsObject\GraphicsObject_Wireframe.h">
+      <Filter>Source\Graphics\GraphicsObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\GraphicsObject\GraphicsObject_Base.h">
+      <Filter>Source\Graphics\GraphicsObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\GraphicsObject\GraphicsObject_Color.h">
+      <Filter>Source\Graphics\GraphicsObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\GraphicsObject\GraphicsObject_ColorLight.h">
+      <Filter>Source\Graphics\GraphicsObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\GraphicsObject\GraphicsObject_Sprite.h">
+      <Filter>Source\Graphics\GraphicsObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\GraphicsObject\GraphicsObject_Texture.h">
+      <Filter>Source\Graphics\GraphicsObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Graphics\GraphicsObject\GraphicsObject_TextureLight.h">
+      <Filter>Source\Graphics\GraphicsObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

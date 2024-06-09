@@ -3,7 +3,7 @@
 
 class Vect;
 class Model;
-class GraphicObject_TextureLight;
+class GraphicsObject_TextureLight;
 class ShaderColorLightTexture;
 class Matrix;
 class Texture;
@@ -20,7 +20,7 @@ private:
 	int eyeballBoiCount = 10;
 	Matrix** mWorld_EyeballBois;
 	Texture** 	ppTex_EyeballBoi;
-	GraphicObject_TextureLight**	EyeballBois;
+	GraphicsObject_TextureLight**	EyeballBois;
 	ShaderColorLightTexture* pShaderTexLight;
 };
 

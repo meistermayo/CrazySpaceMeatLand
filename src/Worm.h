@@ -3,7 +3,7 @@
 
 class Vect;
 class Model;
-class GraphicObject_TextureLight;
+class GraphicsObject_TextureLight;
 class ShaderColorLightTexture;
 class Matrix;
 class Texture;
@@ -22,10 +22,10 @@ private:
 
 	Matrix* mWorld_WormyBoi;
 	Texture** ppTex_WormyBoi;
-	GraphicObject_TextureLight* WormyBoi;
+	GraphicsObject_TextureLight* WormyBoi;
 
 	Model* pModel_UnitSphere;
-	GraphicObject_TextureLight** GroundSpheres;
+	GraphicsObject_TextureLight** GroundSpheres;
 	ShaderColorLightTexture* pShaderTexLight;
 
 };

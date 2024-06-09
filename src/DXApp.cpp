@@ -9,8 +9,8 @@
 #include "DirectXTex.h"
 
 #include "Graphics/d3dUtil.h"
-#include "Graphics/GraphicObject/GraphicObject_Color.h"
-#include "Graphics/GraphicObject/GraphicObject_TextureLight.h"
+#include "Graphics/GraphicsObject/GraphicsObject_Color.h"
+#include "Graphics/GraphicsObject/GraphicsObject_TextureLight.h"
 
 #include "Graphics/Model/Model.h"
 #include "Graphics/Model/FbxModelLoader.h"
@@ -82,7 +82,7 @@ void DXApp::InitDemo()
 	pModel_Frigate = new Model("../Assets/Models/space_frigate.azul",false,false,.2f);
 	pTex_Frigate = new Texture("../Assets/Textures/space_frigate.tga");
 	world_Frigate = Matrix::RotY(MATH_PI) * Matrix::RotZ(0.f) * Matrix::Trans(Vect(40.f, 60.f, 40.f));
-	GO_Frigate = new GraphicObject_TextureLight(pShaderTexLight,pModel_Frigate);
+	GO_Frigate = new GraphicsObject_TextureLight(pShaderTexLight,pModel_Frigate);
 	GO_Frigate->SetWorld(world_Frigate);
 	GO_Frigate->SetTexture(pTex_Frigate, 0);
 
@@ -95,9 +95,9 @@ void DXApp::InitDemo()
 	//pModel_Cube = new Model(Model::UnitSphere, 12.0f);
 	mWorld_Cube = new Matrix(Matrix::Trans(Vect(0.f, 10.f, 0.f))); /// ??? pointer???
 	pShader_Cube = new ShaderColorLightTexture("../Assets/Shaders/D3D/ColorLightTexture.hlsl");
-	Cube1 = new GraphicObject_TextureLight((ShaderColorLightTexture*)(pShader_Cube), pModel_Cube1);// Vect(1, 0, 0, 1), Vect(1, 0, 0, 1), Vect(1, 1, 1, 1));
-	Cube2 = new GraphicObject_TextureLight((ShaderColorLightTexture*)(pShader_Cube), pModel_Cube2);// Vect(1, 0, 0, 1), Vect(1, 0, 0, 1), Vect(1, 1, 1, 1));
-	Cube3 = new GraphicObject_TextureLight((ShaderColorLightTexture*)(pShader_Cube), pModel_Cube3);// Vect(1, 0, 0, 1), Vect(1, 0, 0, 1), Vect(1, 1, 1, 1));
+	Cube1 = new GraphicsObject_TextureLight((ShaderColorLightTexture*)(pShader_Cube), pModel_Cube1);// Vect(1, 0, 0, 1), Vect(1, 0, 0, 1), Vect(1, 1, 1, 1));
+	Cube2 = new GraphicsObject_TextureLight((ShaderColorLightTexture*)(pShader_Cube), pModel_Cube2);// Vect(1, 0, 0, 1), Vect(1, 0, 0, 1), Vect(1, 1, 1, 1));
+	Cube3 = new GraphicsObject_TextureLight((ShaderColorLightTexture*)(pShader_Cube), pModel_Cube3);// Vect(1, 0, 0, 1), Vect(1, 0, 0, 1), Vect(1, 1, 1, 1));
 	pTex_Cube = new Texture("../Assets/Textures/mouse.tga", D3D11_FILTER_MIN_MAG_MIP_POINT, 4U, FALSE, 0U, DirectX::TEX_FILTER_POINT);
 	Cube1->SetTexture(pTex_Cube, 0);
 	Cube2->SetTexture(pTex_Cube, 0);
@@ -114,11 +114,11 @@ void DXApp::InitDemo()
 #ifdef _TEST
 	_TEST_model = new Model("../Assets/Models/CubeTest2.azul");
 	_TEST_tex = new Texture(L"../Assets/Textures/CubeTex.tga");
-	_TEST_go = new GraphicObject_Texture(pShaderTex, _TEST_model);
+	_TEST_go = new GraphicsObject_Texture(pShaderTex, _TEST_model);
 	_TEST_go->SetWorld(Matrix::Scale( 1, 1, 1) * Matrix::Trans(0, 10, 0));
 	_TEST_go->SetTexture(_TEST_tex,0);
 	CubeModel = new Model(Model::PreMadeModels::UnitBoxRepeatedTexture);
-	CubeGo = new GraphicObject_TextureLight(pShaderTexLight, CubeModel);
+	CubeGo = new GraphicsObject_TextureLight(pShaderTexLight, CubeModel);
 	CubeGo->SetWorld(Matrix::Scale( 10, 10, 10)*Matrix::Trans(5, 10, 5));
 	CubeGo->SetTexture(ppTex_WormyBoi[0],0);
 #endif
@@ -144,7 +144,7 @@ void DXApp::InitDemo()
 #endif
 
 	// Initialize the projection matrix
-	mCam.setPerspective( 3.14159f*.45f, mClientWidth / (float)mClientHeight, 1.0f, 5000.0f);
+	mCam.setPerspective( 3.14159f*.45f, mClientWidth / (float)mClientHeight, 0.0001f, 5000.0f);
 	mCam.setOrientAndPosition(
 		Vect( - 0.0507903174f, 0.857880533f, 0.511332929f),
 		Vect(-2.04233885f, 23.4840279f, -16.0365753f),

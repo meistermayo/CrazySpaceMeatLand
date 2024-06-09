@@ -1,6 +1,6 @@
 #include "EyeballRing.h"
 #include "Graphics/Shader/ShaderColorLightTexture.h"
-#include "Graphics/GraphicObject/GraphicObject_TextureLight.h"
+#include "Graphics/GraphicsObject/GraphicsObject_TextureLight.h"
 #include "Graphics/Texture/Texture.h"
 #include "Graphics/Math/Vect.h"
 #include "Graphics/Math/Matrix.h"
@@ -23,12 +23,12 @@ EyeballRing::EyeballRing(ShaderColorLightTexture* pShaderTexLight)
 
 	pModel_EyeballBoi = new Model("../Assets/Models/Eyeball_Ascii.azul", false, true, 0.25f);
 
-	EyeballBois = new GraphicObject_TextureLight*[eyeballBoiCount];
+	EyeballBois = new GraphicsObject_TextureLight*[eyeballBoiCount];
 
 	mWorld_EyeballBois = new Matrix*[eyeballBoiCount];
 	for (int i = 0; i < eyeballBoiCount; i++)
 	{
-		EyeballBois[i] = new GraphicObject_TextureLight(pShaderTexLight, pModel_EyeballBoi);
+		EyeballBois[i] = new GraphicsObject_TextureLight(pShaderTexLight, pModel_EyeballBoi);
 		for (int j = 0; j < texNum; j++)
 		{
 			EyeballBois[i]->SetTexture(ppTex_EyeballBoi[j], j);

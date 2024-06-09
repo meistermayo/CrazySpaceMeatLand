@@ -49,11 +49,11 @@ class Model;
 class Texture;
 class FlatPlane;
 class TerrainModel;
-class GraphicObject_Color;
+class GraphicsObject_Color;
 class ShaderTexture;
 class ShaderColorLightTexture;
-class GraphicObject_Texture;
-class GraphicObject_TextureLight;
+class GraphicsObject_Texture;
+class GraphicsObject_TextureLight;
 class EyeballRing;
 class Worm;
 
@@ -103,9 +103,9 @@ private:
 	Model* pModel_Cube3;
 	Matrix* mWorld_Cube;
 	Texture* pTex_Cube;
-	GraphicObject_TextureLight* Cube1;
-	GraphicObject_TextureLight* Cube2;
-	GraphicObject_TextureLight* Cube3;
+	GraphicsObject_TextureLight* Cube1;
+	GraphicsObject_TextureLight* Cube2;
+	GraphicsObject_TextureLight* Cube3;
 
 	// WORMY BOI >:D
 	Worm* worm;
@@ -114,13 +114,13 @@ private:
 	Model* pModel_Frigate;
 	Texture* pTex_Frigate;
 	Matrix world_Frigate;
-	GraphicObject_TextureLight* GO_Frigate;
+	GraphicsObject_TextureLight* GO_Frigate;
 #ifdef _TEST
 	Model* _TEST_model;
 	Texture* _TEST_tex;
-	GraphicObject_Texture* _TEST_go;
+	GraphicsObject_Texture* _TEST_go;
 	Model* CubeModel;
-	GraphicObject_TextureLight* CubeGo;
+	GraphicsObject_TextureLight* CubeGo;
 #endif
 #ifdef TERRAIN
 	Matrix* pTerrain_World;
@@ -139,8 +139,8 @@ private:
 	Matrix flatPlane_World;
 #endif
 	//ShaderTexture*		pShaderTex;
-	//GraphicObject_Texture*	GraphObj1;
-	//GraphicObject_Texture*	GraphObj2;
+	//GraphicsObject_Texture*	GraphObj1;
+	//GraphicsObject_Texture*	GraphObj2;
 	//Texture*				pTex1;
 	//Texture*				pTex2;
 

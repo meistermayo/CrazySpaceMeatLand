@@ -1,27 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
-  <Class Name="GraphicObject_Color">
+  <Class Name="GraphicsObject_Color">
     <Position X="1" Y="3" Width="3.75" />
     <Members>
-      <Method Name="~GraphicObject_Color" Hidden="true" />
-      <Method Name="GraphicObject_Color" Hidden="true" />
+      <Method Name="~GraphicsObject_Color" Hidden="true" />
+      <Method Name="GraphicsObject_Color" Hidden="true" />
       <Method Name="operator=" Hidden="true" />
     </Members>
     <TypeIdentifier>
       <HashCode>AAAAAAABABAAAAEIAAAAAAAAAAAAAAAAARggEAAAAAA=</HashCode>
-      <FileName>C:\Users\aberthia\Documents\Perforce\aberthiaume_ABERTHIAWS2014_7118\berthiaume2017winter_gam398\instructor\Week8-Lecture\23 Meshes\src\GraphicObject_Color.h</FileName>
+      <FileName>C:\Users\aberthia\Documents\Perforce\aberthiaume_ABERTHIAWS2014_7118\berthiaume2017winter_gam398\instructor\Week8-Lecture\23 Meshes\src\GraphicsObject_Color.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GraphicObject_Base">
+  <Class Name="GraphicsObject_Base">
     <Position X="1.5" Y="0.5" Width="2.5" />
     <Members>
-      <Method Name="~GraphicObject_Base" Hidden="true" />
-      <Method Name="GraphicObject_Base" Hidden="true" />
+      <Method Name="~GraphicsObject_Base" Hidden="true" />
+      <Method Name="GraphicsObject_Base" Hidden="true" />
       <Method Name="operator=" Hidden="true" />
     </Members>
     <TypeIdentifier>
       <HashCode>AAAAAAAACAgAAAAAAAAAAAAIAAAAAAQAABAgAAAAAAA=</HashCode>
-      <FileName>C:\Users\aberthia\Documents\Perforce\aberthiaume_ABERTHIAWS2014_7118\berthiaume2017winter_gam398\instructor\Week8-Lecture\23 Meshes\src\GraphicObject_Base.h</FileName>
+      <FileName>C:\Users\aberthia\Documents\Perforce\aberthiaume_ABERTHIAWS2014_7118\berthiaume2017winter_gam398\instructor\Week8-Lecture\23 Meshes\src\GraphicsObject_Base.h</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Field Name="pModel" />
