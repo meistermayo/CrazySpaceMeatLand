@@ -150,8 +150,8 @@ void DXApp::InitDemo()
 
 #endif
 
-	pModel_Sprite = new Model(Model::PreMadeModels::UnitPlaneXY, 100.0f);
-	pTex_Sprite = new Texture("../Assets/Textures/redspace.tga");
+	pModel_Sprite = new Model(Model::PreMadeModels::UnitPlaneXY);
+	pTex_Sprite = new Texture("../Assets/Textures/SpiderHeadLivesBig.tga");
 	pShader_Sprite = new ShaderTexture("../Assets/Shaders/D3D/Texture.hlsl");
 	pRect_Sprite = new Rect(0.f, 0.f, 100.f, 100.f);
 	pImage_Sprite = new Image(pTex_Sprite, *pRect_Sprite);
@@ -171,7 +171,10 @@ void DXApp::InitDemo()
 		Vect(-1.95754349f, 23.9978771f, -16.8902550f));
 
 	pCam2D = new Camera();
-	pCam2D->setOrthographic(0.f, 0.f, (float)mClientWidth, (float)mClientHeight, 0.1f, 2.0f);
+	pCam2D->setViewport(0, 0, mClientWidth, mClientHeight);
+	pCam2D->setOrthographic(0.f, 0.f, (float)mClientWidth, (float)mClientHeight, 0.1f, 1.0f);
+	pCam2D->setOrientAndPosition(Vect::Up, Vect::Forward, Vect::Zero);
+	pCam2D->updateCamera();
 
 	// Initialize gimmicky mouse control values
 	mTheta = .5f;
@@ -336,6 +339,8 @@ void DXApp::DrawScene()
 	Cube2->Render(pCam3D);
 	Cube3->Render(pCam3D);
 
+	int texSize = 100;
+	pGO_Sprite->SetWorld(Matrix::Scale(100.0f) * Matrix::Trans(static_cast<float>(-texSize/2) - 16.0f, mClientHeight - static_cast<float>(texSize / 2) - 16.0f, 0.5f));
 	pGO_Sprite->Render(pCam2D);
 }
 
