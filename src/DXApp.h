@@ -67,8 +67,8 @@ class DXApp : public Align16
 {
 	struct UserData
 	{
-		float frigateSpotRange = 100;
-		float frigateSpotAtten = .001f;
+		float frigateSpotRange = 1000;
+		float frigateSpotAtten = .01f;
 	};
 private:
 	UserData userdata;
