@@ -5,8 +5,6 @@
 #define _FlatPlane
 
 class Model;
-struct ID3D11DeviceContext;
-struct ID3D11Device;
 
 class FlatPlane 
 {
@@ -20,9 +18,9 @@ public:
 	FlatPlane& operator=(FlatPlane&&) & = delete;       // Move assignment operator
 	~FlatPlane();
 
-	FlatPlane(ID3D11Device* dev, float size, float hrep, float vrep);
+	FlatPlane(float size, float hrep, float vrep);
 
-	void Render(ID3D11DeviceContext* context);
+	void Render();
 
 };
 

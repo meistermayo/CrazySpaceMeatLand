@@ -21,7 +21,7 @@
 #include <fbxsdk/utils/fbxrenamingstrategybase.h>
 #include <fbxsdk/utils/fbxnamehandler.h>
 
-#include <libxml/globals.h>
+#include <components/libxml2-2.7.8/include/libxml/globals.h>
 
 #include <fbxsdk/fbxsdk_nsbegin.h>
 
@@ -31,11 +31,11 @@ public:
 	FbxRenamingStrategyCollada();
 	virtual ~FbxRenamingStrategyCollada();
 
-	void CleanUp() override;
-	bool DecodeScene(FbxScene* pScene) override;
-	bool EncodeScene(FbxScene* pScene) override;
-	bool DecodeString(FbxNameHandler& pName) override;
-	bool EncodeString(FbxNameHandler& pName, bool pIsPropertyName = false) override;
+	virtual void CleanUp();
+	virtual bool DecodeScene(FbxScene* pScene);
+	virtual bool EncodeScene(FbxScene* pScene);
+	virtual bool DecodeString(FbxNameHandler& pName);
+	virtual bool EncodeString(FbxNameHandler& pName, bool pIsPropertyName = false);
 };
 
 
@@ -209,12 +209,8 @@ void DAE_GetElementContent(xmlNode * pElement, TYPE & pData)
 {
     if (pElement != NULL)
     {
-        xmlChar* lContent = xmlNodeGetContent(pElement);
-		if (lContent)
-		{
-			FromString(&pData, (const char *)lContent);
-			xmlFree(lContent);
-		}
+        FbxAutoFreePtr<xmlChar> lContent(xmlNodeGetContent(pElement));
+        FromString(&pData, (const char *)lContent.Get());
     }
 }
 
@@ -249,11 +245,10 @@ bool DAE_GetElementAttributeValue(xmlNode * pElement, const char * pAttributeNam
     if (!pElement || !pAttributeName)
         return false;
 
-    xmlChar* lPropertyValue = xmlGetProp(pElement, (const xmlChar *)pAttributeName);
+    FbxAutoFreePtr<xmlChar> lPropertyValue(xmlGetProp(pElement, (const xmlChar *)pAttributeName));
     if (lPropertyValue)
     {
-        FromString(&pData, (const char *)lPropertyValue);
-		xmlFree(lPropertyValue);
+        FromString(&pData, (const char *)lPropertyValue.Get());
         return true;
     }
     return false;
@@ -269,11 +264,10 @@ inline bool DAE_GetElementAttributeValue(xmlNode * pElement,
     if (!pElement || !pAttributeName)
         return false;
 
-    xmlChar* lPropertyValue =xmlGetProp(pElement, (const xmlChar *)pAttributeName);
+    FbxAutoFreePtr<xmlChar> lPropertyValue(xmlGetProp(pElement, (const xmlChar *)pAttributeName));
     if (lPropertyValue)
     {
-        pData = (const char *)lPropertyValue;
-		xmlFree(lPropertyValue);
+        pData = (const char *)lPropertyValue.Get();
         return true;
     }
     return false;

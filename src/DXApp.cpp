@@ -2,22 +2,39 @@
 #include <windows.h>
 #include <sstream>
 #include <assert.h>
-#include "d3dUtil.h"
 
 // needed to load shaders from file
 #include <d3dcompiler.h>
 
-#include "Model.h"
-#include "ShaderColor.h"
 #include "DirectXTex.h"
-#include "Texture.h"
+
+#include "Graphics/d3dUtil.h"
+#include "Graphics/GraphicsObject/GraphicsObject_Color.h"
+#include "Graphics/GraphicsObject/GraphicsObject_TextureLight.h"
+#include "Graphics/GraphicsObject/GraphicsObject_Wireframe.h"
+#include "Graphics/GraphicsObject/GraphicsObject_Sprite.h"
+
+#include "Graphics/Model/Model.h"
+#include "Graphics/Model/FbxModelLoader.h"
+#include "Graphics/Model/TerrainModel.h"
+#ifdef SKYBOX
+#include "Graphics/Model/Skybox.h"
+#endif
+
+
+#include "Graphics/Camera.h"
+#include "Graphics/Shader/ShaderColor.h"
+#include "Graphics/Shader/ShaderColorLightTexture.h"
+#include "Graphics/Shader/ShaderWireframe.h"
+#include "Graphics/Texture/Texture.h"
+#include "Graphics/Texture/Image.h"
+#include "Graphics/Texture/Rect.h"
+#include "Graphics/Math/Constants.h"
+
 #include "FlatPlane.h"
-#include "TerrainModel.h"
-#include "GraphicObject_Color.h"
-#include "FbxModelLoader.h"
 #include "EyeballRing.h"
-#include "Math/Constants.h"
 #include "Worm.h"
+
 /*/
 where could my code be failing
 
@@ -53,51 +70,42 @@ void DXApp::InitDemo()
 	float spotExp = 1;
 	Vect spotLightAmb = Vect(0, 0, 1) * .1f;
 	Vect spotLightDif = Vect(0, 0, 1) * .5f;
-	Vect spotLightSpc = Vect(.3, .6, 1, 150) * 0.5f;
+	Vect spotLightSpc = Vect(.3f, .6f, 1, 150) * 0.5f;
 
+	pShaderTex = new ShaderTexture("../Assets/Shaders/D3D/Texture.hlsl");
 
-
-	pShaderTex = new ShaderTexture(md3dDevice);
-
-	pShaderTexLight = new ShaderColorLightTexture(md3dDevice);
+	pShaderTexLight = new ShaderColorLightTexture("../Assets/Shaders/D3D/ColorLightTexture.hlsl");
 
 	pShaderTexLight->SetPointLightParameters1(pointLightPos1, pointLightRadius1, pointLightAtt1, pointLightAmb1, pointLightDif1, pointLightSpc1);
 	pShaderTexLight->SetPointLightParameters2(pointLightPos2, pointLightRadius2, pointLightAtt2, pointLightAmb2, pointLightDif2, pointLightSpc2);
 	pShaderTexLight->SetSpotLightParameters(spotLightPos , spotLightRadius, spotLightAtt, spotDir, spotExp, spotLightAmb, spotLightDif, spotLightSpc);
 
-
-	pShaderTex->SetTextureResourceAndSampler(NULL);
-	pShaderTexLight->SetTextureResourceAndSampler(NULL);
-
-	eyeballRing = new EyeballRing(md3dDevice,pShaderTexLight);
+	eyeballRing = new EyeballRing(pShaderTexLight);
 	
-
 	// WORMY BOI
-	worm = new Worm(md3dDevice, pShaderTexLight);
-
+	worm = new Worm(pShaderTexLight);
 
 	// FRIGATE )))))))
-	pModel_Frigate = new Model(md3dDevice, "../Assets/Models/space_frigate.azul",false,false,.2f);
-	pTex_Frigate = new Texture(md3dDevice, L"../Assets/Textures/space_frigate.tga");
+	pModel_Frigate = new Model("../Assets/Models/space_frigate.azul",false,false,.2f);
+	pTex_Frigate = new Texture("../Assets/Textures/space_frigate.tga");
 	world_Frigate = Matrix::RotY(MATH_PI) * Matrix::RotZ(0.f) * Matrix::Trans(Vect(40.f, 60.f, 40.f));
-	GO_Frigate = new GraphicObject_TextureLight(pShaderTexLight,pModel_Frigate);
+	GO_Frigate = new GraphicsObject_TextureLight(pShaderTexLight,pModel_Frigate);
 	GO_Frigate->SetWorld(world_Frigate);
 	GO_Frigate->SetTexture(pTex_Frigate, 0);
-
 
 	// Cube
 	FbxModelLoader fbxModelLoader = FbxModelLoader();
 	FbxModelInfo fbxModelInfo = fbxModelLoader.GetModel("../Assets/Models/mouse.fbx");
-	pModel_Cube1 = new Model(md3dDevice, fbxModelInfo.meshInfo[0]);
-	pModel_Cube2 = new Model(md3dDevice, fbxModelInfo.meshInfo[1]);
-	pModel_Cube3 = new Model(md3dDevice, fbxModelInfo.meshInfo[2]);
-	//pModel_Cube = new Model(md3dDevice, Model::UnitSphere, 12.0f);
+	pModel_Cube1 = new Model(fbxModelInfo.meshInfo[0]);
+	pModel_Cube2 = new Model(fbxModelInfo.meshInfo[1]);
+	pModel_Cube3 = new Model(fbxModelInfo.meshInfo[2]);
+	//pModel_Cube = new Model(Model::UnitSphere, 12.0f);
 	mWorld_Cube = new Matrix(Matrix::Trans(Vect(0.f, 10.f, 0.f))); /// ??? pointer???
-	pShader_Cube = new ShaderColorLightTexture(md3dDevice);
-	Cube1 = new GraphicObject_TextureLight((ShaderColorLightTexture*)(pShader_Cube), pModel_Cube1);// Vect(1, 0, 0, 1), Vect(1, 0, 0, 1), Vect(1, 1, 1, 1));
-	Cube2 = new GraphicObject_TextureLight((ShaderColorLightTexture*)(pShader_Cube), pModel_Cube2);// Vect(1, 0, 0, 1), Vect(1, 0, 0, 1), Vect(1, 1, 1, 1));
-	Cube3 = new GraphicObject_TextureLight((ShaderColorLightTexture*)(pShader_Cube), pModel_Cube3);// Vect(1, 0, 0, 1), Vect(1, 0, 0, 1), Vect(1, 1, 1, 1));
-	pTex_Cube = new Texture(md3dDevice, L"../Assets/Textures/mouse.tga", D3D11_FILTER_MIN_MAG_MIP_POINT, 4U, FALSE, 0U, DirectX::TEX_FILTER_POINT);
+	pShader_Cube = new ShaderColorLightTexture("../Assets/Shaders/D3D/ColorLightTexture.hlsl");
+	Cube1 = new GraphicsObject_TextureLight((ShaderColorLightTexture*)(pShader_Cube), pModel_Cube1);// Vect(1, 0, 0, 1), Vect(1, 0, 0, 1), Vect(1, 1, 1, 1));
+	Cube2 = new GraphicsObject_TextureLight((ShaderColorLightTexture*)(pShader_Cube), pModel_Cube2);// Vect(1, 0, 0, 1), Vect(1, 0, 0, 1), Vect(1, 1, 1, 1));
+	Cube3 = new GraphicsObject_TextureLight((ShaderColorLightTexture*)(pShader_Cube), pModel_Cube3);// Vect(1, 0, 0, 1), Vect(1, 0, 0, 1), Vect(1, 1, 1, 1));
+	pTex_Cube = new Texture("../Assets/Textures/mouse.tga", D3D11_FILTER_MIN_MAG_MIP_POINT, 4U, FALSE, 0U, DirectX::TEX_FILTER_POINT);
 	Cube1->SetTexture(pTex_Cube, 0);
 	Cube2->SetTexture(pTex_Cube, 0);
 	Cube3->SetTexture(pTex_Cube, 0);
@@ -111,56 +119,67 @@ void DXApp::InitDemo()
 	pShader_Cube->SetSpotLightParameters(spotLightPos, spotLightRadius, spotLightAtt, spotDir, spotExp, spotLightAmb, spotLightDif, spotLightSpc);
 
 #ifdef _TEST
-	_TEST_model = new Model(md3dDevice, "../Assets/Models/CubeTest2.azul");
-	_TEST_tex = new Texture(md3dDevice, L"../Assets/Textures/CubeTex.tga");
-	_TEST_go = new GraphicObject_Texture(pShaderTex, _TEST_model);
-	_TEST_go->SetWorld(Matrix(SCALE, 1, 1, 1) * Matrix(TRANS, 0, 10, 0));
+	_TEST_model = new Model("../Assets/Models/CubeTest2.azul");
+	_TEST_tex = new Texture(L"../Assets/Textures/CubeTex.tga");
+	_TEST_go = new GraphicsObject_Texture(pShaderTex, _TEST_model);
+	_TEST_go->SetWorld(Matrix::Scale( 1, 1, 1) * Matrix::Trans(0, 10, 0));
 	_TEST_go->SetTexture(_TEST_tex,0);
-	CubeModel = new Model(md3dDevice, Model::PreMadedeModels::UnitBoxRepeatedTexture);
-	CubeGo = new GraphicObject_TextureLight(pShaderTexLight, CubeModel);
-	CubeGo->SetWorld(Matrix(SCALE, 10, 10, 10)*Matrix(TRANS, 5, 10, 5));
+	CubeModel = new Model(Model::PreMadeModels::UnitBoxRepeatedTexture);
+	CubeGo = new GraphicsObject_TextureLight(pShaderTexLight, CubeModel);
+	CubeGo->SetWorld(Matrix::Scale( 10, 10, 10)*Matrix::Trans(5, 10, 5));
 	CubeGo->SetTexture(ppTex_WormyBoi[0],0);
 #endif
 #ifdef TERRAIN
-	pTerrain_Texture = new Texture(md3dDevice, L"../Assets/Textures/brownsand.tga");
+	pTerrain_Texture = new Texture("../Assets/Textures/brownsand.tga");
 	float len = 3;
-	pTerrain = new TerrainModel(md3dDevice, L"../Assets/Textures/canyon2.tga",len,50,0,8,8);
-	pTerrain_Shader = new ShaderTexture(md3dDevice);
-	pTerrain_Shader->SetTextureResourceAndSampler(NULL);
-	pTerrain_World = new Matrix(Matrix::Trans(Vect(-128.0f*len, 0.0f, -128.0f*len))); // why tf is this a pointer???
+	pTerrain = new TerrainModel("../Assets/Textures/canyon2.tga", len, 50.f, 0.f, 8, 8);
+	pTerrain_Shader = new ShaderTexture("../Assets/Shaders/D3D/Texture.hlsl");
+	pTerrain_World = new Matrix(Matrix::Trans(Vect(-128.0f*len, 0.0f, -128.0f*len)));
 #endif
 
 #ifdef SKYBOX
 	Matrix _tempMatrix = Matrix::Scale(1.f) * Matrix::Trans(Vect::Zero); // why?
 	pSkyBox_World = new Matrix(_tempMatrix);
-	pSkyBox_Texture = new Texture(md3dDevice, L"../Assets/Textures/redspace.tga");
-	pSkyBox_Shader = new ShaderTexture(md3dDevice);
-	pSkyBox_Shader->SetTextureResourceAndSampler(NULL);
-	pSkyBox = new Skybox(md3dDevice,pSkyBox_Shader,pSkyBox_Texture);
+	pSkyBox_Texture = new Texture("../Assets/Textures/redspace.tga");
+	pSkyBox_Shader = new ShaderTexture("../Assets/Shaders/D3D/Texture.hlsl");
+	pSkyBox = new Skybox(pSkyBox_Shader, pSkyBox_Texture);
 #endif
 #ifdef FLATPLANE
-	flatPlane = new FlatPlane(md3dDevice,1000,1,1);
-	flatPlane_World = Matrix(SCALE,1,1,1) * Matrix(TRANS, 0, 2, 0);
+	flatPlane = new FlatPlane(1000,1,1);
+	flatPlane_World = Matrix::Scale(1,1,1) * Matrix::Trans(0, 2, 0);
 
 #endif
 
-	// Bullet
-	// Bullet_GO = new GraphicObject_TextureLight(pShaderTexLight, pModel_UnitSphere);
-	// Bullet_GO->SetTexture(ppTex_WormyBoi[0], 0);
-	// myBullet = new Bullet(Bullet_GO);
+	pModel_Sprite = new Model(Model::PreMadeModels::UnitPlaneXY);
+	pTex_Sprite = new Texture("../Assets/Textures/SpiderHeadLivesBig.tga");
+	pShader_Sprite = new ShaderTexture("../Assets/Shaders/D3D/Texture.hlsl");
+	pRect_Sprite = new Rect(0.f, 0.f, 100.f, 100.f);
+	pImage_Sprite = new Image(pTex_Sprite, *pRect_Sprite);
+	pGO_Sprite = new GraphicsObject_Sprite(pModel_Sprite, pShader_Sprite, pImage_Sprite, pRect_Sprite);
 
+	pModel_WF = new Model(Model::PreMadeModels::UnitSphere, 10.0f);
+	pShader_WF = new ShaderWireframe("../Assets/Shaders/D3D/ColorSelected3D.hlsl");
+	Vect color = Vect(1.f, 0.f, 0.f, 1.f);
+	pGO_WF = new GraphicsObject_Wireframe(pModel_WF, pShader_WF, color);
 
 	// Initialize the projection matrix
-	mCam.setPerspective( 3.14159*.45f, mClientWidth / (float)mClientHeight, 1.0f, 5000.0f);
-	mCam.setOrientAndPosition(
-		Vect( - 0.0507903174, 0.857880533, 0.511332929),
-		Vect(-2.04233885, 23.4840279, -16.0365753),
-		Vect(-1.95754349, 23.9978771, -16.8902550));
+	pCam3D = new Camera();
+	pCam3D->setPerspective( 3.14159f*.45f, mClientWidth / (float)mClientHeight, 0.1f, 5000.0f);
+	pCam3D->setOrientAndPosition(
+		Vect( - 0.0507903174f, 0.857880533f, 0.511332929f),
+		Vect(-2.04233885f, 23.4840279f, -16.0365753f),
+		Vect(-1.95754349f, 23.9978771f, -16.8902550f));
+
+	pCam2D = new Camera();
+	pCam2D->setViewport(0, 0, mClientWidth, mClientHeight);
+	pCam2D->setOrthographic(0.f, 0.f, (float)mClientWidth, (float)mClientHeight, 0.1f, 1.0f);
+	pCam2D->setOrientAndPosition(Vect::Up, Vect::Forward, Vect::Zero);
+	pCam2D->updateCamera();
 
 	// Initialize gimmicky mouse control values
-	mTheta = .5;
-	mPhi = 3.1415f / 8;
-	mRadius = 6;
+	mTheta = .5f;
+	mPhi = 3.1415f / 8.f;
+	mRadius = 6.f;
 
 	mTimer.Reset();
 }
@@ -169,43 +188,41 @@ void DXApp::InitDemo()
 // make me smooth
 void DXApp::UpdateScene()
 {
-	//mWorld2 *= Matrix(ROT_Y, 0.0003);
-	//GraphObj2->SetWorld(mWorld2);
 	GO_Frigate->SetWorld(world_Frigate);
 
 	pShaderTexLight->SetPointLightParameters3(
 		world_Frigate.GetTrans() + Vect(0, -59.9f, 0), userdata.frigateSpotRange,
 		Vect(0, 1, 0) * userdata.frigateSpotAtten,
 
-		Vect(.7, .7, 1) * 1.f,
-		Vect(.7, .7, 1) * 3.f,
+		Vect(.7f, .7f, 1) * 1.f,
+		Vect(.7f, .7f, 1) * 3.f,
 		Vect(1, 1, 1, 1) * 1.f);
 
 	pShader_Cube->SetPointLightParameters3(
 		world_Frigate.GetTrans() + Vect(0, -59.9f, 0), userdata.frigateSpotRange,
 		Vect(0, 1, 0) * userdata.frigateSpotAtten,
 
-		Vect(.7, .7, 1)	* 1.f,
-		Vect(.7, .7, 1)	* 3.f,
+		Vect(.7f, .7f, 1)	* 1.f,
+		Vect(.7f, .7f, 1)	* 3.f,
 		Vect(1, 1, 1, 1)* 1.f);
 
 	float camSpeed = 40 * mTimer.DeltaTime();
 	if (GetKeyState('W') & 0x08000)
 	{
-		mCam.TranslateFwdBack(camSpeed);
+		pCam3D->TranslateFwdBack(camSpeed);
 	}
 	else if (GetKeyState('S') & 0x08000)
 	{
-		mCam.TranslateFwdBack(-camSpeed);
+		pCam3D->TranslateFwdBack(-camSpeed);
 	}
 
 	if (GetKeyState('A') & 0x08000)
 	{
-		mCam.TranslateLeftRight(-camSpeed);
+		pCam3D->TranslateLeftRight(-camSpeed);
 	}
 	else if (GetKeyState('D') & 0x08000)
 	{
-		mCam.TranslateLeftRight(camSpeed);
+		pCam3D->TranslateLeftRight(camSpeed);
 	}
 	else if (GetKeyState('R') & 0x08000)
 	{
@@ -235,95 +252,96 @@ void DXApp::UpdateScene()
 	float rotSpeed = 3 * mTimer.DeltaTime();
 	if (GetKeyState(VK_LEFT) & 0x08000)
 	{
-		mCam.TurnLeftRight(rotSpeed);
+		pCam3D->TurnLeftRight(rotSpeed);
 	}
 	else if (GetKeyState(VK_RIGHT) & 0x08000)
 	{
-		mCam.TurnLeftRight(-rotSpeed);
+		pCam3D->TurnLeftRight(-rotSpeed);
 	}
 
 	if (GetKeyState(VK_UP) & 0x08000)
 	{
-		mCam.TiltUpDown(rotSpeed);
+		pCam3D->TiltUpDown(rotSpeed);
 	}
 	else if (GetKeyState(VK_DOWN) & 0x08000)
 	{
-		mCam.TiltUpDown(-rotSpeed);
+		pCam3D->TiltUpDown(-rotSpeed);
 	}
 
-	//myBullet->Update(mTimer.DeltaTime());
-	mCam.updateCamera();
+	pCam3D->updateCamera();
 }
 
 void DXApp::DrawScene()
 {
-	md3dImmediateContext->ClearRenderTargetView(mRenderTargetView, VasA(BackgroundColor));
-	md3dImmediateContext->ClearDepthStencilView(mpDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 	Vect eyepos;
-	mCam.getPos(eyepos);
+	pCam3D->getPos(eyepos);
 
 	float fogStart = 128;
 	float fogRange = 256;
 	Vect fogCol = Vect(0.25f, 0, 0, 1);
 
 #ifdef _TEST
-	pShaderTex->SetToContext(md3dImmediateContext);
-	pShaderTex->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());
+	pShaderTex->SetToContext();
+	pShaderTex->SendCamMatrices(pCam3D->getViewMatrix(), pCam3D->getProjMatrix());
 	//pShaderTex->SendWorld();
-	_TEST_go->Render();
-	pShaderTexLight->SetToContext(md3dImmediateContext);
-	pShaderTexLight->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());
-	CubeGo->Render();
+	_TEST_go->Render(pCam3D);
+	pShaderTexLight->SetToContext();
+	pShaderTexLight->SendCamMatrices(pCam3D->getViewMatrix(), pCam3D->getProjMatrix());
+	CubeGo->Render(pCam3D);
 #endif 
 #ifdef SKYBOX
 	Vect camPos;
-	mCam.getPos(camPos);
+	pCam3D->getPos(camPos);
 	pSkyBox_World->SetTrans(camPos);
-	pSkyBox_Shader->SetToContext(md3dImmediateContext);
+	pSkyBox_Shader->SetToContext();
 	pSkyBox_Shader->SendFogData(500, 5000, fogCol);
-	pSkyBox_Shader->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());
+	pSkyBox_Shader->SendCamMatrices(pCam3D->getViewMatrix(), pCam3D->getProjMatrix());
 	pSkyBox_Shader->SendWorld(*pSkyBox_World);
-	pSkyBox->Render(md3dImmediateContext);
+	pSkyBox->Render();
 #endif
 
-	eyeballRing->Render(md3dImmediateContext, &mCam, eyepos, fogStart, fogRange, fogCol);
-	worm->Render(md3dImmediateContext,&mCam, eyepos, fogStart, fogRange, fogCol);
+	eyeballRing->Render(pCam3D, eyepos, fogStart, fogRange, fogCol);
+	worm->Render(pCam3D, eyepos, fogStart, fogRange, fogCol);
 
-	GO_Frigate->Render();
+	GO_Frigate->Render(pCam3D);
 
-	// myBullet->Render();
+	pGO_WF->SetWorld(Matrix::Trans(0.f, 10.f,0.f) * Matrix::RotY(mTimer.TotalTime()));
+	pGO_WF->Render(pCam3D);
 
 #ifdef TERRAIN
-	//pTerrain_Shader->SetToContext(md3dImmediateContext);
-	//pTerrain_Shader->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());
-	pTerrain_Texture->SetToContext(md3dImmediateContext);
+	//pTerrain_Shader->SetToContext();
+	//pTerrain_Shader->SendCamMatrices(pCam3D->getViewMatrix(), pCam3D->getProjMatrix());
+	pTerrain_Texture->SetToContext();
+	pShaderTexLight->SetToContext();
 	pShaderTexLight->SendWorldAndMaterial(*pTerrain_World);
 
-	//pShaderColLight->SetToContext(md3dImmediateContext);
-	//pShaderColLight->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());
+	//pShaderColLight->SetToContext();
+	//pShaderColLight->SendCamMatrices(pCam3D->getViewMatrix(), pCam3D->getProjMatrix());
 	//pShaderColLight->SendLightParameters(eyepos);
 	//pShaderColLight->SendWorldAndMaterial(*pTerrain_World);
 
-	pTerrain->Render(md3dImmediateContext);
+	pTerrain->Render();
 #endif
 #ifdef FLATPLANE
 	//pShaderTexLight->SendWorldAndMaterial(flatPlane_World);
-	pShaderColLight->SetToContext(md3dImmediateContext);
-	pShaderColLight->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());
+	pShaderColLight->SetToContext();
+	pShaderColLight->SendCamMatrices(pCam3D->getViewMatrix(), pCam3D->getProjMatrix());
 	pShaderColLight->SendLightParameters(eyepos);
 	pShaderColLight->SendWorldAndMaterial(flatPlane_World);
-	//flatPlane->Render(md3dImmediateContext);
+	//flatPlane->Render();
 #endif
-	pShader_Cube->SetToContext(md3dImmediateContext);
+	pShader_Cube->SetToContext();
 	pShader_Cube->SendFogData(fogStart, fogRange, fogCol);
 	pShader_Cube->SendLightParameters(eyepos);
-	pShader_Cube->SendCamMatrices(mCam.getViewMatrix(), mCam.getProjMatrix());
-	Cube1->Render();
-	Cube2->Render();
-	Cube3->Render();
+	pShader_Cube->SendCamMatrices(pCam3D->getViewMatrix(), pCam3D->getProjMatrix());
 
-	// Switches the display to show the now-finished back-buffer
-	mSwapChain->Present(0, 0);
+	Cube1->Render(pCam3D);
+	Cube2->Render(pCam3D);
+	Cube3->Render(pCam3D);
+
+	int texSize = 100;
+	pGO_Sprite->SetWorld(Matrix::Scale(100.0f) * Matrix::Trans(static_cast<float>(-texSize/2) - 16.0f, mClientHeight - static_cast<float>(texSize / 2) - 16.0f, 0.5f));
+	pGO_Sprite->Render(pCam2D);
 }
 
 
@@ -331,13 +349,6 @@ DXApp::DXApp(HWND hwnd)
 {
 	assert(hwnd);
 	mhMainWnd = hwnd;
-
-	BackgroundColor = Colors::MidnightBlue;
-
-	md3dDevice = nullptr;
-	md3dImmediateContext = nullptr;
-	mSwapChain = nullptr;
-	mRenderTargetView = nullptr;
 
 	// Get window data through the window handle
 	RECT rc;
@@ -352,10 +363,8 @@ DXApp::DXApp(HWND hwnd)
 	const int MAX_LABEL_LENGTH = 100; // probably overkill...
 	WCHAR str[MAX_LABEL_LENGTH];
 	GetWindowText(mhMainWnd, str, MAX_LABEL_LENGTH);
-	mMainWndCaption = str;
 
-	// Initialize DX11
-	this->InitDirect3D();
+	mMainWndCaption = str;
 
 	// Demo initialization
 	this->InitDemo();
@@ -363,9 +372,6 @@ DXApp::DXApp(HWND hwnd)
 
 DXApp::~DXApp()
 {
-	//delete pModel_EyeballBoi;
-	//delete ppTex_EyeballBoi;
-
 	delete pModel_Cube1;
 	delete pModel_Cube2;
 	delete pModel_Cube3;
@@ -384,11 +390,6 @@ DXApp::~DXApp()
 	delete pShaderTex;
 
 	delete eyeballRing;
-	//delete myBullet;
-	//delete Bullet_GO;
-	//delete mWorld_WormyBoi;
-	//delete pModel_WormyBoi;
-	//delete ppTex_WormyBoi;
 	delete worm;
 
 #ifdef _TEST
@@ -413,178 +414,17 @@ DXApp::~DXApp()
 #ifdef FLATPLANE
 	delete flatPlane;
 #endif
-	//delete pTex1;
-	//delete pTex2;
 
-	ReleaseAndDeleteCOMobject(mRenderTargetView);
-	ReleaseAndDeleteCOMobject(mpDepthStencilView);
-	ReleaseAndDeleteCOMobject(mSwapChain);
-	ReleaseAndDeleteCOMobject(md3dImmediateContext);
+	delete pModel_Sprite;
+	delete pTex_Sprite;
+	delete pShader_Sprite;
+	delete pRect_Sprite;
+	delete pImage_Sprite;
+	delete pGO_Sprite;
 
-	// Must be done BEFORE the device is released
-	ReportLiveDXObjects();		// See http://masterkenth.com/directx-leak-debugging/
-
-	ReleaseAndDeleteCOMobject(md3dDevice);
-}
-
-// See http://masterkenth.com/directx-leak-debugging/
-void DXApp::ReportLiveDXObjects()
-{
-#ifdef _DEBUG
-	HRESULT hr = S_OK;
-
-	// Now we set up the Debug interface, to be queried on shutdown
-	ID3D11Debug* debugDev;
-	hr = md3dDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&debugDev));
-
-	debugDev->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
-	ReleaseAndDeleteCOMobject(debugDev);
-#endif
-}
-
-void DXApp::InitDirect3D()
-{
-	HRESULT hr = S_OK;
-
-	UINT createDeviceFlags = 0;
-#ifdef _DEBUG
-	createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
-#endif
-
-	// This is a *greatly* simplified process to create a DX device and context:
-	// We force the use of DX11 feature level since that's what CDM labs are limited to.
-	// For real-life applications would need to test what's the best feature level and act accordingly
-	hr = D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, createDeviceFlags, nullptr, 0, D3D11_SDK_VERSION, &md3dDevice, nullptr, &md3dImmediateContext);
-	assert(SUCCEEDED(hr));
-
-	// Now we obtain the associated DXGIfactory1 with our device 
-	// Many steps...
-	IDXGIDevice* dxgiDevice = nullptr;
-	hr = md3dDevice->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(&dxgiDevice));
-	assert(SUCCEEDED(hr));
-
-	IDXGIAdapter* adapter = nullptr;
-	hr = dxgiDevice->GetAdapter(&adapter);
-	assert(SUCCEEDED(hr));
-
-	IDXGIFactory1* dxgiFactory1 = nullptr;
-	hr = adapter->GetParent(__uuidof(IDXGIFactory1), reinterpret_cast<void**>(&dxgiFactory1));
-	assert(SUCCEEDED(hr));
-	// See also note on weird stuff with factories and swap chains (1s and 2s)
-	// https://msdn.microsoft.com/en-us/library/windows/desktop/jj863687(v=vs.85).aspx
-
-	// We are done with these now...
-	ReleaseAndDeleteCOMobject(adapter);
-	ReleaseAndDeleteCOMobject(dxgiDevice);
-
-	// Controls MSAA option:
-	// - 4x count level garanteed for all DX11 
-	// - MUST be the same for depth buffer!
-	// - We _need_ to work with the depth buffer because reasons... (see below)
-	DXGI_SAMPLE_DESC sampDesc;
-	sampDesc.Count = 1;
-	sampDesc.Quality = static_cast<UINT>(D3D11_CENTER_MULTISAMPLE_PATTERN);  // MS: what's with the type mismtach?
-
-	DXGI_MODE_DESC buffdesc;				// https://msdn.microsoft.com/en-us/library/windows/desktop/bb173064(v=vs.85).aspx
-	ZeroMemory(&buffdesc, sizeof(buffdesc));
-	buffdesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-
-	// Next we create a swap chain. 
-	// Useful thread: http://stackoverflow.com/questions/27270504/directx-creating-the-swapchain
-	// Note that this is for a DirectX 11.0: in a real app, we should test the feature levels and act accordingly
-
-	DXGI_SWAP_CHAIN_DESC sd;				// See MSDN: https://msdn.microsoft.com/en-us/library/windows/desktop/bb173075(v=vs.85).aspx
-	ZeroMemory(&sd, sizeof(sd));
-	sd.BufferCount = 2;						// Much confusion about this number... see http://www.gamedev.net/topic/633807-swap-chain-buffer-count/
-	sd.BufferDesc = buffdesc;
-	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	sd.OutputWindow = mhMainWnd;
-	sd.SampleDesc = sampDesc;
-	sd.Windowed = TRUE;
-
-	hr = dxgiFactory1->CreateSwapChain(md3dDevice, &sd, &mSwapChain);
-	assert(SUCCEEDED(hr));
-	ReleaseAndDeleteCOMobject(dxgiFactory1);
-
-	// Create a render target view		https://msdn.microsoft.com/en-us/library/windows/desktop/ff476582(v=vs.85).aspx
-	ID3D11Texture2D* pBackBuffer = nullptr;
-	hr = mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&pBackBuffer));
-	assert(SUCCEEDED(hr));;
-
-	hr = md3dDevice->CreateRenderTargetView(pBackBuffer, nullptr, &mRenderTargetView);
-	ReleaseAndDeleteCOMobject(pBackBuffer);
-	assert(SUCCEEDED(hr));
-
-	/**********************************************************/
-
-	// First we fix what it means for triangles to be front facing.
-	// Requires setting a whole new rasterizer state
-	//*
-	D3D11_RASTERIZER_DESC rd;
-	rd.FillMode = D3D11_FILL_SOLID;  // Also: D3D11_FILL_WIREFRAME
-	rd.CullMode = D3D11_CULL_BACK;
-	rd.FrontCounterClockwise = true; // true for RH forward facing
-	rd.DepthBias = 0;
-	rd.SlopeScaledDepthBias = 0.0f;
-	rd.DepthBiasClamp = 0.0f;
-	rd.DepthClipEnable = true;
-	rd.ScissorEnable = false;
-	rd.MultisampleEnable = true;  // Does not in fact turn on/off multisample: https://msdn.microsoft.com/en-us/library/windows/desktop/ff476198(v=vs.85).aspx
-	rd.AntialiasedLineEnable = true;
-
-	ID3D11RasterizerState* rs;
-	md3dDevice->CreateRasterizerState(&rd, &rs);
-
-	md3dImmediateContext->RSSetState(rs);
-	ReleaseAndDeleteCOMobject(rs); // we can release this resource since we won't be changing it any further
-	//*/
-
-	// We must turn on the abilty to process depth during rendering.
-	// Done through depth stencils (see https://msdn.microsoft.com/en-us/library/windows/desktop/bb205074(v=vs.85).aspx)
-	// Below is a simplified version
-	//*
-	D3D11_TEXTURE2D_DESC descDepth;
-	descDepth.Width = mClientWidth;
-	descDepth.Height = mClientHeight;
-	descDepth.MipLevels = 1;
-	descDepth.ArraySize = 1;
-	descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	descDepth.SampleDesc = sampDesc;
-	descDepth.Usage = D3D11_USAGE_DEFAULT;
-	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	descDepth.CPUAccessFlags = 0;
-	descDepth.MiscFlags = 0;
-
-	ID3D11Texture2D* pDepthStencil;
-	hr = md3dDevice->CreateTexture2D(&descDepth, NULL, &pDepthStencil);
-	assert(SUCCEEDED(hr));
-
-	// Create the depth stencil view
-	D3D11_DEPTH_STENCIL_VIEW_DESC descDSV;
-	ZeroMemory(&descDSV, sizeof(descDSV));
-	descDSV.Format = descDepth.Format;
-	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
-	descDSV.Texture2D.MipSlice = 0;;
-
-	hr = md3dDevice->CreateDepthStencilView(pDepthStencil, &descDSV, &mpDepthStencilView);
-	assert(SUCCEEDED(hr));
-	ReleaseAndDeleteCOMobject(pDepthStencil);
-	//*/
-
-	/**********************************************************/
-
-	//md3dImmediateContext->OMSetRenderTargets(1, &mRenderTargetView, nullptr);  // to use without depth stencil
-	md3dImmediateContext->OMSetRenderTargets(1, &mRenderTargetView, mpDepthStencilView);
-
-	// Setup the viewport
-	D3D11_VIEWPORT vp;
-	vp.Width = (FLOAT)mClientWidth;
-	vp.Height = (FLOAT)mClientHeight;
-	vp.MinDepth = 0.0f;
-	vp.MaxDepth = 1.0f;
-	vp.TopLeftX = 0;
-	vp.TopLeftY = 0;
-	md3dImmediateContext->RSSetViewports(1, &vp);
+	delete pModel_WF;
+	delete pShader_WF;
+	delete pGO_WF;
 }
 
 void DXApp::CalculateFrameStats()
@@ -632,12 +472,12 @@ void DXApp::OnMouseDown(WPARAM btnState, int xval, int yval)
 	if (btnState & MK_LBUTTON)
 	{
 		Vect camPos, camDir;
-		mCam.getPos(camPos);
-		mCam.getDir(camDir);
+		pCam3D->getPos(camPos);
+		pCam3D->getDir(camDir);
 		Matrix camWorld;
 		camWorld = Matrix::RotY(0) * Matrix::Scale(1.f) * Matrix::Trans(camPos);
 
-		//myBullet->Activate(0.1f*(((-camDir)).getNorm()), camWorld);
+		//myBullet->Activate(0.1f*(((-camDir)).GetNormalized()), camWorld);
 		MousePos.x = static_cast<float>(xval);
 		MousePos.y = static_cast<float>(yval);
 	}
@@ -676,8 +516,8 @@ void DXApp::OnMouseMove(WPARAM btnState, int xval, int yval)
 		// Build the view matrix using gimmicky trick
 		Vect target = Vect(0, 0, 0, 0);
 		Vect up = Vect(0, 1, 0, 0);
-		Vect pos = Vect(0, 0, -mRadius) * Matrix(ROT_Y, mTheta) * Matrix(ROT_X, mPhi);
-		mCam.setOrientAndPosition(up, target, pos);
+		Vect pos = Vect(0, 0, -mRadius) * Matrix::RotY(mTheta) * Matrix::RotX(mPhi);
+		pCam3D->setOrientAndPosition(up, target, pos);
 	}
 
 	MousePos[x] = static_cast<float>(xval);

@@ -1,34 +1,34 @@
 #include "EyeballRing.h"
-#include "ShaderColorLightTexture.h"
-#include "GraphicObject_TextureL.h"
-#include "Texture.h"
-#include "Math/Vect.h"
-#include "Math/Matrix.h"
-#include "Model.h"
-#include "Camera.h"
-#include "Math/Constants.h"
+#include "Graphics/Shader/ShaderColorLightTexture.h"
+#include "Graphics/GraphicsObject/GraphicsObject_TextureLight.h"
+#include "Graphics/Texture/Texture.h"
+#include "Graphics/Math/Vect.h"
+#include "Graphics/Math/Matrix.h"
+#include "Graphics/Model/Model.h"
+#include "Graphics/Camera.h"
+#include "Graphics/Math/Constants.h"
 #include <d3d11.h>
 
-EyeballRing::EyeballRing(ID3D11Device* md3dDevice, ShaderColorLightTexture* pShaderTexLight)
+EyeballRing::EyeballRing(ShaderColorLightTexture* pShaderTexLight)
 {
 	int texNum = 7;
 	ppTex_EyeballBoi = new Texture*[texNum];
-	ppTex_EyeballBoi[0] = new Texture(md3dDevice, L"../Assets/Textures/Tex_Eyeball_Stalk.tga");
-	ppTex_EyeballBoi[1] = new Texture(md3dDevice, L"../Assets/Textures/Tex_Eyeball_Stalk.tga");
-	ppTex_EyeballBoi[2] = new Texture(md3dDevice, L"../Assets/Textures/Tex_Eyeball_Stalk.tga");
-	ppTex_EyeballBoi[3] = new Texture(md3dDevice, L"../Assets/Textures/Tex_Eyeball_Stalk.tga");
-	ppTex_EyeballBoi[4] = new Texture(md3dDevice, L"../Assets/Textures/Tex_Eyeball_Stalk.tga");
-	ppTex_EyeballBoi[5] = new Texture(md3dDevice, L"../Assets/Textures/Tex_Eyeball_Stalk.tga");
-	ppTex_EyeballBoi[6] = new Texture(md3dDevice, L"../Assets/Textures/Tex_Eyeball_Ball.tga");
+	ppTex_EyeballBoi[0] = new Texture("../Assets/Textures/Tex_Eyeball_Stalk.tga");
+	ppTex_EyeballBoi[1] = new Texture("../Assets/Textures/Tex_Eyeball_Stalk.tga");
+	ppTex_EyeballBoi[2] = new Texture("../Assets/Textures/Tex_Eyeball_Stalk.tga");
+	ppTex_EyeballBoi[3] = new Texture("../Assets/Textures/Tex_Eyeball_Stalk.tga");
+	ppTex_EyeballBoi[4] = new Texture("../Assets/Textures/Tex_Eyeball_Stalk.tga");
+	ppTex_EyeballBoi[5] = new Texture("../Assets/Textures/Tex_Eyeball_Stalk.tga");
+	ppTex_EyeballBoi[6] = new Texture("../Assets/Textures/Tex_Eyeball_Ball.tga");
 
-	pModel_EyeballBoi = new Model(md3dDevice, "../Assets/Models/Eyeball_Ascii.azul", false, true, 0.25f);
+	pModel_EyeballBoi = new Model("../Assets/Models/Eyeball_Ascii.azul", false, true, 0.25f);
 
-	EyeballBois = new GraphicObject_TextureLight*[eyeballBoiCount];
+	EyeballBois = new GraphicsObject_TextureLight*[eyeballBoiCount];
 
 	mWorld_EyeballBois = new Matrix*[eyeballBoiCount];
 	for (int i = 0; i < eyeballBoiCount; i++)
 	{
-		EyeballBois[i] = new GraphicObject_TextureLight(pShaderTexLight, pModel_EyeballBoi);
+		EyeballBois[i] = new GraphicsObject_TextureLight(pShaderTexLight, pModel_EyeballBoi);
 		for (int j = 0; j < texNum; j++)
 		{
 			EyeballBois[i]->SetTexture(ppTex_EyeballBoi[j], j);
@@ -45,12 +45,12 @@ EyeballRing::EyeballRing(ID3D11Device* md3dDevice, ShaderColorLightTexture* pSha
 	this->pShaderTexLight = pShaderTexLight;
 }
 
-void EyeballRing::Render(ID3D11DeviceContext* md3dImmediateContext, Camera* pCam, Vect eyepos, float fogStart, float fogRange, Vect fogCol)
+void EyeballRing::Render(Camera* pCam, Vect eyepos, float fogStart, float fogRange, Vect fogCol)
 {
-	pShaderTexLight->SetToContext(md3dImmediateContext);
+	pShaderTexLight->SetToContext();
 	pShaderTexLight->SendFogData(fogStart, fogRange, fogCol);
 	pShaderTexLight->SendCamMatrices(pCam->getViewMatrix(), pCam->getProjMatrix());
 	pShaderTexLight->SendLightParameters(eyepos);
 	for (int i = 0; i<eyeballBoiCount; i++)
-		EyeballBois[i]->Render();
+		EyeballBois[i]->Render(pCam);
 }

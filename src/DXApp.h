@@ -34,38 +34,41 @@
 #ifndef _DXApp
 #define _DXApp
 #include <d3d11.h>
-#include "d3dUtil.h"
-#include "Align16.h"
+#include "Graphics/d3dUtil.h"
+#include "Graphics/Align16.h"
 #include "GameTimer.h"
 #include <string>
 
 // New includes for demo
-#include "Math/Vect.h"
-#include "Math/Matrix.h"
-#include "Camera.h"
-#include "ShaderColor.h"
-#include "ShaderColorLight.h"
-#include "GraphicObject_Texture.h"
-#include "GraphicObject_TextureL.h"
-#include "Skybox.h"
-#include "TerrainModel.h"
-#include "Bullet.h"
+#include "Graphics/Math/Vect.h"
+#include "Graphics/Math/Matrix.h"
 
-class Model;
-class Texture;
-class FlatPlane;
-class TerrainModel;
-class GraphicObject_Color;
-class ShaderTexture;
-class GraphicObject_Texture;
+class Camera;
 class EyeballRing;
+class FlatPlane;
+class GraphicsObject_Color;
+class GraphicsObject_Sprite;
+class GraphicsObject_Texture;
+class GraphicsObject_TextureLight;
+class GraphicsObject_Wireframe;
+class Image;
+class Model;
+class ShaderWireframe;
+class ShaderTexture;
+class ShaderColorLightTexture;
+class Skybox;
+class Texture;
+class TerrainModel;
 class Worm;
+
+struct Rect;
+
 class DXApp : public Align16
 {
 	struct UserData
 	{
-		float frigateSpotRange = 100;
-		float frigateSpotAtten = .001f;
+		float frigateSpotRange = 1000;
+		float frigateSpotAtten = .01f;
 	};
 private:
 	UserData userdata;
@@ -74,19 +77,11 @@ private:
 
 	Vect BackgroundColor;
 
-	// DX application elements
-	ID3D11Device* md3dDevice;					// Connects to the graphics card
-	ID3D11DeviceContext* md3dImmediateContext;	// Settings for the GPU to use
-	IDXGISwapChain* mSwapChain;					// image buffers used for rendering
-	ID3D11RenderTargetView* mRenderTargetView;	// Where to send rendring operations (typically: points to one of the swap buffers)
-	ID3D11DepthStencilView* mpDepthStencilView; // Needed to force depth-buffer operations
-
 	GameTimer mTimer;
 	std::wstring mMainWndCaption;
 	int mClientWidth;
 	int mClientHeight;
 
-	void InitDirect3D();
 	void InitDemo();
 	void UpdateScene();
 	void DrawScene();
@@ -95,11 +90,9 @@ private:
 	// Shader loading utility. SHould be moved elsewhere later...
 	HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
 
-	// Debug utility
-	void ReportLiveDXObjects();
-
 	// Demo specific additions
-	Camera mCam;
+	Camera* pCam3D;
+	Camera* pCam2D;
 
 #ifdef _COL_L
 	ShaderColorLight* pShaderColLight;
@@ -117,27 +110,36 @@ private:
 	Model* pModel_Cube3;
 	Matrix* mWorld_Cube;
 	Texture* pTex_Cube;
-	GraphicObject_TextureLight* Cube1;
-	GraphicObject_TextureLight* Cube2;
-	GraphicObject_TextureLight* Cube3;
+	GraphicsObject_TextureLight* Cube1;
+	GraphicsObject_TextureLight* Cube2;
+	GraphicsObject_TextureLight* Cube3;
+
+	ShaderTexture* pShader_Sprite;
+	Model* pModel_Sprite;
+	Texture* pTex_Sprite;
+	Image* pImage_Sprite;
+	Rect* pRect_Sprite;
+	GraphicsObject_Sprite* pGO_Sprite;
+
+	ShaderWireframe* pShader_WF;
+	Model* pModel_WF;
+	GraphicsObject_Wireframe* pGO_WF;
+
 
 	// WORMY BOI >:D
 	Worm* worm;
-
-	GraphicObject_TextureLight* Bullet_GO;
-	Bullet* myBullet;
 
 	// Frigate
 	Model* pModel_Frigate;
 	Texture* pTex_Frigate;
 	Matrix world_Frigate;
-	GraphicObject_TextureLight* GO_Frigate;
+	GraphicsObject_TextureLight* GO_Frigate;
 #ifdef _TEST
 	Model* _TEST_model;
 	Texture* _TEST_tex;
-	GraphicObject_Texture* _TEST_go;
+	GraphicsObject_Texture* _TEST_go;
 	Model* CubeModel;
-	GraphicObject_TextureLight* CubeGo;
+	GraphicsObject_TextureLight* CubeGo;
 #endif
 #ifdef TERRAIN
 	Matrix* pTerrain_World;
@@ -156,8 +158,8 @@ private:
 	Matrix flatPlane_World;
 #endif
 	//ShaderTexture*		pShaderTex;
-	//GraphicObject_Texture*	GraphObj1;
-	//GraphicObject_Texture*	GraphObj2;
+	//GraphicsObject_Texture*	GraphObj1;
+	//GraphicsObject_Texture*	GraphObj2;
 	//Texture*				pTex1;
 	//Texture*				pTex2;
 

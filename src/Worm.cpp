@@ -1,43 +1,42 @@
 #include "Worm.h"
-#include "ShaderColorLightTexture.h"
-#include "GraphicObject_TextureL.h"
-#include "Texture.h"
-#include "Math/Vect.h"
-#include "Math/Matrix.h"
-#include "Model.h"
-#include "Camera.h"
 #include <d3d11.h>
-#include "FbxModelLoader.h"
+#include "Graphics/Camera.h"
+#include "Graphics/GraphicsObject/GraphicsObject_TextureLight.h"
+#include "Graphics/Math/Vect.h"
+#include "Graphics/Math/Matrix.h"
+#include "Graphics/Model/Model.h"
+#include "Graphics/Model/FbxModelLoader.h"
+#include "Graphics/Shader/ShaderColorLightTexture.h"
+#include "Graphics/Texture/Texture.h"
 
 
-Worm::Worm(ID3D11Device * md3dDevice, ShaderColorLightTexture * pShaderTexLight)
+Worm::Worm(ShaderColorLightTexture * pShaderTexLight)
 {
 	Matrix tempMatrix = Matrix::RotY(180.5f) * Matrix::Scale(1.f) * Matrix::Trans(Vect(0.f, 0.f, -20.f));
 	mWorld_WormyBoi = new Matrix(tempMatrix);
-	pModel_WormyBoi = new Model(md3dDevice, "../Assets/Models/WormyBoi_Full.azul", false, true, 2);
-	WormyBoi = new GraphicObject_TextureLight(pShaderTexLight, pModel_WormyBoi);
+	pModel_WormyBoi = new Model("../Assets/Models/WormyBoi_Full.azul", false, true, 2);
+	WormyBoi = new GraphicsObject_TextureLight(pShaderTexLight, pModel_WormyBoi);
 	WormyBoi->SetWorld(*mWorld_WormyBoi);
 	ppTex_WormyBoi = new Texture*[4];
-	ppTex_WormyBoi[0] = new Texture(md3dDevice, L"../Assets/Textures/WormyBoi_Neck.tga");
-	ppTex_WormyBoi[1] = new Texture(md3dDevice, L"../Assets/Textures/WormyBoi_Eyes.tga");
-	ppTex_WormyBoi[2] = new Texture(md3dDevice, L"../Assets/Textures/WormyBoi_Teeth.tga");
-	ppTex_WormyBoi[3] = new Texture(md3dDevice, L"../Assets/Textures/WormyBoi_Face.tga");
+	ppTex_WormyBoi[0] = new Texture("../Assets/Textures/WormyBoi_Neck.tga");
+	ppTex_WormyBoi[1] = new Texture("../Assets/Textures/WormyBoi_Eyes.tga");
+	ppTex_WormyBoi[2] = new Texture("../Assets/Textures/WormyBoi_Teeth.tga");
+	ppTex_WormyBoi[3] = new Texture("../Assets/Textures/WormyBoi_Face.tga");
+
 	for (int i = 0; i < 4; i++)
 	{
 		WormyBoi->SetTexture(ppTex_WormyBoi[i], i);
 	}
-	pModel_UnitSphere = new Model(md3dDevice, Model::PreMadedeModels::UnitSphere, 12);
-	//pModel_UnitSphere = new Model(md3dDevice, Model::PreMadedeModels::UnitBoxRepeatedTexture,12.0f);
-	//pModel_UnitSphere = new Model(md3dDevice, fbxModelInfo);
 
+	pModel_UnitSphere = new Model(Model::PreMadeModels::UnitSphere, 12);
 
-	GroundSpheres = new GraphicObject_TextureLight*[7];
+	GroundSpheres = new GraphicsObject_TextureLight*[7];
 
-	pTerrain_Texture = new Texture(md3dDevice, L"../Assets/Textures/brownsand.tga");
+	pTerrain_Texture = new Texture("../Assets/Textures/brownsand.tga");
 
 	for (int i = 0; i < 7; i++)
 	{
-		GroundSpheres[i] = new GraphicObject_TextureLight(pShaderTexLight, pModel_UnitSphere);
+		GroundSpheres[i] = new GraphicsObject_TextureLight(pShaderTexLight, pModel_UnitSphere);
 		GroundSpheres[i]->SetTexture(pTerrain_Texture, 0);
 	}
 
@@ -52,13 +51,13 @@ Worm::Worm(ID3D11Device * md3dDevice, ShaderColorLightTexture * pShaderTexLight)
 	this->pShaderTexLight = pShaderTexLight;
 }
 
-void Worm::Render(ID3D11DeviceContext * md3dImmediateContext, Camera * pCam, Vect eyepos, float fogStart, float fogRange, Vect fogCol)
+void Worm::Render(Camera * pCam, Vect eyepos, float fogStart, float fogRange, Vect fogCol)
 {
-	pShaderTexLight->SetToContext(md3dImmediateContext);
+	pShaderTexLight->SetToContext();
 	pShaderTexLight->SendFogData(fogStart, fogRange, fogCol);
 	pShaderTexLight->SendCamMatrices(pCam->getViewMatrix(), pCam->getProjMatrix());
 	pShaderTexLight->SendLightParameters(eyepos);
-	WormyBoi->Render();
+	WormyBoi->Render(pCam);
 	for (int i = 0; i < 7; i++)
-		GroundSpheres[i]->Render();
+		GroundSpheres[i]->Render(pCam);
 }

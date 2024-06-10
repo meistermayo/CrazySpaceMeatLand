@@ -568,9 +568,9 @@ public:
 	};
 
 protected:
-	void Construct(const FbxObject* pFrom) override;
-	void ConstructProperties(bool pForceSet) override;
-	void Destruct(bool pRecursive) override;
+	virtual void Construct(const FbxObject* pFrom);
+	virtual void ConstructProperties(bool pForceSet);
+	virtual void Destruct(bool pRecursive);
 
 private:
 	void AddNewPropInfo(FbxProperty& pProp);
