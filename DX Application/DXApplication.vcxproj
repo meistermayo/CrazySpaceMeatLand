@@ -441,7 +441,6 @@
     <ClInclude Include="..\src\Graphics\Texture\Image.h" />
     <ClInclude Include="..\src\Graphics\Texture\Rect.h" />
     <ClInclude Include="..\src\Graphics\Texture\Texture.h" />
-    <ClInclude Include="..\src\Graphics\VKeys.h" />
     <ClInclude Include="..\src\Worm.h" />
     <CLInclude Include="resource.h" />
     <ResourceCompile Include="DXApplication.rc" />

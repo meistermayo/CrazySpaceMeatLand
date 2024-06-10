@@ -266,9 +266,6 @@
     <ClInclude Include="..\src\Graphics\Model\AzulFileHdr.h">
       <Filter>Source\Graphics\Model</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Graphics\VKeys.h">
-      <Filter>Source\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\Graphics\GraphicsObject\GraphicsObject_Wireframe.h">
       <Filter>Source\Graphics\GraphicsObject</Filter>
     </ClInclude>

@@ -22,14 +22,13 @@ Worm::Worm(ShaderColorLightTexture * pShaderTexLight)
 	ppTex_WormyBoi[1] = new Texture("../Assets/Textures/WormyBoi_Eyes.tga");
 	ppTex_WormyBoi[2] = new Texture("../Assets/Textures/WormyBoi_Teeth.tga");
 	ppTex_WormyBoi[3] = new Texture("../Assets/Textures/WormyBoi_Face.tga");
+
 	for (int i = 0; i < 4; i++)
 	{
 		WormyBoi->SetTexture(ppTex_WormyBoi[i], i);
 	}
-	pModel_UnitSphere = new Model(Model::PreMadeModels::UnitSphere, 12);
-	//pModel_UnitSphere = new Model(Model::PreMadeModels::UnitBoxRepeatedTexture,12.0f);
-	//pModel_UnitSphere = new Model(fbxModelInfo);
 
+	pModel_UnitSphere = new Model(Model::PreMadeModels::UnitSphere, 12);
 
 	GroundSpheres = new GraphicsObject_TextureLight*[7];
 
