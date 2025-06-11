@@ -20,15 +20,6 @@
     <Filter Include="_Libs\DXTex\lib">
       <UniqueIdentifier>{7cb16f48-c669-45bb-9628-6acd1c0caf48}</UniqueIdentifier>
     </Filter>
-    <Filter Include="_Libs\File">
-      <UniqueIdentifier>{2456a3dc-556e-4c00-a0fb-ab1ff1e50f71}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="_Libs\File\include">
-      <UniqueIdentifier>{1c2fab60-77e2-45d3-be75-f90deb7fb424}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="_Libs\File\lib">
-      <UniqueIdentifier>{b651abad-1452-4d78-91fb-153a763f0d30}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\Main DX App">
       <UniqueIdentifier>{2b220d25-da3f-4235-b289-0c75799ee22c}</UniqueIdentifier>
     </Filter>
@@ -174,9 +165,6 @@
     <ClInclude Include="..\dist\DXTex\include\DirectXTex.h">
       <Filter>_Libs\DXTex\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\dist\File\include\File.h">
-      <Filter>_Libs\File\include</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\EyeballRing.h" />
     <ClInclude Include="..\src\Worm.h" />
     <ClInclude Include="..\src\DXApp.h">
@@ -287,40 +275,6 @@
     <ClInclude Include="..\src\Graphics\GraphicsObject\GraphicsObject_TextureLight.h">
       <Filter>Source\Graphics\GraphicsObject</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="..\dist\DXTex\lib\DirectXTex.lib">
-      <Filter>_Libs\DXTex\lib</Filter>
-    </Library>
-    <Library Include="..\dist\File\lib\File_Debug.lib">
-      <Filter>_Libs\File\lib</Filter>
-    </Library>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="..\Assets\Shaders\SimpleColor.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Assets\Shaders\SimpleColorPlus.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Assets\Shaders\ColorSelected.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Assets\Shaders\SimpleColor3D.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Assets\Shaders\ColorSelected3D.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Assets\Shaders\Texture.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Assets\Shaders\ColorLight.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Assets\Shaders\ColorLightTexture.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DXApplication.rc">
