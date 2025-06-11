@@ -1,3 +1,0 @@
-[submodule "src/Graphics"]
-	path = src/Graphics
-	url = git@github.com:meistermayo/GraphicsBackend.git
