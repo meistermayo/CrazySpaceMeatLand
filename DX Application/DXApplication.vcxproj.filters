@@ -157,6 +157,9 @@
     <ClCompile Include="..\src\Graphics\GraphicsObject\GraphicsObject_Wireframe.cpp">
       <Filter>Source\Graphics\GraphicsObject</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Graphics\OGL_GraphicsBackend.cpp">
+      <Filter>Source\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

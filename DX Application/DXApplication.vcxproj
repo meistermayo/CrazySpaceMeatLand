@@ -174,13 +174,13 @@
       <AdditionalOptions> %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>WIN32;_DEBUG;DEBUG;PROFILE;_WINDOWS;_WIN32_WINNT=0x0600;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <AdditionalIncludeDirectories>$(SolutionDir)/dist/Fbx/include;$(SolutionDir)/dist/DXTex/include;$(SolutionDir)/dist/Math/include;$(SolutionDir)/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/dist/GLFW/include;$(SolutionDir)/dist/Fbx/include;$(SolutionDir)/dist/DXTex/include;$(SolutionDir)/dist/Math/include;$(SolutionDir)/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalOptions> %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>libxml2-md.lib;zlib-md.lib;DirectXTex.lib;libfbxsdk-md.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;libxml2-md.lib;zlib-md.lib;DirectXTex.lib;libfbxsdk-md.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <LargeAddressAware>true</LargeAddressAware>
@@ -189,7 +189,7 @@
       <TargetMachine>MachineX64</TargetMachine>
       <UACExecutionLevel>AsInvoker</UACExecutionLevel>
       <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(SolutionDir)dist/DXTex/lib/x64/Debug;$(SolutionDir)dist/Fbx/lib/x64/debug;</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(SolutionDir)dist/DXTex/lib/x64/Debug;$(SolutionDir)dist/GLFW/lib/x64/debug;$(SolutionDir)dist/Fbx/lib/x64/debug;</AdditionalLibraryDirectories>
     </Link>
     <Manifest>
       <EnableDPIAwareness>PerMonitorHighDPIAware</EnableDPIAwareness>
@@ -391,6 +391,7 @@
     <ClCompile Include="..\src\Graphics\Model\ModelTools.cpp" />
     <ClCompile Include="..\src\Graphics\Model\Skybox.cpp" />
     <ClCompile Include="..\src\Graphics\Model\TerrainModel.cpp" />
+    <ClCompile Include="..\src\Graphics\OGL_GraphicsBackend.cpp" />
     <ClCompile Include="..\src\Graphics\Shader\LightStructs.cpp" />
     <ClCompile Include="..\src\Graphics\Shader\ShaderBase.cpp" />
     <ClCompile Include="..\src\Graphics\Shader\ShaderColor.cpp" />

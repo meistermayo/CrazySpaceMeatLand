@@ -17,11 +17,21 @@ int WINAPI wWinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 {
     UNREFERENCED_PARAMETER( hPrevInstance );
     UNREFERENCED_PARAMETER( lpCmdLine );
-
-    ((D3D_GraphicsBackend*)GraphicsBackend::Instance())->SetData(hInstance, nCmdShow);
+#ifdef BACKEND_D3D
+	((D3D_GraphicsBackend*)GraphicsBackend::Instance())->SetData(hInstance, nCmdShow);
+#endif
+#ifdef BACKEND_OGL
+	((OGL_GraphicsBackend*)GraphicsBackend::Instance())->SetData();
+#endif
     GraphicsBackend::Initialize();
     GraphicsBackend::InitApp();
+
+#ifdef BACKEND_D3D
 	HWND hWnd = ((D3D_GraphicsBackend*)GraphicsBackend::Instance())->GetWindowHandle();
+#endif
+#ifdef BACKEND_OGL
+	HWND hWnd = ((OGL_GraphicsBackend*)GraphicsBackend::Instance())->GetWindowHandle();
+#endif
 
 	// Initialize the application that will make use of this window.
 	// In this case, it's our DX11 demo
